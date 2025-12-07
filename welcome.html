@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hoş Geldiniz!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #eafff4, #f0fdf4);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      color: #1f2937;
+    }
+    .welcome-container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(22,163,74,0.08);
+      padding: 48px 36px 36px 36px;
+      text-align: center;
+    }
+    .welcome-title {
+      font-size: 2.5rem;
+      color: #16a34a;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .welcome-user {
+      font-size: 1.2rem;
+      color: #1f2937;
+      margin-bottom: 30px;
+    }
+    .summary-box {
+      background: #f0fdf4;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 8px rgba(22,163,74,0.05);
+    }
+    .summary-title {
+      color: #16a34a;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .summary-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .activities {
+      margin-bottom: 30px;
+    }
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .activity-item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(22,163,74,0.04);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .activity-icon {
+      font-size: 1.7rem;
+      color: #16a34a;
+    }
+    .activity-info {
+      flex: 1;
+    }
+    .activity-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    .activity-desc {
+      color: #374151;
+      font-size: 0.98rem;
+    }
+    .cta-btn {
+      margin-top: 18px;
+      padding: 12px 32px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .cta-btn:hover {
+      background: #15803d;
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-container">
+    <div class="welcome-title">Hoş Geldiniz!</div>
+    <div class="welcome-user" id="welcomeUser">Kullanıcı</div>
+    <div class="summary-box">
+      <div class="summary-title">Toplam Bağışınız</div>
+      <div class="summary-value" id="donationAmount">₺1.250</div>
+    </div>
+    <div class="activities">
+      <div class="summary-title">Son Aktiviteleriniz</div>
+      <ul class="activity-list">
+        <li class="activity-item">
+          <span class="activity-icon">🤝</span>
+          <div class="activity-info">
+            <div class="activity-title">Gönüllülük Etkinliği</div>
+            <div class="activity-desc">Yaşlı Bakım Evi Ziyareti - 2 Aralık 2025</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="activity-icon">📚</span>
+          <div class="activity-info">
+            <div class="activity-title">Eğitim Programı</div>
+            <div class="activity-desc">Python Atölyesi - 28 Kasım 2025</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="activity-icon">🌳</span>
+          <div class="activity-info">
+            <div class="activity-title">Çevre Temizliği</div>
+            <div class="activity-desc">Sahil Temizliği - 20 Kasım 2025</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <a href="index.html" class="cta-btn">Ana Sayfa</a>
+  </div>
+  <script>
+    // Kullanıcı e-posta bilgisini localStorage'dan al
+    const user = localStorage.getItem('userEmail');
+    if(user) {
+      document.getElementById('welcomeUser').textContent = user + ' olarak giriş yaptınız.';
+    }
+  </script>
+</body>
+</html>
