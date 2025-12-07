@@ -1,355 +1,383 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Hoş Geldiniz!</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      background: linear-gradient(135deg, #eafff4, #f0fdf4);
-      min-height: 100vh;
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      color: #1f2937;
-    }
-    .welcome-container {
-      max-width: 600px;
-      margin: 60px auto;
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 8px 32px rgba(22,163,74,0.08);
-      padding: 48px 36px 36px 36px;
-      text-align: center;
-    }
-    .welcome-title {
-      font-size: 2.5rem;
-      color: #16a34a;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    .welcome-user {
-      font-size: 1.2rem;
-      color: #1f2937;
-      margin-bottom: 30px;
-    }
-    .summary-box {
-      background: #f0fdf4;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 32px;
-      box-shadow: 0 2px 8px rgba(22,163,74,0.05);
-    }
-    .summary-title {
-      color: #16a34a;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .summary-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #1f2937;
-    }
-    .activities {
-      margin-bottom: 30px;
-    }
-    .activity-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    .activity-item {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 18px 20px;
-      text-align: left;
-      box-shadow: 0 2px 8px rgba(22,163,74,0.04);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .activity-icon {
-      font-size: 1.7rem;
-      color: #16a34a;
-    }
-    .activity-info {
-      flex: 1;
-    }
-    .activity-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin-bottom: 4px;
-    }
-    .activity-desc {
-      color: #374151;
-      font-size: 0.98rem;
-    }
-    .cta-btn {
-      margin-top: 18px;
-      padding: 12px 32px;
-      background: #16a34a;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .cta-btn:hover {
-      background: #15803d;
-    }
-    .button-group {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 18px;
-      flex-wrap: wrap;
-    }
-    .donation-btn {
-      padding: 12px 32px;
-      background: #2b7cff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .donation-btn:hover {
-      background: #1f5fd1;
-    }
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 5% auto;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    .modal-header {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #16a34a;
-      margin-bottom: 20px;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: #000;
-    }
-    .donation-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    .form-group label {
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: #1f2937;
-    }
-    .form-group input {
-      padding: 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    .preset-amounts {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .preset-btn {
-      padding: 10px;
-      background: #f0fdf4;
-      border: 2px solid #16a34a;
-      color: #16a34a;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-    .preset-btn:hover,
-    .preset-btn.active {
-      background: #16a34a;
-      color: white;
-    }
-    .donate-submit {
-      padding: 12px;
-      background: #16a34a;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .donate-submit:hover {
-      background: #15803d;
-    }
-  </style>
-</head>
-<body>
-  <div class="welcome-container">
-    <div class="welcome-title">Hoş Geldiniz!</div>
-    <div class="welcome-user" id="welcomeUser">Kullanıcı</div>
-    <div class="summary-box">
-      <div class="summary-title">Toplam Bağışınız</div>
-      <div class="summary-value" id="donationAmount">₺1.250</div>
-    </div>
-    <div class="activities">
-      <div class="summary-title">Son Aktiviteleriniz</div>
-      <ul class="activity-list">
-        <li class="activity-item">
-          <span class="activity-icon">🤝</span>
-          <div class="activity-info">
-            <div class="activity-title">Gönüllülük Etkinliği</div>
-            <div class="activity-desc">Yaşlı Bakım Evi Ziyareti - 2 Aralık 2025</div>
-          </div>
-        </li>
-        <li class="activity-item">
-          <span class="activity-icon">📚</span>
-          <div class="activity-info">
-            <div class="activity-title">Eğitim Programı</div>
-            <div class="activity-desc">Python Atölyesi - 28 Kasım 2025</div>
-          </div>
-        </li>
-        <li class="activity-item">
-          <span class="activity-icon">🌳</span>
-          <div class="activity-info">
-            <div class="activity-title">Çevre Temizliği</div>
-            <div class="activity-desc">Sahil Temizliği - 20 Kasım 2025</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="button-group">
-      <a href="index.html" class="cta-btn">Ana Sayfa</a>
-      <button class="donation-btn" id="donationBtnOpen">Bağış Yap</button>
-    </div>
-  </div>
-
-  <!-- Bağış Modal -->
-  <div id="donationModal" class="modal">
-    <div class="modal-content">
-      <span class="close" id="donationClose">&times;</span>
-      <div class="modal-header">Bağış Yap</div>
-      <form class="donation-form" id="donationForm">
-        <div class="form-group">
-          <label>Önceden Belirlenmiş Miktar Seç</label>
-          <div class="preset-amounts">
-            <button type="button" class="preset-btn" data-amount="50">₺50</button>
-            <button type="button" class="preset-btn" data-amount="100">₺100</button>
-            <button type="button" class="preset-btn" data-amount="250">₺250</button>
-            <button type="button" class="preset-btn" data-amount="500">₺500</button>
-            <button type="button" class="preset-btn" data-amount="1000">₺1000</button>
-            <button type="button" class="preset-btn" data-amount="2500">₺2500</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="customAmount">Özel Miktar Gir (₺)</label>
-          <input type="number" id="customAmount" name="customAmount" placeholder="Örn: 150" min="1" />
-        </div>
-        <button type="submit" class="donate-submit">Bağış Yap</button>
-      </form>
-    </div>
-  </div>
-  <script>
-    // Kullanıcı e-posta bilgisini localStorage'dan al
-    const user = localStorage.getItem('userEmail');
-    if(user) {
-      document.getElementById('welcomeUser').textContent = user + ' olarak giriş yaptınız.';
-    }
-
-    // Bağış Modal İşlemleri
-    const modal = document.getElementById('donationModal');
-    const donationBtnOpen = document.getElementById('donationBtnOpen');
-    const donationClose = document.getElementById('donationClose');
-    const donationForm = document.getElementById('donationForm');
-    const presetBtns = document.querySelectorAll('.preset-btn');
-    const customAmount = document.getElementById('customAmount');
-    let selectedAmount = 0;
-
-    // Modal aç
-    donationBtnOpen.addEventListener('click', () => {
-      modal.style.display = 'block';
-    });
-
-    // Modal kapat
-    donationClose.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-
-    // Modal dışına tıkla kapat
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hoş Geldiniz!</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #eafff4, #f0fdf4);
+        min-height: 100vh;
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        color: #1f2937;
       }
-    });
+      .welcome-container {
+        max-width: 600px;
+        margin: 60px auto;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(22, 163, 74, 0.08);
+        padding: 48px 36px 36px 36px;
+        text-align: center;
+      }
+      .welcome-title {
+        font-size: 2.5rem;
+        color: #16a34a;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      .welcome-user {
+        font-size: 1.2rem;
+        color: #1f2937;
+        margin-bottom: 30px;
+      }
+      .summary-box {
+        background: #f0fdf4;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.05);
+      }
+      .summary-title {
+        color: #16a34a;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .summary-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+      }
+      .activities {
+        margin-bottom: 30px;
+      }
+      .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .activity-item {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 18px 20px;
+        text-align: left;
+        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.04);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .activity-icon {
+        font-size: 1.7rem;
+        color: #16a34a;
+      }
+      .activity-info {
+        flex: 1;
+      }
+      .activity-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+      }
+      .activity-desc {
+        color: #374151;
+        font-size: 0.98rem;
+      }
+      .cta-btn {
+        margin-top: 18px;
+        padding: 12px 32px;
+        background: #16a34a;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .cta-btn:hover {
+        background: #15803d;
+      }
+      .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+      .donation-btn {
+        padding: 12px 32px;
+        background: #2b7cff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .donation-btn:hover {
+        background: #1f5fd1;
+      }
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+      .modal-header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #16a34a;
+        margin-bottom: 20px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover {
+        color: #000;
+      }
+      .donation-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .form-group label {
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+      .form-group input {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 1rem;
+      }
+      .preset-amounts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      .preset-btn {
+        padding: 10px;
+        background: #f0fdf4;
+        border: 2px solid #16a34a;
+        color: #16a34a;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .preset-btn:hover,
+      .preset-btn.active {
+        background: #16a34a;
+        color: white;
+      }
+      .donate-submit {
+        padding: 12px;
+        background: #16a34a;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .donate-submit:hover {
+        background: #15803d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="welcome-container">
+      <div class="welcome-title">Hoş Geldiniz!</div>
+      <div class="welcome-user" id="welcomeUser">Kullanıcı</div>
+      <div class="summary-box">
+        <div class="summary-title">Toplam Bağışınız</div>
+        <div class="summary-value" id="donationAmount">₺1.250</div>
+      </div>
+      <div class="activities">
+        <div class="summary-title">Son Aktiviteleriniz</div>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <span class="activity-icon">🤝</span>
+            <div class="activity-info">
+              <div class="activity-title">Gönüllülük Etkinliği</div>
+              <div class="activity-desc">
+                Yaşlı Bakım Evi Ziyareti - 2 Aralık 2025
+              </div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-icon">📚</span>
+            <div class="activity-info">
+              <div class="activity-title">Eğitim Programı</div>
+              <div class="activity-desc">Python Atölyesi - 28 Kasım 2025</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-icon">🌳</span>
+            <div class="activity-info">
+              <div class="activity-title">Çevre Temizliği</div>
+              <div class="activity-desc">Sahil Temizliği - 20 Kasım 2025</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="button-group">
+        <a href="index.html" class="cta-btn">Ana Sayfa</a>
+        <button class="donation-btn" id="donationBtnOpen">Bağış Yap</button>
+      </div>
+    </div>
 
-    // Önceden belirlenmiş miktar seçimi
-    presetBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        presetBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedAmount = parseInt(btn.dataset.amount);
-        customAmount.value = '';
+    <!-- Bağış Modal -->
+    <div id="donationModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="donationClose">&times;</span>
+        <div class="modal-header">Bağış Yap</div>
+        <form class="donation-form" id="donationForm">
+          <div class="form-group">
+            <label>Önceden Belirlenmiş Miktar Seç</label>
+            <div class="preset-amounts">
+              <button type="button" class="preset-btn" data-amount="50">
+                ₺50
+              </button>
+              <button type="button" class="preset-btn" data-amount="100">
+                ₺100
+              </button>
+              <button type="button" class="preset-btn" data-amount="250">
+                ₺250
+              </button>
+              <button type="button" class="preset-btn" data-amount="500">
+                ₺500
+              </button>
+              <button type="button" class="preset-btn" data-amount="1000">
+                ₺1000
+              </button>
+              <button type="button" class="preset-btn" data-amount="2500">
+                ₺2500
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="customAmount">Özel Miktar Gir (₺)</label>
+            <input
+              type="number"
+              id="customAmount"
+              name="customAmount"
+              placeholder="Örn: 150"
+              min="1"
+            />
+          </div>
+          <button type="submit" class="donate-submit">Bağış Yap</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      // Kullanıcı e-posta bilgisini localStorage'dan al
+      const user = localStorage.getItem("userEmail");
+      if (user) {
+        document.getElementById("welcomeUser").textContent =
+          user + " olarak giriş yaptınız.";
+      }
+
+      // Bağış Modal İşlemleri
+      const modal = document.getElementById("donationModal");
+      const donationBtnOpen = document.getElementById("donationBtnOpen");
+      const donationClose = document.getElementById("donationClose");
+      const donationForm = document.getElementById("donationForm");
+      const presetBtns = document.querySelectorAll(".preset-btn");
+      const customAmount = document.getElementById("customAmount");
+      let selectedAmount = 0;
+
+      // Modal aç
+      donationBtnOpen.addEventListener("click", () => {
+        modal.style.display = "block";
       });
-    });
 
-    // Özel miktar girilince preset seçimini temizle
-    customAmount.addEventListener('input', () => {
-      presetBtns.forEach(b => b.classList.remove('active'));
-      selectedAmount = 0;
-    });
+      // Modal kapat
+      donationClose.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
 
-    // Bağış formu gönderimi
-    donationForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const amount = customAmount.value ? parseInt(customAmount.value) : selectedAmount;
-      
-      if (!amount || amount < 1) {
-        alert('Lütfen geçerli bir miktar seçin veya girin.');
-        return;
-      }
+      // Modal dışına tıkla kapat
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
 
-      alert(`₺${amount} bağışınız alınmıştır. Teşekkür ederiz!`);
-      modal.style.display = 'none';
-      donationForm.reset();
-      presetBtns.forEach(b => b.classList.remove('active'));
-    });
-  </script>
-</body>
+      // Önceden belirlenmiş miktar seçimi
+      presetBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          presetBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedAmount = parseInt(btn.dataset.amount);
+          customAmount.value = "";
+        });
+      });
+
+      // Özel miktar girilince preset seçimini temizle
+      customAmount.addEventListener("input", () => {
+        presetBtns.forEach((b) => b.classList.remove("active"));
+        selectedAmount = 0;
+      });
+
+      // Bağış formu gönderimi
+      donationForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const amount = customAmount.value
+          ? parseInt(customAmount.value)
+          : selectedAmount;
+
+        if (!amount || amount < 1) {
+          alert("Lütfen geçerli bir miktar seçin veya girin.");
+          return;
+        }
+
+        alert(`₺${amount} bağışınız alınmıştır. Teşekkür ederiz!`);
+        modal.style.display = "none";
+        donationForm.reset();
+        presetBtns.forEach((b) => b.classList.remove("active"));
+      });
+    </script>
+  </body>
 </html>
