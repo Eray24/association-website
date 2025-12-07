@@ -40,8 +40,15 @@ document.addEventListener("DOMContentLoaded", function () {
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      alert("Giriş başarılı! (Bu demo formudur)");
-      // Gerçek uygulamada sunucuya veri gönderilir
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      // Demo: Herhangi bir e-posta ve şifre ile giriş başarılı
+      if (email && password) {
+        alert("Giriş başarılı! Hoş geldiniz, " + email);
+        window.location.href = "index.html";
+      } else {
+        alert("Lütfen e-posta ve şifrenizi girin.");
+      }
     });
   }
 
