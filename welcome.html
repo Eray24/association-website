@@ -106,6 +106,118 @@
     .cta-btn:hover {
       background: #15803d;
     }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .donation-btn {
+      padding: 12px 32px;
+      background: #2b7cff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .donation-btn:hover {
+      background: #1f5fd1;
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .modal-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #16a34a;
+      margin-bottom: 20px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #000;
+    }
+    .donation-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .form-group input {
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .preset-amounts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .preset-btn {
+      padding: 10px;
+      background: #f0fdf4;
+      border: 2px solid #16a34a;
+      color: #16a34a;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover,
+    .preset-btn.active {
+      background: #16a34a;
+      color: white;
+    }
+    .donate-submit {
+      padding: 12px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .donate-submit:hover {
+      background: #15803d;
+    }
   </style>
 </head>
 <body>
@@ -142,7 +254,36 @@
         </li>
       </ul>
     </div>
-    <a href="index.html" class="cta-btn">Ana Sayfa</a>
+    <div class="button-group">
+      <a href="index.html" class="cta-btn">Ana Sayfa</a>
+      <button class="donation-btn" id="donationBtnOpen">Bağış Yap</button>
+    </div>
+  </div>
+
+  <!-- Bağış Modal -->
+  <div id="donationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="donationClose">&times;</span>
+      <div class="modal-header">Bağış Yap</div>
+      <form class="donation-form" id="donationForm">
+        <div class="form-group">
+          <label>Önceden Belirlenmiş Miktar Seç</label>
+          <div class="preset-amounts">
+            <button type="button" class="preset-btn" data-amount="50">₺50</button>
+            <button type="button" class="preset-btn" data-amount="100">₺100</button>
+            <button type="button" class="preset-btn" data-amount="250">₺250</button>
+            <button type="button" class="preset-btn" data-amount="500">₺500</button>
+            <button type="button" class="preset-btn" data-amount="1000">₺1000</button>
+            <button type="button" class="preset-btn" data-amount="2500">₺2500</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="customAmount">Özel Miktar Gir (₺)</label>
+          <input type="number" id="customAmount" name="customAmount" placeholder="Örn: 150" min="1" />
+        </div>
+        <button type="submit" class="donate-submit">Bağış Yap</button>
+      </form>
+    </div>
   </div>
   <script>
     // Kullanıcı e-posta bilgisini localStorage'dan al
@@ -150,6 +291,65 @@
     if(user) {
       document.getElementById('welcomeUser').textContent = user + ' olarak giriş yaptınız.';
     }
+
+    // Bağış Modal İşlemleri
+    const modal = document.getElementById('donationModal');
+    const donationBtnOpen = document.getElementById('donationBtnOpen');
+    const donationClose = document.getElementById('donationClose');
+    const donationForm = document.getElementById('donationForm');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const customAmount = document.getElementById('customAmount');
+    let selectedAmount = 0;
+
+    // Modal aç
+    donationBtnOpen.addEventListener('click', () => {
+      modal.style.display = 'block';
+    });
+
+    // Modal kapat
+    donationClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Modal dışına tıkla kapat
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Önceden belirlenmiş miktar seçimi
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        presetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedAmount = parseInt(btn.dataset.amount);
+        customAmount.value = '';
+      });
+    });
+
+    // Özel miktar girilince preset seçimini temizle
+    customAmount.addEventListener('input', () => {
+      presetBtns.forEach(b => b.classList.remove('active'));
+      selectedAmount = 0;
+    });
+
+    // Bağış formu gönderimi
+    donationForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const amount = customAmount.value ? parseInt(customAmount.value) : selectedAmount;
+      
+      if (!amount || amount < 1) {
+        alert('Lütfen geçerli bir miktar seçin veya girin.');
+        return;
+      }
+
+      alert(`₺${amount} bağışınız alınmıştır. Teşekkür ederiz!`);
+      modal.style.display = 'none';
+      donationForm.reset();
+      presetBtns.forEach(b => b.classList.remove('active'));
+    });
   </script>
 </body>
 </html>
