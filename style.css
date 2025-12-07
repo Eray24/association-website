@@ -98,6 +98,8 @@ body {
   border: none;
   background-color: #16a34a;
   color: white;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .primary:hover {
