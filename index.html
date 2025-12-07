@@ -1,140 +1,135 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Dernek Websitesi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-
-
-<body>
-
-<header class="navbar">
-    <div class="logo">A DERNEĞİ</div>
-    <nav>
+  <body>
+    <header class="navbar">
+      <div class="logo">A DERNEĞİ</div>
+      <nav>
         <a href="#">Ana Sayfa</a>
-        <a href="#">Hakkımızda</a>
+        <a href="about.html">Hakkımızda</a>
         <a href="#">Yönetim</a>
         <a href="#">Duyurular</a>
         <a href="#">İletişim</a>
         <button id="theme-toggle" class="theme-toggle">🌙</button>
-        <button class="login">Giriş Yap</button>
-    </nav>
-</header>
+        <a href="login.html" class="login">Giriş Yap</a>
+      </nav>
+    </header>
 
-
-<section class="hero">
-    <h1>
-        Birlikte Güçlüyüz,  
+    <section class="hero">
+      <h1>
+        Birlikte Güçlüyüz,
         <span>Topluluğumuza Hoş Geldiniz</span>
-    </h1>
-    <p>
+      </h1>
+      <p>
         Toplumsal dayanışmayı güçlendiren, gönüllülüğü teşvik eden ve
         sürdürülebilir projelerle fark yaratan bir derneğiz.
-    </p>
-    <div class="buttons">
+      </p>
+      <div class="buttons">
         <button class="primary">Derneğe Katıl</button>
         <button class="secondary">Faaliyetlerimiz</button>
-    </div>
-</section>
+      </div>
+    </section>
 
-<section class="stats">
-    <div class="stat">
+    <section class="stats">
+      <div class="stat">
         <h2>4</h2>
         <p>Toplam Üye</p>
-    </div>
-    <div class="stat">
+      </div>
+      <div class="stat">
         <h2>2</h2>
         <p>Aktif Üye</p>
-    </div>
-    <div class="stat">
+      </div>
+      <div class="stat">
         <h2>15+</h2>
         <p>Program Sayısı</p>
-    </div>
-    <div class="stat">
+      </div>
+      <div class="stat">
         <h2>100+</h2>
         <p>Düzenlenen Etkinlikler</p>
-    </div>
-</section>
+      </div>
+    </section>
 
-<section class="why-join">
-    <h2>Neden Bize Katılmalısınız?</h2>
+    <section class="why-join">
+      <h2>Neden Bize Katılmalısınız?</h2>
 
-    <div class="why-cards">
+      <div class="why-cards">
         <div class="why-card">
-            <div class="icon">👥</div>
-            <h3>Güçlü Bir Topluluk</h3>
-            <p>
-                Benzer hedeflere ve değerlere sahip bireylerle tanışın,
-                dayanışma içinde güçlü bağlar kurun.
-            </p>
+          <div class="icon">👥</div>
+          <h3>Güçlü Bir Topluluk</h3>
+          <p>
+            Benzer hedeflere ve değerlere sahip bireylerle tanışın, dayanışma
+            içinde güçlü bağlar kurun.
+          </p>
         </div>
 
         <div class="why-card">
-            <div class="icon">📈</div>
-            <h3>Gelişim Fırsatları</h3>
-            <p>
-                Özel etkinlikler, atölyeler ve networking
-                fırsatlarıyla kendinizi geliştirin.
-            </p>
+          <div class="icon">📈</div>
+          <h3>Gelişim Fırsatları</h3>
+          <p>
+            Özel etkinlikler, atölyeler ve networking fırsatlarıyla kendinizi
+            geliştirin.
+          </p>
         </div>
 
         <div class="why-card">
-            <div class="icon">💚</div>
-            <h3>Fark Yaratın</h3>
-            <p>
-                Toplumda olumlu değişim yaratan
-                anlamlı projelere katkı sağlayın.
-            </p>
+          <div class="icon">💚</div>
+          <h3>Fark Yaratın</h3>
+          <p>
+            Toplumda olumlu değişim yaratan anlamlı projelere katkı sağlayın.
+          </p>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<section class="cta">
-    <h2>Başlamaya Hazır mısınız?</h2>
-    <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
-    <button>Üye Ol</button>
-</section>
+    <section class="cta">
+      <h2>Başlamaya Hazır mısınız?</h2>
+      <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
+      <button>Üye Ol</button>
+    </section>
 
-<script>
-    const toggleBtn = document.getElementById("theme-toggle");
+    <script>
+      const toggleBtn = document.getElementById("theme-toggle");
 
-    toggleBtn.addEventListener("click", () => {
+      toggleBtn.addEventListener("click", () => {
         document.body.classList.toggle("dark");
 
         if (document.body.classList.contains("dark")) {
-            toggleBtn.textContent = "☀️";
+          toggleBtn.textContent = "☀️";
         } else {
-            toggleBtn.textContent = "🌙";
+          toggleBtn.textContent = "🌙";
         }
-    });
-</script>
+      });
+    </script>
 
-<section class="donation-section" id="bagis">
-  <h2>Bağış Yap</h2>
-  <p>
-    Derneğimizin faaliyetlerini sürdürebilmesi için bağışlarınız çok
-    değerlidir. Küçük bir destek, büyük bir değişim yaratabilir.
-  </p>
+    <section class="donation-section" id="bagis">
+      <h2>Bağış Yap</h2>
+      <p>
+        Derneğimizin faaliyetlerini sürdürebilmesi için bağışlarınız çok
+        değerlidir. Küçük bir destek, büyük bir değişim yaratabilir.
+      </p>
 
-  <div class="donation-box">
-    <div class="donation-item">
-      <strong>Banka:</strong> Türkiye Cumhuriyeti Ziraat Bankası
-    </div>
-    <div class="donation-item">
-      <strong>IBAN:</strong> TR00 0000 0000 0000 0000 0000 00
-    </div>
-    <div class="donation-item">
-      <strong>Alıcı Adı:</strong> Örnek Derneği
-    </div>
+      <div class="donation-box">
+        <div class="donation-item">
+          <strong>Banka:</strong> Türkiye Cumhuriyeti Ziraat Bankası
+        </div>
+        <div class="donation-item">
+          <strong>IBAN:</strong> TR00 0000 0000 0000 0000 0000 00
+        </div>
+        <div class="donation-item">
+          <strong>Alıcı Adı:</strong> Örnek Derneği
+        </div>
 
-    <button class="donate-button">Bağış Yap</button>
-  </div>
-</section>
-
-
-
-</body>
+        <button class="donate-button">Bağış Yap</button>
+      </div>
+    </section>
+  </body>
 </html>

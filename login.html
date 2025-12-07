@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Giriş Yap - Dernek Websitesi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">A DERNEĞİ</div>
+      <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="index.html">Hakkımızda</a>
+        <a href="index.html">Yönetim</a>
+        <a href="index.html">Duyurular</a>
+        <a href="index.html">İletişim</a>
+        <button id="theme-toggle" class="theme-toggle">🌙</button>
+      </nav>
+    </header>
+
+    <section class="login-container">
+      <div class="login-box">
+        <h2>Giriş Yap</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">E-posta Adresi</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="ornek@email.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="Şifrenizi girin"
+            />
+          </div>
+
+          <div class="form-group checkbox">
+            <input type="checkbox" id="remember" name="remember" />
+            <label for="remember">Beni Hatırla</label>
+          </div>
+
+          <button type="submit" class="login-button">Giriş Yap</button>
+        </form>
+
+        <div class="login-footer">
+          <p>Hesabınız yok mu? <a href="#">Kaydol</a></p>
+          <a href="#">Şifremi Unuttum</a>
+        </div>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
