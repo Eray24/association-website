@@ -93,7 +93,6 @@
         font-size: 0.98rem;
       }
       .cta-btn {
-        margin-top: 18px;
         padding: 14px 32px;
         background: #16a34a;
         color: #fff;
@@ -300,6 +299,21 @@
             </div>
           </div>
           <div class="form-group">
+            <label>Bağış Miktarı (₺)</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input
+                type="number"
+                id="donationAmountInput"
+                name="donationAmount"
+                placeholder="0"
+                min="1"
+                readonly
+                style="flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: #f9fafb;"
+              />
+              <span style="font-size: 1.2rem; font-weight: 600; color: #16a34a; min-width: 50px;">₺<span id="amountDisplay">0</span></span>
+            </div>
+          </div>
+          <div class="form-group">
             <label for="customAmount">Özel Miktar Gir (₺)</label>
             <input
               type="number"
@@ -328,11 +342,25 @@
       const donationForm = document.getElementById("donationForm");
       const presetBtns = document.querySelectorAll(".preset-btn");
       const customAmount = document.getElementById("customAmount");
+      const donationAmountInput = document.getElementById("donationAmountInput");
+      const amountDisplay = document.getElementById("amountDisplay");
+      const donationAmountElement = document.getElementById("donationAmount");
       let selectedAmount = 0;
+
+      // Toplam bağış miktarını al (localStorage'den veya sayfadaki sayıdan)
+      function getTotalDonation() {
+        const text = donationAmountElement.textContent;
+        return parseInt(text.replace(/[^\d]/g, "")) || 1250;
+      }
 
       // Modal aç
       donationBtnOpen.addEventListener("click", () => {
         modal.style.display = "block";
+        selectedAmount = 0;
+        customAmount.value = "";
+        donationAmountInput.value = "0";
+        amountDisplay.textContent = "0";
+        presetBtns.forEach((b) => b.classList.remove("active"));
       });
 
       // Modal kapat
@@ -355,13 +383,18 @@
           btn.classList.add("active");
           selectedAmount = parseInt(btn.dataset.amount);
           customAmount.value = "";
+          donationAmountInput.value = selectedAmount;
+          amountDisplay.textContent = selectedAmount;
         });
       });
 
-      // Özel miktar girilince preset seçimini temizle
+      // Özel miktar girilince preset seçimini temizle ve miktarı güncelle
       customAmount.addEventListener("input", () => {
         presetBtns.forEach((b) => b.classList.remove("active"));
         selectedAmount = 0;
+        const customValue = parseInt(customAmount.value) || 0;
+        donationAmountInput.value = customValue;
+        amountDisplay.textContent = customValue;
       });
 
       // Bağış formu gönderimi
@@ -376,9 +409,16 @@
           return;
         }
 
-        alert(`₺${amount} bağışınız alınmıştır. Teşekkür ederiz!`);
+        // Toplam bağışı güncelle
+        const currentTotal = getTotalDonation();
+        const newTotal = currentTotal + amount;
+        donationAmountElement.textContent = "₺" + newTotal.toLocaleString("tr-TR");
+
+        alert(`₺${amount} bağışınız alınmıştır. Teşekkür ederiz!\nYeni toplam bağışınız: ₺${newTotal.toLocaleString("tr-TR")}`);
         modal.style.display = "none";
         donationForm.reset();
+        donationAmountInput.value = "0";
+        amountDisplay.textContent = "0";
         presetBtns.forEach((b) => b.classList.remove("active"));
       });
     </script>
