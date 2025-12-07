@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>İletişim - Dernek Websitesi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">A DERNEĞİ</div>
+    <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="about.html">Hakkımızda</a>
+        <a href="management.html">Yönetim</a>
+        <a href="announcements.html">Duyurular</a>
+        <a href="contact.html">İletişim</a>
+        <button id="theme-toggle" class="theme-toggle">🌙</button>
+        <a href="login.html" class="login">Giriş Yap</a>
+    </nav>
+</header>
+
+<section class="contact-hero">
+    <h1>İletişim</h1>
+    <p>Bize ulaşın, sorularınızı sorabilirsiniz</p>
+</section>
+
+<section class="contact-content">
+    <div class="contact-container">
+        <div class="contact-form-section">
+            <h2>Bize Mesaj Gönder</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Ad Soyad</label>
+                    <input type="text" id="name" name="name" required placeholder="Adınız ve soyadınız">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-posta Adresi</label>
+                    <input type="email" id="email" name="email" required placeholder="ornek@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefon Numarası (İsteğe Bağlı)</label>
+                    <input type="tel" id="phone" name="phone" placeholder="0(5XX) XXX XX XX">
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Konu</label>
+                    <input type="text" id="subject" name="subject" required placeholder="Mesajınızın konusu">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Mesaj</label>
+                    <textarea id="message" name="message" rows="6" required placeholder="Mesajınızı yazınız..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-button">Mesaj Gönder</button>
+            </form>
+        </div>
+
+        <div class="contact-info-section">
+            <h2>İletişim Bilgileri</h2>
+            
+            <div class="contact-info-item">
+                <div class="info-icon">📍</div>
+                <div>
+                    <h3>Adresimiz</h3>
+                    <p>
+                        Dernek Merkezi<br>
+                        Bahçelievler Mahallesi<br>
+                        1234 Sokak No: 45<br>
+                        34200 İstanbul, Türkiye
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <div class="info-icon">📞</div>
+                <div>
+                    <h3>Telefon</h3>
+                    <p>
+                        Genel Hattı: (0212) 555-1234<br>
+                        Fax: (0212) 555-1235
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <div class="info-icon">📧</div>
+                <div>
+                    <h3>E-posta</h3>
+                    <p>
+                        Genel: info@dernek.org<br>
+                        Destek: destek@dernek.org<br>
+                        Gönüllülük: gonulluler@dernek.org
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <div class="info-icon">🕐</div>
+                <div>
+                    <h3>Çalışma Saatleri</h3>
+                    <p>
+                        Pazartesi - Cuma: 09:00 - 18:00<br>
+                        Cumartesi: 10:00 - 16:00<br>
+                        Pazar: Kapalı
+                    </p>
+                </div>
+            </div>
+
+            <div class="social-links">
+                <h3>Sosyal Medya</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">f</a>
+                    <a href="#" class="social-icon">𝕏</a>
+                    <a href="#" class="social-icon">📷</a>
+                    <a href="#" class="social-icon">in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Başlamaya Hazır mısınız?</h2>
+    <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
+    <button>Üye Ol</button>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
