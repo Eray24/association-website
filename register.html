@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Kaydol - Dernek Websitesi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header class="navbar">
-    <div class="logo">A DERNEĞİ</div>
-    <nav>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">A DERNEĞİ</div>
+      <nav>
         <a href="index.html">Ana Sayfa</a>
         <a href="about.html">Hakkımızda</a>
         <a href="management.html">Yönetim</a>
@@ -18,87 +20,125 @@
         <a href="contact.html">İletişim</a>
         <button id="theme-toggle" class="theme-toggle">🌙</button>
         <a href="login.html" class="login">Giriş Yap</a>
-    </nav>
-</header>
+      </nav>
+    </header>
 
-<section class="register-container">
-    <div class="register-box">
+    <section class="register-container">
+      <div class="register-box">
         <h2>Üye Ol</h2>
-        <p class="register-subtitle">Topluluğumuza katılın ve sosyal değişimin parçası olun</p>
-        
+        <p class="register-subtitle">
+          Topluluğumuza katılın ve sosyal değişimin parçası olun
+        </p>
+
         <form id="registerForm" class="register-form">
-            <div class="form-group">
-                <label for="first-name">Adı</label>
-                <input type="text" id="first-name" name="first-name" required placeholder="Adınız">
-            </div>
+          <div class="form-group">
+            <label for="first-name">Adı</label>
+            <input
+              type="text"
+              id="first-name"
+              name="first-name"
+              required
+              placeholder="Adınız"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="last-name">Soyadı</label>
-                <input type="text" id="last-name" name="last-name" required placeholder="Soyadınız">
-            </div>
+          <div class="form-group">
+            <label for="last-name">Soyadı</label>
+            <input
+              type="text"
+              id="last-name"
+              name="last-name"
+              required
+              placeholder="Soyadınız"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="register-email">E-posta Adresi</label>
-                <input type="email" id="register-email" name="email" required placeholder="ornek@email.com">
-            </div>
+          <div class="form-group">
+            <label for="register-email">E-posta Adresi</label>
+            <input
+              type="email"
+              id="register-email"
+              name="email"
+              required
+              placeholder="ornek@email.com"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="phone">Telefon Numarası</label>
-                <input type="tel" id="phone" name="phone" required placeholder="0(5XX) XXX XX XX">
-            </div>
+          <div class="form-group">
+            <label for="phone">Telefon Numarası</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              required
+              placeholder="0(5XX) XXX XX XX"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="birth-date">Doğum Tarihi</label>
-                <input type="date" id="birth-date" name="birth-date" required>
-            </div>
+          <div class="form-group">
+            <label for="birth-date">Doğum Tarihi</label>
+            <input type="date" id="birth-date" name="birth-date" required />
+          </div>
 
-            <div class="form-group">
-                <label for="register-password">Şifre</label>
-                <input type="password" id="register-password" name="password" required placeholder="En az 8 karakter">
-            </div>
+          <div class="form-group">
+            <label for="register-password">Şifre</label>
+            <input
+              type="password"
+              id="register-password"
+              name="password"
+              required
+              placeholder="En az 8 karakter"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="confirm-password">Şifre Tekrar</label>
-                <input type="password" id="confirm-password" name="confirm-password" required placeholder="Şifrenizi tekrar girin">
-            </div>
+          <div class="form-group">
+            <label for="confirm-password">Şifre Tekrar</label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              required
+              placeholder="Şifrenizi tekrar girin"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="interests">İlgi Alanları</label>
-                <select id="interests" name="interests" required>
-                    <option value="">Seçiniz...</option>
-                    <option value="education">Eğitim</option>
-                    <option value="environment">Çevre</option>
-                    <option value="health">Sağlık</option>
-                    <option value="sports">Spor</option>
-                    <option value="culture">Kültür</option>
-                    <option value="social">Sosyal Yardım</option>
-                    <option value="technology">Teknoloji</option>
-                </select>
-            </div>
+          <div class="form-group">
+            <label for="interests">İlgi Alanları</label>
+            <select id="interests" name="interests" required>
+              <option value="">Seçiniz...</option>
+              <option value="education">Eğitim</option>
+              <option value="environment">Çevre</option>
+              <option value="health">Sağlık</option>
+              <option value="sports">Spor</option>
+              <option value="culture">Kültür</option>
+              <option value="social">Sosyal Yardım</option>
+              <option value="technology">Teknoloji</option>
+            </select>
+          </div>
 
-            <div class="form-group checkbox">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">
-                    Şartlar ve Koşulları okudum ve kabul ediyorum
-                </label>
-            </div>
+          <div class="form-group checkbox">
+            <input type="checkbox" id="terms" name="terms" required />
+            <label for="terms">
+              Şartlar ve Koşulları okudum ve kabul ediyorum
+            </label>
+          </div>
 
-            <div class="form-group checkbox">
-                <input type="checkbox" id="newsletter" name="newsletter">
-                <label for="newsletter">
-                    Dernek haberleri ve duyurularından haberdar olmak istiyorum
-                </label>
-            </div>
+          <div class="form-group checkbox">
+            <input type="checkbox" id="newsletter" name="newsletter" />
+            <label for="newsletter">
+              Dernek haberleri ve duyurularından haberdar olmak istiyorum
+            </label>
+          </div>
 
-            <button type="submit" class="register-button">Üye Ol</button>
+          <button type="submit" class="register-button">Üye Ol</button>
         </form>
 
         <div class="register-footer">
-            <p>Zaten üye misiniz? <a href="login.html">Giriş Yap</a></p>
+          <p>Zaten üye misiniz? <a href="login.html">Giriş Yap</a></p>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

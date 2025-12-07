@@ -802,7 +802,7 @@ body.dark .activities-list {
 }
 
 .contact-form textarea {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   resize: vertical;
 }
 
@@ -924,7 +924,7 @@ body.dark .activities-list {
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   transition: border-color 0.3s;
 }
 
