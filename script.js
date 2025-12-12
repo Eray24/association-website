@@ -78,6 +78,41 @@
       el.style.display = isMember(su) || isAdmin(su) ? "block" : "none";
     });
 
+    // Ana sayfada admin badge göster
+    const adminBadge = document.getElementById("adminBadge");
+    const adminName = document.getElementById("adminName");
+    const userLoginBtn = document.getElementById("userLoginBtn");
+    if (su && isAdmin(su)) {
+      if (adminBadge) {
+        adminBadge.style.display = "block";
+        if (adminName) {
+          adminName.textContent = `${su.firstName} ${su.lastName}`;
+        }
+      }
+      if (userLoginBtn) {
+        userLoginBtn.textContent = "Çıkış Yap";
+        userLoginBtn.href = "#";
+        userLoginBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          sessionStorage.removeItem("user");
+          alert("Çıkış yapıldı");
+          window.location.reload();
+        });
+      }
+    } else if (su) {
+      // Normal üye girişi
+      if (userLoginBtn) {
+        userLoginBtn.textContent = `👤 ${su.firstName}`;
+        userLoginBtn.href = "#";
+        userLoginBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          sessionStorage.removeItem("user");
+          alert("Çıkış yapıldı");
+          window.location.reload();
+        });
+      }
+    }
+
     const registerForm = document.getElementById("registerForm");
     if (registerForm) {
       registerForm.addEventListener("submit", async (e) => {
