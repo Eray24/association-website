@@ -61,7 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
       setUsers(demoUsers);
     }
   };
-  initializeUsers();
+
+  // Admin hesabını başlat ve bekle
+  (async () => {
+    await initializeUsers();
+  })();
 
   // Rol kontrol fonksiyonları
   const isAdmin = (user) => user && user.role === "admin";
