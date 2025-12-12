@@ -81,13 +81,22 @@
     // Ana sayfada admin badge göster
     const adminBadge = document.getElementById("adminBadge");
     const adminName = document.getElementById("adminName");
+    const adminLogoutBtn = document.getElementById("adminLogoutBtn");
     const userLoginBtn = document.getElementById("userLoginBtn");
+
     if (su && isAdmin(su)) {
       if (adminBadge) {
         adminBadge.style.display = "block";
         if (adminName) {
           adminName.textContent = `${su.firstName} ${su.lastName}`;
         }
+      }
+      if (adminLogoutBtn) {
+        adminLogoutBtn.addEventListener("click", () => {
+          sessionStorage.removeItem("user");
+          alert("Çıkış yapıldı");
+          window.location.reload();
+        });
       }
       if (userLoginBtn) {
         userLoginBtn.textContent = "Çıkış Yap";
