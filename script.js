@@ -78,43 +78,49 @@
       el.style.display = isMember(su) || isAdmin(su) ? "block" : "none";
     });
 
-    // Ana sayfada admin badge göster
-    const adminBadge = document.getElementById("adminBadge");
-    const adminName = document.getElementById("adminName");
-    const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+    // Navbar ve çıkış butonu yönetimi
     const userLoginBtn = document.getElementById("userLoginBtn");
+    const userLogoutBtn = document.getElementById("userLogoutBtn");
 
     if (su && isAdmin(su)) {
-      if (adminBadge) {
-        adminBadge.style.display = "block";
-        if (adminName) {
-          adminName.textContent = `${su.firstName} ${su.lastName}`;
-        }
-      }
-      if (adminLogoutBtn) {
-        adminLogoutBtn.addEventListener("click", () => {
-          sessionStorage.removeItem("user");
-          alert("Çıkış yapıldı");
-          window.location.reload();
-        });
-      }
+      // Admin girişi: Navbar'da taç + isim göster
       if (userLoginBtn) {
-        userLoginBtn.textContent = "Çıkış Yap";
+        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 24px;">👑</span><span>${su.firstName}</span></span>`;
         userLoginBtn.href = "#";
+        userLoginBtn.style.background = "linear-gradient(135deg, #ffd700, #ffed4e)";
+        userLoginBtn.style.color = "#854d0e";
+        userLoginBtn.style.fontWeight = "700";
+        userLoginBtn.style.padding = "10px 20px";
+        userLoginBtn.style.borderRadius = "25px";
+        userLoginBtn.style.boxShadow = "0 4px 15px rgba(255, 215, 0, 0.3)";
         userLoginBtn.addEventListener("click", (e) => {
           e.preventDefault();
+          // Çıkış butonunu göster
+        });
+      }
+      // Çıkış butonunu göster
+      if (userLogoutBtn) {
+        userLogoutBtn.style.display = "block";
+        userLogoutBtn.addEventListener("click", () => {
           sessionStorage.removeItem("user");
           alert("Çıkış yapıldı");
           window.location.reload();
         });
       }
     } else if (su) {
-      // Normal üye girişi
+      // Normal üye girişi: İsim göster
       if (userLoginBtn) {
         userLoginBtn.textContent = `👤 ${su.firstName}`;
         userLoginBtn.href = "#";
         userLoginBtn.addEventListener("click", (e) => {
           e.preventDefault();
+          // Çıkış butonunu göster
+        });
+      }
+      // Çıkış butonunu göster
+      if (userLogoutBtn) {
+        userLogoutBtn.style.display = "block";
+        userLogoutBtn.addEventListener("click", () => {
           sessionStorage.removeItem("user");
           alert("Çıkış yapıldı");
           window.location.reload();
