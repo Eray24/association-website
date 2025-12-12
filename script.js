@@ -147,6 +147,20 @@
           alert("Kullanıcı bulunamadı");
           return;
         }
+
+        // Demo admin bypass kontrolü
+        if (email === "admin@dernek.org" && password === "admin123") {
+          setSessionUser({
+            email: candidate.email,
+            firstName: candidate.firstName,
+            lastName: candidate.lastName,
+            role: candidate.role,
+          });
+          alert("Giriş başarılı");
+          window.location.href = "index.html";
+          return;
+        }
+
         const passwordHash = await hashPassword(password);
         if (candidate.passwordHash !== passwordHash) {
           console.log("Girilen hash:", passwordHash);
