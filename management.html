@@ -27,6 +27,20 @@
     <section class="management-hero">
       <h1>Yönetim Kurulu</h1>
       <p>Derneğimizi yöneten başarılı ekibimizi tanıyın</p>
+      <div
+        data-admin-only
+        style="
+          display: none;
+          margin-top: 20px;
+          padding: 15px;
+          background: #fff3cd;
+          border-radius: 8px;
+          color: #856404;
+        "
+      >
+        <strong>Admin Paneli:</strong> Admin olarak giriş yaptınız. Sistem
+        yönetim araçlarına erişebilirsiniz.
+      </div>
     </section>
 
     <section class="management-content">
@@ -126,6 +140,47 @@
           </li>
         </ul>
       </div>
+
+      <div data-admin-only style="display: none; margin-top: 40px; padding: 30px; background: #e7f3ff; border: 2px solid #0066cc; border-radius: 12px;">
+        <h2 style="color: #0066cc; margin-top: 0;">Admin Yönetim Alanı</h2>
+        <p><strong>Sistem Kontrol Paneli</strong></p>
+        <ul>
+          <li>Toplam kayıtlı kullanıcı sayısı: <span id="totalUsers">0</span></li>
+          <li>Admin sayısı: <span id="adminCount">0</span></li>
+          <li>Üye sayısı: <span id="memberCount">0</span></li>
+        </ul>
+        <button id="logoutBtn" style="background: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Çıkış Yap</button>
+      </div>
+
+      <div data-member-only style="display: none; margin-top: 40px; padding: 30px; background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 12px;">
+        <h2 style="color: #2e7d32; margin-top: 0;">Üye Bilgileri</h2>
+        <p><strong>Sizin Oturum Bilgileriniz</strong></p>
+        <p id="memberInfo">Bilgiler yükleniyor...</p>
+        <button id="logoutBtn" style="background: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Çıkış Yap</button>
+      </div>
+    </section>
+
+    <script>
+      // Admin ve member alanları için kullanıcı bilgileri göster
+      document.addEventListener("DOMContentLoaded", () => {
+        const su = JSON.parse(sessionStorage.getItem("user") || "null");
+        if (!su) return;
+
+        if (su.role === "admin") {
+          try {
+            const users = JSON.parse(localStorage.getItem("users") || "[]");
+            document.getElementById("totalUsers").textContent = users.length;
+            document.getElementById("adminCount").textContent = users.filter((u) => u.role === "admin").length;
+            document.getElementById("memberCount").textContent = users.filter((u) => u.role === "member").length;
+          } catch {}
+        }
+
+        if (su.role === "member" || su.role === "admin") {
+          document.getElementById("memberInfo").textContent =
+            `Adı: ${su.firstName} ${su.lastName} | E-posta: ${su.email} | Rol: ${su.role}`;
+        }
+      });
+    </script>
     </section>
 
     <section class="cta">

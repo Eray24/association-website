@@ -39,6 +39,45 @@ document.addEventListener("DOMContentLoaded", () => {
     return arr.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
+  // Demo admin hesabını initialize et (ilk kez)
+  const initializeUsers = async () => {
+    const users = getUsers();
+    if (users.length === 0) {
+      const adminPw = await hashPassword("admin123");
+      const demoUsers = [
+        {
+          firstName: "Admin",
+          lastName: "Kullanıcı",
+          email: "admin@dernek.org",
+          passwordHash: adminPw,
+          phone: "",
+          birthDate: "",
+          interests: "",
+          newsletter: false,
+          role: "admin",
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      setUsers(demoUsers);
+    }
+  };
+  initializeUsers();
+
+  // Rol kontrol fonksiyonları
+  const isAdmin = (user) => user && user.role === "admin";
+  const isMember = (user) => user && user.role === "member";
+
+  // Admin paneli görünürlüğü
+  const adminSections = document.querySelectorAll("[data-admin-only]");
+  const memberSections = document.querySelectorAll("[data-member-only]");
+  const su = getSessionUser();
+  adminSections.forEach((el) => {
+    el.style.display = isAdmin(su) ? "block" : "none";
+  });
+  memberSections.forEach((el) => {
+    el.style.display = isMember(su) || isAdmin(su) ? "block" : "none";
+  });
+
   const registerForm = document.getElementById("registerForm");
   if (registerForm) {
     registerForm.addEventListener("submit", async (e) => {
@@ -124,14 +163,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Korunan sayfalar için basit kontrol (örnek: management.html)
-  const protectedPages = ["management.html"];
+  // Korunan sayfalar ve rol kontrolleri
+  const pageRoles = {
+    "management.html": ["admin", "member"],
+  };
   const path = location.pathname.split("/").pop();
-  if (protectedPages.includes(path)) {
+  if (pageRoles[path]) {
     const su = getSessionUser();
     if (!su) {
       alert("Bu sayfa için giriş yapmalısınız");
       window.location.href = "login.html";
+    } else if (!pageRoles[path].includes(su.role)) {
+      alert(
+        "Bu sayfa erişimi yalnızca " +
+          pageRoles[path].join("/") +
+          " rolü için açıktır"
+      );
+      window.location.href = "index.html";
     }
   }
 });
