@@ -82,12 +82,19 @@
     const userLoginBtn = document.getElementById("userLoginBtn");
     const userLogoutBtn = document.getElementById("userLogoutBtn");
 
+    console.log("Session user:", su);
+    console.log("Is admin:", su ? isAdmin(su) : false);
+    console.log("userLoginBtn element:", userLoginBtn);
+    console.log("userLogoutBtn element:", userLogoutBtn);
+
     if (su && isAdmin(su)) {
+      console.log("Admin login detected!");
       // Admin girişi: Navbar'da taç + isim göster
       if (userLoginBtn) {
         userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 24px;">👑</span><span>${su.firstName}</span></span>`;
         userLoginBtn.href = "#";
-        userLoginBtn.style.background = "linear-gradient(135deg, #ffd700, #ffed4e)";
+        userLoginBtn.style.background =
+          "linear-gradient(135deg, #ffd700, #ffed4e)";
         userLoginBtn.style.color = "#854d0e";
         userLoginBtn.style.fontWeight = "700";
         userLoginBtn.style.padding = "10px 20px";
@@ -95,7 +102,9 @@
         userLoginBtn.style.boxShadow = "0 4px 15px rgba(255, 215, 0, 0.3)";
         userLoginBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          // Çıkış butonunu göster
+          sessionStorage.removeItem("user");
+          alert("Çıkış yapıldı");
+          window.location.reload();
         });
       }
       // Çıkış butonunu göster
@@ -108,13 +117,16 @@
         });
       }
     } else if (su) {
+      console.log("Member login detected!");
       // Normal üye girişi: İsim göster
       if (userLoginBtn) {
         userLoginBtn.textContent = `👤 ${su.firstName}`;
         userLoginBtn.href = "#";
         userLoginBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          // Çıkış butonunu göster
+          sessionStorage.removeItem("user");
+          alert("Çıkış yapıldı");
+          window.location.reload();
         });
       }
       // Çıkış butonunu göster
