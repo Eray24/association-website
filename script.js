@@ -149,6 +149,8 @@
         }
         const passwordHash = await hashPassword(password);
         if (candidate.passwordHash !== passwordHash) {
+          console.log("Girilen hash:", passwordHash);
+          console.log("Saklanan hash:", candidate.passwordHash);
           alert("Şifre hatalı");
           return;
         }
