@@ -23,13 +23,15 @@
 
   const users = getUsers();
   if (users.length === 0) {
-    const adminPw = await hashPassword("admin123");
+    // Önceden hesaplanmış hash: SHA-256("admin123")
+    const adminPwHash =
+      "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f1979c75d";
     const demoUsers = [
       {
         firstName: "Admin",
         lastName: "Kullanıcı",
         email: "admin@dernek.org",
-        passwordHash: adminPw,
+        passwordHash: adminPwHash,
         phone: "",
         birthDate: "",
         interests: "",
