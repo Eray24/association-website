@@ -113,7 +113,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      setSessionUser({ email: candidate.email, firstName: candidate.firstName, lastName: candidate.lastName, role: candidate.role });
+      setSessionUser({
+        email: candidate.email,
+        firstName: candidate.firstName,
+        lastName: candidate.lastName,
+        role: candidate.role,
+      });
       alert("Giriş başarılı");
       window.location.href = "index.html";
     });
