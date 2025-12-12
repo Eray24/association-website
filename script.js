@@ -1,6 +1,44 @@
-// Client-side register/login handlers that call the server API
+// LocalStorage tabanlı kullanıcı ve oturum yönetimi (backend yok)
 document.addEventListener("DOMContentLoaded", () => {
-  // Backend kaldırıldı: formlar demo modunda çalışır
+  // Basit yardımcılar
+  const getUsers = () => {
+    try {
+      return JSON.parse(localStorage.getItem("users") || "[]");
+    } catch {
+      return [];
+    }
+  };
+
+  const setUsers = (users) => {
+    localStorage.setItem("users", JSON.stringify(users));
+  };
+
+  const setSessionUser = (user) => {
+    sessionStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const getSessionUser = () => {
+    const raw = sessionStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
+  };
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.removeItem("user");
+      alert("Çıkış yapıldı");
+      window.location.href = "index.html";
+    });
+  }
+
+  // Basit SHA-256 hash (gösterim amaçlı; gerçek güvenlik sağlamaz)
+  async function hashPassword(pw) {
+    const enc = new TextEncoder().encode(pw);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    const arr = Array.from(new Uint8Array(buf));
+    return arr.map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
   const registerForm = document.getElementById("registerForm");
   if (registerForm) {
     registerForm.addEventListener("submit", async (e) => {
@@ -26,12 +64,29 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Demo: doğrudan başarılı kabul et
-      alert("Kayıt başarılı (demo)");
-      localStorage.setItem(
-        "userPending",
-        JSON.stringify({ firstName, lastName, email })
-      );
+      const users = getUsers();
+      if (users.some((u) => u.email === email)) {
+        alert("Bu e-posta ile zaten kayıtlı bir kullanıcı var");
+        return;
+      }
+
+      const passwordHash = await hashPassword(password);
+      const newUser = {
+        firstName,
+        lastName,
+        email,
+        passwordHash,
+        phone,
+        birthDate,
+        interests,
+        newsletter,
+        role: "member",
+        createdAt: new Date().toISOString(),
+      };
+      users.push(newUser);
+      setUsers(users);
+
+      alert("Kayıt başarılı");
       window.location.href = "login.html";
     });
   }
@@ -46,13 +101,32 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Lütfen e-posta ve şifrenizi girin.");
         return;
       }
+      const users = getUsers();
+      const candidate = users.find((u) => u.email === email);
+      if (!candidate) {
+        alert("Kullanıcı bulunamadı");
+        return;
+      }
+      const passwordHash = await hashPassword(password);
+      if (candidate.passwordHash !== passwordHash) {
+        alert("Şifre hatalı");
+        return;
+      }
 
-      // Demo: basit doğrulama ile giriş kabul et
-      const pending = localStorage.getItem("userPending");
-      const user = pending ? JSON.parse(pending) : { email };
-      localStorage.setItem("user", JSON.stringify(user));
-      alert("Giriş başarılı (demo)");
+      setSessionUser({ email: candidate.email, firstName: candidate.firstName, lastName: candidate.lastName, role: candidate.role });
+      alert("Giriş başarılı");
       window.location.href = "index.html";
     });
+  }
+
+  // Korunan sayfalar için basit kontrol (örnek: management.html)
+  const protectedPages = ["management.html"];
+  const path = location.pathname.split("/").pop();
+  if (protectedPages.includes(path)) {
+    const su = getSessionUser();
+    if (!su) {
+      alert("Bu sayfa için giriş yapmalısınız");
+      window.location.href = "login.html";
+    }
   }
 });
