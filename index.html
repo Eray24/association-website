@@ -107,21 +107,6 @@
       </div>
     </section>
 
-    <section class="cta">
-      <h2>Başlamaya Hazır mısınız?</h2>
-        <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
-        <button id="ctaRegisterBtn">Üye Ol</button>
-    </section>
-
-    <script>
-        const ctaBtn = document.getElementById("ctaRegisterBtn");
-        if (ctaBtn) {
-          ctaBtn.addEventListener("click", () => {
-            window.location.href = "register.html";
-          });
-        }
-    </script>
-
     <section class="donation-section" id="bagis">
       <h2>Bağış Yap</h2>
       <p>
@@ -143,6 +128,33 @@
         <button class="donate-button">Bağış Yap</button>
       </div>
     </section>
+
+    <section class="cta">
+      <h2>Başlamaya Hazır mısınız?</h2>
+        <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
+        <button id="ctaRegisterBtn">Üye Ol</button>
+    </section>
+
+    <script>
+      const toggleBtn = document.getElementById("theme-toggle");
+
+      toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+
+        if (document.body.classList.contains("dark")) {
+          toggleBtn.textContent = "☀️";
+        } else {
+          toggleBtn.textContent = "🌙";
+        }
+      });
+
+        const ctaBtn = document.getElementById("ctaRegisterBtn");
+        if (ctaBtn) {
+          ctaBtn.addEventListener("click", () => {
+            window.location.href = "register.html";
+          });
+        }
+    </script>
 
     <script src="script.js"></script>
   </body>
