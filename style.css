@@ -1320,3 +1320,36 @@ body.dark .modal-content p,
 body.dark .modal-content ul li {
   color: #d1d5db;
 }
+
+/* Contact result buttons */
+.result-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.btn-green {
+  background-color: #16a34a;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.08s ease;
+}
+
+.btn-green:hover {
+  background-color: #15803d;
+  transform: translateY(-1px);
+}
+
+body.dark .btn-green {
+  background-color: #22c55e;
+  color: #0b1220;
+}
+
+body.dark .btn-green:hover {
+  background-color: #16a34a;
+}

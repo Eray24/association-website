@@ -31,11 +31,11 @@
       <p>Bize ulaşın, sorularınızı sorabilirsiniz</p>
     </section>
 
-    <section class="contact-content">
+    <section class="contact-content" id="contactContent">
       <div class="contact-container">
         <div class="contact-form-section">
           <h2>Bize Mesaj Gönder</h2>
-          <form class="contact-form">
+          <form id="contactForm" class="contact-form">
             <div class="form-group">
               <label for="name">Ad Soyad</label>
               <input
@@ -164,6 +164,35 @@
       <button>Üye Ol</button>
     </section>
 
+    <script>
+      (function(){
+        const contactForm = document.getElementById('contactForm');
+        const contactContent = document.getElementById('contactContent');
+        if (!contactForm || !contactContent) return;
+
+        contactForm.addEventListener('submit', function(e){
+          e.preventDefault();
+
+          contactContent.innerHTML = `
+            <section class="contact-result">
+              <div class="result-box">
+                <h2>Mesajınız başarıyla gönderilmiştir</h2>
+                <p>İlginiz için teşekkür ederiz. En kısa sürede size dönüş yapılacaktır.</p>
+                <div class="result-actions">
+                  <button id="backHomeBtn" class="btn-green">Ana Sayfaya Dön</button>
+                  <button id="newMsgBtn" class="btn-green">Yeni Mesaj Gönder</button>
+                </div>
+              </div>
+            </section>
+          `;
+
+          const backBtn = document.getElementById('backHomeBtn');
+          const newBtn = document.getElementById('newMsgBtn');
+          if (backBtn) backBtn.addEventListener('click', function(){ window.location.href = 'index.html'; });
+          if (newBtn) newBtn.addEventListener('click', function(){ window.location.reload(); });
+        });
+      })();
+    </script>
     <script src="script.js"></script>
   </body>
 </html>
