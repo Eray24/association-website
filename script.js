@@ -22,30 +22,29 @@
   };
 
   const users = getUsers();
-    if (su && isAdmin(su)) {
+  if (users.length === 0) {
     // Önceden hesaplanmış hash: SHA-256("admin123")
-      // Admin girişi: Navbar'da taç + isim + çıkış ikonu (ayrı) göster, taşmayı engelle
+    const adminPwHash =
       "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f1979c75d";
-        userLoginBtn.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 10px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          <span style="font-size: 18px;">👑</span>
-          <span style="overflow: hidden; text-overflow: ellipsis;">${su.firstName}</span>
-          <span id="logoutIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; cursor: pointer; margin-left: 6px; border-left: 1px solid rgba(255,255,255,0.25); padding-left: 10px;" title="Çıkış Yap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </span>
-        </span>`;
-        userLoginBtn.href = "#";
-        // Kapsayıcı buton taşmasın ve görsel olarak yapışık durmasın
-        userLoginBtn.style.display = "inline-flex";
-        userLoginBtn.style.alignItems = "center";
-        userLoginBtn.style.gap = "10px";
-        userLoginBtn.style.maxWidth = "240px";
-        userLoginBtn.style.whiteSpace = "nowrap";
-        userLoginBtn.style.overflow = "hidden";
-        userLoginBtn.style.textOverflow = "ellipsis";
+    const demoUsers = [
+      {
+        firstName: "Admin",
+        lastName: "Kullanıcı",
+        email: "admin@dernek.org",
+        passwordHash: adminPwHash,
+        phone: "",
+        birthDate: "",
+        interests: "",
+        newsletter: false,
+        role: "admin",
+        createdAt: new Date().toISOString(),
+      },
+    ];
+    setUsers(demoUsers);
+  }
+
+  // DOMContentLoaded olduktan sonra form işlemleri
+  document.addEventListener("DOMContentLoaded", () => {
     const setSessionUser = (user) => {
       sessionStorage.setItem("user", JSON.stringify(user));
     };
@@ -63,26 +62,17 @@
         window.location.href = "index.html";
       });
     }
-        userLoginBtn.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 10px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          <span style="font-size: 18px;">👤</span>
-          <span style="overflow: hidden; text-overflow: ellipsis;">${su.firstName}</span>
-          <span id="logoutIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; cursor: pointer; margin-left: 6px; border-left: 1px solid rgba(255, 255, 255, 0.25); padding-left: 10px;" title="Çıkış Yap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </span>
-        </span>`;
-        userLoginBtn.href = "#";
-        // Kapsayıcı buton taşmasın ve görsel olarak yapışık durmasın
-        userLoginBtn.style.display = "inline-flex";
-        userLoginBtn.style.alignItems = "center";
-        userLoginBtn.style.gap = "10px";
-        userLoginBtn.style.maxWidth = "240px";
-        userLoginBtn.style.whiteSpace = "nowrap";
-        userLoginBtn.style.overflow = "hidden";
-        userLoginBtn.style.textOverflow = "ellipsis";
+
+    // Rol kontrol fonksiyonları
+    const isAdmin = (user) => user && user.role === "admin";
+    const isMember = (user) => user && user.role === "member";
+
+    // Admin paneli görünürlüğü
+    const adminSections = document.querySelectorAll("[data-admin-only]");
+    const memberSections = document.querySelectorAll("[data-member-only]");
+    const su = getSessionUser();
+    adminSections.forEach((el) => {
+      el.style.display = isAdmin(su) ? "block" : "none";
     });
     memberSections.forEach((el) => {
       el.style.display = isMember(su) || isAdmin(su) ? "block" : "none";
