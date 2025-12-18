@@ -90,6 +90,16 @@
               ></textarea>
             </div>
 
+            <div class="form-group">
+              <label for="attachment">Dosya Ekle (İsteğe Bağlı)</label>
+              <input
+                type="file"
+                id="attachment"
+                name="attachment"
+                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+              />
+              <small class="hint">JPEG, PNG, PDF, DOC, DOCX formatları (max 5MB)</small>
+            </div>
             <button type="submit" class="submit-button">Mesaj Gönder</button>
           </form>
         </div>
@@ -217,11 +227,36 @@
         contactForm.addEventListener('submit', function(e){
           e.preventDefault();
 
+          const attachment = document.getElementById('attachment');
+          let attachedFile = null;
+          if (attachment && attachment.files && attachment.files.length > 0) {
+            attachedFile = attachment.files[0];
+            const allowedTypes = [
+              'image/jpeg',
+              'image/png',
+              'application/pdf',
+              'application/msword',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            ];
+            if (!allowedTypes.includes(attachedFile.type)) {
+              alert('Lütfen JPEG, PNG, PDF veya Word (DOC/DOCX) dosyası yükleyin.');
+              return;
+            }
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (attachedFile.size > maxSize) {
+              alert('Dosya boyutu 5MB\'ı geçemez.');
+              return;
+            }
+          }
+
+          const uploadedFileHtml = attachedFile ? `<p>Yüklenen dosya: ${attachedFile.name}</p>` : '';
+
           contactContent.innerHTML = `
             <section class="contact-result">
               <div class="result-box">
                 <h2>Mesajınız başarıyla gönderilmiştir</h2>
                 <p>İlginiz için teşekkür ederiz. En kısa sürede size dönüş yapılacaktır.</p>
+                ${uploadedFileHtml}
                 <div class="result-actions">
                   <button id="backHomeBtn" class="btn-green">Ana Sayfaya Dön</button>
                   <button id="newMsgBtn" class="btn-green">Yeni Mesaj Gönder</button>
