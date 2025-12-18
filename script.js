@@ -281,9 +281,7 @@
     }
 
     // Korunan sayfalar ve rol kontrolleri
-    const pageRoles = {
-      "management.html": ["admin", "member"],
-    };
+    const pageRoles = {};
     const path = location.pathname.split("/").pop();
     if (pageRoles[path]) {
       const su = getSessionUser();
