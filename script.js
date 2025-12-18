@@ -89,67 +89,106 @@
 
     if (su && isAdmin(su)) {
       console.log("Admin login detected!");
-      // Admin girişi: Navbar'da taç + isim + çıkış ikonu göster
+      // Admin girişi: Navbar'da taç + isim göster
       if (userLoginBtn) {
-        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: 24px;">👑</span>
+        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 18px;">👑</span>
           <span>${su.firstName}</span>
-          <span id="logoutIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-left: 4px; border-left: 2px solid rgba(133, 77, 14, 0.3); padding-left: 12px;" title="Çıkış Yap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </span>
         </span>`;
         userLoginBtn.href = "#";
         userLoginBtn.style.background =
           "linear-gradient(135deg, #ffd700, #ffed4e)";
         userLoginBtn.style.color = "#854d0e";
         userLoginBtn.style.fontWeight = "700";
-        userLoginBtn.style.padding = "10px 20px";
-        userLoginBtn.style.borderRadius = "25px";
+        userLoginBtn.style.padding = "10px 16px";
+        userLoginBtn.style.borderRadius = "8px";
         userLoginBtn.style.boxShadow = "0 4px 15px rgba(255, 215, 0, 0.3)";
+      }
 
-        // Sadece çıkış ikonuna tıklayınca çıkış yapsın
-        const logoutIcon = document.getElementById("logoutIcon");
-        if (logoutIcon) {
-          logoutIcon.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            sessionStorage.removeItem("user");
-            alert("Çıkış yapıldı");
-            window.location.reload();
-          });
-        }
+      // Ayrı logout butonu oluştur
+      const logoutBtn = document.createElement("button");
+      logoutBtn.id = "logoutNavBtn";
+      logoutBtn.style.display = "inline-flex";
+      logoutBtn.style.alignItems = "center";
+      logoutBtn.style.justifyContent = "center";
+      logoutBtn.style.width = "36px";
+      logoutBtn.style.height = "36px";
+      logoutBtn.style.cursor = "pointer";
+      logoutBtn.style.background = "transparent";
+      logoutBtn.style.border = "none";
+      logoutBtn.style.color = "#1f2937";
+      logoutBtn.style.transition = "all 0.3s";
+      logoutBtn.title = "Çıkış Yap";
+      logoutBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>`;
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        sessionStorage.removeItem("user");
+        alert("Çıkış yapıldı");
+        window.location.reload();
+      });
+      logoutBtn.addEventListener("mouseover", () => {
+        logoutBtn.style.background = "rgba(0,0,0,0.05)";
+        logoutBtn.style.borderRadius = "6px";
+      });
+      logoutBtn.addEventListener("mouseout", () => {
+        logoutBtn.style.background = "transparent";
+      });
+      if (userLoginBtn && userLoginBtn.parentNode) {
+        userLoginBtn.parentNode.insertBefore(logoutBtn, userLoginBtn.nextSibling);
       }
     } else if (su) {
       console.log("Member login detected!");
-      // Normal üye girişi: İsim + çıkış ikonu göster
+      // Normal üye girişi: İsim göster
       if (userLoginBtn) {
-        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 12px;">
-          <span>👤 ${su.firstName}</span>
-          <span id="logoutIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-left: 4px; border-left: 2px solid rgba(255, 255, 255, 0.3); padding-left: 12px;" title="Çıkış Yap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </span>
+        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 6px;">
+          <span>👤</span>
+          <span>${su.firstName}</span>
         </span>`;
         userLoginBtn.href = "#";
+        userLoginBtn.style.padding = "10px 16px";
+        userLoginBtn.style.borderRadius = "8px";
+      }
 
-        // Sadece çıkış ikonuna tıklayınca çıkış yapsın
-        const logoutIcon = document.getElementById("logoutIcon");
-        if (logoutIcon) {
-          logoutIcon.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            sessionStorage.removeItem("user");
-            alert("Çıkış yapıldı");
-            window.location.reload();
-          });
-        }
+      // Ayrı logout butonu oluştur
+      const logoutBtn = document.createElement("button");
+      logoutBtn.id = "logoutNavBtn";
+      logoutBtn.style.display = "inline-flex";
+      logoutBtn.style.alignItems = "center";
+      logoutBtn.style.justifyContent = "center";
+      logoutBtn.style.width = "36px";
+      logoutBtn.style.height = "36px";
+      logoutBtn.style.cursor = "pointer";
+      logoutBtn.style.background = "transparent";
+      logoutBtn.style.border = "none";
+      logoutBtn.style.color = "#1f2937";
+      logoutBtn.style.transition = "all 0.3s";
+      logoutBtn.title = "Çıkış Yap";
+      logoutBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>`;
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        sessionStorage.removeItem("user");
+        alert("Çıkış yapıldı");
+        window.location.reload();
+      });
+      logoutBtn.addEventListener("mouseover", () => {
+        logoutBtn.style.background = "rgba(0,0,0,0.05)";
+        logoutBtn.style.borderRadius = "6px";
+      });
+      logoutBtn.addEventListener("mouseout", () => {
+        logoutBtn.style.background = "transparent";
+      });
+      if (userLoginBtn && userLoginBtn.parentNode) {
+        userLoginBtn.parentNode.insertBefore(logoutBtn, userLoginBtn.nextSibling);
       }
     }
 
