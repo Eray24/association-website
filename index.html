@@ -12,7 +12,9 @@
 
   <body>
     <header class="navbar">
-      <div class="logo">UFUK DERNEĞİ</div>
+      <div class="logo">
+        <a href="index.html" class="logo-link">Dernek Sistemi</a>
+      </div>
       <nav>
         <a href="index.html">Ana Sayfa</a>
         <a href="about.html">Hakkımızda</a>
@@ -24,32 +26,6 @@
         <a href="login.html" class="login" id="userLoginBtn">Giriş Yap</a>
       </nav>
     </header>
-
-    <!-- Kullanıcı Çıkış Butonu (giriş yapılınca görünür) -->
-    <button
-      id="userLogoutBtn"
-      style="
-        display: none;
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: linear-gradient(135deg, #dc2626, #991b1b);
-        color: white;
-        border: none;
-        padding: 14px 28px;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 15px;
-        cursor: pointer;
-        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
-        z-index: 1000;
-        transition: all 0.3s ease;
-      "
-      onmouseover="this.style.transform='scale(1.05)'"
-      onmouseout="this.style.transform='scale(1)'"
-    >
-      Çıkış Yap
-    </button>
 
     <style>
       @keyframes glow {
