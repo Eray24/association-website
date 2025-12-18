@@ -109,8 +109,8 @@
 
     <section class="cta">
       <h2>Başlamaya Hazır mısınız?</h2>
-      <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
-      <button>Üye Ol</button>
+        <p>Bugün topluluğumuza katılın ve özel bir yapının parçası olun.</p>
+        <button id="ctaRegisterBtn">Üye Ol</button>
     </section>
 
     <script>
@@ -125,6 +125,13 @@
           toggleBtn.textContent = "🌙";
         }
       });
+
+        const ctaBtn = document.getElementById("ctaRegisterBtn");
+        if (ctaBtn) {
+          ctaBtn.addEventListener("click", () => {
+            window.location.href = "register.html";
+          });
+        }
     </script>
 
     <section class="donation-section" id="bagis">
