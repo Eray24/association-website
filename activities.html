@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Faaliyetlerimiz - Dernek Websitesi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <a href="index.html" class="logo-link">UFUK DERNEĞİ</a>
+      </div>
+      <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="about.html">Hakkımızda</a>
+        <a href="management.html">Yönetim</a>
+        <a href="announcements.html">Duyurular</a>
+        <a href="activities.html">Faaliyetlerimiz</a>
+        <a href="contact.html">İletişim</a>
+        <button id="theme-toggle" class="theme-toggle">🌙</button>
+        <a href="login.html" class="login" id="userLoginBtn">Giriş Yap</a>
+      </nav>
+    </header>
+
+    <section class="activities-hero">
+      <h1>Faaliyetlerimiz</h1>
+      <p>Toplanan bağışlarımız sosyal sorumluluk projelerimizde kullanılmaktadır</p>
+    </section>
+
+    <section class="activities-content">
+      <div class="activities-grid">
+        <!-- Faaliyet 1 -->
+        <div class="activity-card" data-activity="egitim">
+          <div class="activity-icon">📚</div>
+          <h3>Eğitim Desteği</h3>
+          <p class="activity-summary">Maddi imkanı kısıtlı öğrencilere burs ve eğitim materyali desteği</p>
+          <div class="activity-budget">Bütçe: ₺125,000</div>
+        </div>
+
+        <!-- Faaliyet 2 -->
+        <div class="activity-card" data-activity="saglik">
+          <div class="activity-icon">🏥</div>
+          <h3>Sağlık Yardımı</h3>
+          <p class="activity-summary">İhtiyaç sahibi ailelere ilaç ve tedavi desteği sağlanması</p>
+          <div class="activity-budget">Bütçe: ₺85,000</div>
+        </div>
+
+        <!-- Faaliyet 3 -->
+        <div class="activity-card" data-activity="gida">
+          <div class="activity-icon">🍽️</div>
+          <h3>Gıda Yardımı</h3>
+          <p class="activity-summary">Düzenli gıda kolisi ve sıcak yemek dağıtımı programı</p>
+          <div class="activity-budget">Bütçe: ₺95,000</div>
+        </div>
+
+        <!-- Faaliyet 4 -->
+        <div class="activity-card" data-activity="kultur">
+          <div class="activity-icon">🎭</div>
+          <h3>Kültür ve Sanat</h3>
+          <p class="activity-summary">Toplumsal kültür ve sanat etkinlikleri düzenlenmesi</p>
+          <div class="activity-budget">Bütçe: ₺45,000</div>
+        </div>
+
+        <!-- Faaliyet 5 -->
+        <div class="activity-card" data-activity="cevre">
+          <div class="activity-icon">🌱</div>
+          <h3>Çevre Projeleri</h3>
+          <p class="activity-summary">Ağaçlandırma ve çevre bilinci oluşturma kampanyaları</p>
+          <div class="activity-budget">Bütçe: ₺35,000</div>
+        </div>
+
+        <!-- Faaliyet 6 -->
+        <div class="activity-card" data-activity="meslek">
+          <div class="activity-icon">👷</div>
+          <h3>Meslek Edindirme</h3>
+          <p class="activity-summary">İşsiz gençlere meslek edindirme ve istihdam desteği</p>
+          <div class="activity-budget">Bütçe: ₺75,000</div>
+        </div>
+      </div>
+
+      <div class="total-budget">
+        <h3>💰 Toplam Proje Bütçesi: ₺460,000</h3>
+        <p>Tüm bağışlarınız şeffaf bir şekilde sosyal sorumluluk projelerimizde harcanmaktadır.</p>
+      </div>
+    </section>
+
+    <!-- Modal / Detay Popup -->
+    <div id="activityModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2 id="modalTitle">Faaliyet Başlığı</h2>
+        <div id="modalBody">Faaliyet detayları yükleniyor...</div>
+      </div>
+    </div>
+
+    <section class="cta">
+      <h2>Projelerimize Destek Olmak İster misiniz?</h2>
+      <p>Bağışlarınızla sosyal sorumluluklarımıza katkıda bulunabilirsiniz.</p>
+      <button onclick="window.location.href='contact.html'">Bağış Yap</button>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+      // Faaliyet detay verileri
+      const activityDetails = {
+        egitim: {
+          title: "Eğitim Desteği Projesi",
+          description: `
+            <p><strong>Proje Amacı:</strong> Maddi imkanı kısıtlı öğrencilerin eğitim hayatlarını sürdürebilmelerini sağlamak.</p>
+            <ul>
+              <li>✅ 50 öğrenciye yıllık burs desteği</li>
+              <li>✅ 200 öğrenciye kırtasiye ve kitap yardımı</li>
+              <li>✅ Ücretsiz dersane ve kurs imkanları</li>
+              <li>✅ Bilgisayar ve tablet desteği</li>
+            </ul>
+            <p><strong>Etki:</strong> Bu yıl 250+ öğrenciye ulaştık ve eğitim hayatlarına katkı sağladık.</p>
+          `
+        },
+        saglik: {
+          title: "Sağlık Yardımı Projesi",
+          description: `
+            <p><strong>Proje Amacı:</strong> İhtiyaç sahibi ailelerin sağlık harcamalarına destek olmak.</p>
+            <ul>
+              <li>✅ Kronik hastalara ilaç yardımı</li>
+              <li>✅ Ameliyat ve tedavi giderlerinde destek</li>
+              <li>✅ Ücretsiz sağlık taramaları</li>
+              <li>✅ Evde bakım hizmeti</li>
+            </ul>
+            <p><strong>Etki:</strong> 120 aileye düzenli sağlık desteği sağlandı.</p>
+          `
+        },
+        gida: {
+          title: "Gıda Yardımı Programı",
+          description: `
+            <p><strong>Proje Amacı:</strong> Gıda güvencesi olmayan ailelere temel gıda desteği sağlamak.</p>
+            <ul>
+              <li>✅ Aylık düzenli gıda kolisi dağıtımı</li>
+              <li>✅ Ramazan ayında iftar ve kumanya yardımı</li>
+              <li>✅ Sokak hayvanları için mama bağışı</li>
+              <li>✅ Günlük sıcak yemek servisi</li>
+            </ul>
+            <p><strong>Etki:</strong> 300+ aileye düzenli gıda yardımı ulaştırıldı.</p>
+          `
+        },
+        kultur: {
+          title: "Kültür ve Sanat Etkinlikleri",
+          description: `
+            <p><strong>Proje Amacı:</strong> Toplumsal kültür birikimini zenginleştirmek ve sanata erişimi kolaylaştırmak.</p>
+            <ul>
+              <li>✅ Ücretsiz tiyatro ve sinema gösterimleri</li>
+              <li>✅ Çocuklara yönelik sanat atölyeleri</li>
+              <li>✅ Müzik ve dans kursları</li>
+              <li>✅ Kitap okuma kulüpleri</li>
+            </ul>
+            <p><strong>Etki:</strong> 15 etkinlik düzenlendi, 500+ kişiye ulaşıldı.</p>
+          `
+        },
+        cevre: {
+          title: "Çevre Koruma Projeleri",
+          description: `
+            <p><strong>Proje Amacı:</strong> Çevre bilincini artırmak ve yeşil alanları korumak.</p>
+            <ul>
+              <li>✅ 1,000 ağaç dikimi kampanyası</li>
+              <li>✅ Plastik atık toplama etkinlikleri</li>
+              <li>✅ Okullarda çevre eğitimleri</li>
+              <li>✅ Geri dönüşüm projeleri</li>
+            </ul>
+            <p><strong>Etki:</strong> 1,200 ağaç dikildi, 5 ton atık toplandı.</p>
+          `
+        },
+        meslek: {
+          title: "Meslek Edindirme ve İstihdam",
+          description: `
+            <p><strong>Proje Amacı:</strong> İşsiz gençlere meslek kazandırarak istihdama katkı sağlamak.</p>
+            <ul>
+              <li>✅ Ücretsiz meslek kursları (bilgisayar, dikiş, aşçılık)</li>
+              <li>✅ Girişimcilik eğitimleri</li>
+              <li>✅ Staj ve iş yerleştirme desteği</li>
+              <li>✅ Ekipman ve malzeme yardımı</li>
+            </ul>
+            <p><strong>Etki:</strong> 80 genç meslek sahibi oldu, 45'i istihdam edildi.</p>
+          `
+        }
+      };
+
+      // Modal açma/kapama
+      const modal = document.getElementById("activityModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalBody = document.getElementById("modalBody");
+      const closeBtn = document.querySelector(".modal-close");
+
+      document.querySelectorAll(".activity-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const activityKey = card.getAttribute("data-activity");
+          const detail = activityDetails[activityKey];
+          
+          if (detail) {
+            modalTitle.textContent = detail.title;
+            modalBody.innerHTML = detail.description;
+            modal.style.display = "flex";
+          }
+        });
+      });
+
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

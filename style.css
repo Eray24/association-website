@@ -1113,3 +1113,210 @@ body.dark .register-form select {
 body.dark .register-footer {
   color: #d1d5db;
 }
+
+/* ACTIVITIES (Faaliyetlerimiz) */
+.activities-hero {
+  background: linear-gradient(135deg, #eafff4, #f0fdf4);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.activities-hero h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+  color: #1f2937;
+}
+
+.activities-hero p {
+  font-size: 18px;
+  color: #374151;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.activities-content {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.activity-card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.activity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.15);
+  border-color: #16a34a;
+}
+
+.activity-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.activity-card h3 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: #1f2937;
+}
+
+.activity-summary {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.activity-budget {
+  font-size: 16px;
+  font-weight: 600;
+  color: #16a34a;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.total-budget {
+  text-align: center;
+  padding: 40px;
+  background: linear-gradient(135deg, #fef3c7, #fef9c3);
+  border-radius: 12px;
+  margin-top: 40px;
+}
+
+.total-budget h3 {
+  font-size: 28px;
+  color: #92400e;
+  margin-bottom: 10px;
+}
+
+.total-budget p {
+  font-size: 16px;
+  color: #78350f;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.modal-close:hover {
+  color: #dc2626;
+}
+
+.modal-content h2 {
+  color: #16a34a;
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+.modal-content p {
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 15px;
+}
+
+.modal-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 15px 0;
+}
+
+.modal-content ul li {
+  padding: 8px 0;
+  color: #1f2937;
+  font-size: 15px;
+}
+
+/* Dark Mode for Activities */
+body.dark .activities-hero {
+  background: linear-gradient(135deg, #1f2937, #111827);
+}
+
+body.dark .activities-hero h1,
+body.dark .activities-hero p {
+  color: #f3f4f6;
+}
+
+body.dark .activity-card {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+body.dark .activity-card h3 {
+  color: #f3f4f6;
+}
+
+body.dark .activity-summary {
+  color: #9ca3af;
+}
+
+body.dark .total-budget {
+  background: linear-gradient(135deg, #374151, #1f2937);
+}
+
+body.dark .total-budget h3,
+body.dark .total-budget p {
+  color: #fbbf24;
+}
+
+body.dark .modal-content {
+  background: #1f2937;
+  color: #f3f4f6;
+}
+
+body.dark .modal-content h2 {
+  color: #34d399;
+}
+
+body.dark .modal-content p,
+body.dark .modal-content ul li {
+  color: #d1d5db;
+}
