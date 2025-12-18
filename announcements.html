@@ -20,9 +20,35 @@
         <a href="announcements.html">Faaliyetlerimiz</a>
         <a href="contact.html">İletişim</a>
         <button id="theme-toggle" class="theme-toggle">🌙</button>
-        <a href="login.html" class="login">Giriş Yap</a>
+        <a href="login.html" class="login" id="userLoginBtn">Giriş Yap</a>
       </nav>
     </header>
+
+    <!-- Kullanıcı Çıkış Butonu (giriş yapılınca görünür) -->
+    <button
+      id="userLogoutBtn"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #dc2626, #991b1b);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        z-index: 1000;
+        transition: all 0.3s ease;
+      "
+      onmouseover="this.style.transform='scale(1.05)'"
+      onmouseout="this.style.transform='scale(1)'"
+    >
+      Çıkış Yap
+    </button>
 
     <section class="announcements-hero">
       <h1>Duyurular</h1>
