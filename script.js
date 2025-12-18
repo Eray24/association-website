@@ -112,7 +112,7 @@
       logoutBtn.style.alignItems = "center";
       logoutBtn.style.justifyContent = "center";
       logoutBtn.style.width = "36px";
-      logoutBtn.style.height = "36px";
+      
       logoutBtn.style.cursor = "pointer";
       logoutBtn.style.background = "transparent";
       logoutBtn.style.border = "none";
@@ -161,7 +161,7 @@
       logoutBtn.style.alignItems = "center";
       logoutBtn.style.justifyContent = "center";
       logoutBtn.style.width = "36px";
-      logoutBtn.style.height = "36px";
+      
       logoutBtn.style.cursor = "pointer";
       logoutBtn.style.background = "transparent";
       logoutBtn.style.border = "none";
