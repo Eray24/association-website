@@ -89,9 +89,19 @@
 
     if (su && isAdmin(su)) {
       console.log("Admin login detected!");
-      // Admin girişi: Navbar'da taç + isim göster
+      // Admin girişi: Navbar'da taç + isim + çıkış ikonu göster
       if (userLoginBtn) {
-        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 24px;">👑</span><span>${su.firstName}</span></span>`;
+        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 24px;">👑</span>
+          <span>${su.firstName}</span>
+          <span id="logoutIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-left: 4px; border-left: 2px solid rgba(133, 77, 14, 0.3); padding-left: 12px;" title="Çıkış Yap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </span>
+        </span>`;
         userLoginBtn.href = "#";
         userLoginBtn.style.background =
           "linear-gradient(135deg, #ffd700, #ffed4e)";
@@ -100,43 +110,46 @@
         userLoginBtn.style.padding = "10px 20px";
         userLoginBtn.style.borderRadius = "25px";
         userLoginBtn.style.boxShadow = "0 4px 15px rgba(255, 215, 0, 0.3)";
-        userLoginBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          sessionStorage.removeItem("user");
-          alert("Çıkış yapıldı");
-          window.location.reload();
-        });
-      }
-      // Çıkış butonunu göster
-      if (userLogoutBtn) {
-        userLogoutBtn.style.display = "block";
-        userLogoutBtn.addEventListener("click", () => {
-          sessionStorage.removeItem("user");
-          alert("Çıkış yapıldı");
-          window.location.reload();
-        });
+
+        // Sadece çıkış ikonuna tıklayınca çıkış yapsın
+        const logoutIcon = document.getElementById("logoutIcon");
+        if (logoutIcon) {
+          logoutIcon.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sessionStorage.removeItem("user");
+            alert("Çıkış yapıldı");
+            window.location.reload();
+          });
+        }
       }
     } else if (su) {
       console.log("Member login detected!");
-      // Normal üye girişi: İsim göster
+      // Normal üye girişi: İsim + çıkış ikonu göster
       if (userLoginBtn) {
-        userLoginBtn.textContent = `👤 ${su.firstName}`;
+        userLoginBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 12px;">
+          <span>👤 ${su.firstName}</span>
+          <span id="logoutIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-left: 4px; border-left: 2px solid rgba(255, 255, 255, 0.3); padding-left: 12px;" title="Çıkış Yap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </span>
+        </span>`;
         userLoginBtn.href = "#";
-        userLoginBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          sessionStorage.removeItem("user");
-          alert("Çıkış yapıldı");
-          window.location.reload();
-        });
-      }
-      // Çıkış butonunu göster
-      if (userLogoutBtn) {
-        userLogoutBtn.style.display = "block";
-        userLogoutBtn.addEventListener("click", () => {
-          sessionStorage.removeItem("user");
-          alert("Çıkış yapıldı");
-          window.location.reload();
-        });
+
+        // Sadece çıkış ikonuna tıklayınca çıkış yapsın
+        const logoutIcon = document.getElementById("logoutIcon");
+        if (logoutIcon) {
+          logoutIcon.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sessionStorage.removeItem("user");
+            alert("Çıkış yapıldı");
+            window.location.reload();
+          });
+        }
       }
     }
 
@@ -195,6 +208,29 @@
 
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
+      // Admin kullanıcısını garantiye almak için yardımcı fonksiyon
+      const ensureAdminExists = () => {
+        const users = getUsers();
+        const exists = users.some((u) => u.email === "admin@dernek.org");
+        if (!exists) {
+          const adminPwHash =
+            "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f1979c75d";
+          users.push({
+            firstName: "Admin",
+            lastName: "Kullanıcı",
+            email: "admin@dernek.org",
+            passwordHash: adminPwHash,
+            phone: "",
+            birthDate: "",
+            interests: "",
+            newsletter: false,
+            role: "admin",
+            createdAt: new Date().toISOString(),
+          });
+          setUsers(users);
+        }
+      };
+
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const email = document.getElementById("email")?.value || "";
@@ -203,23 +239,25 @@
           alert("Lütfen e-posta ve şifrenizi girin.");
           return;
         }
+        // Admin bypass'ı önce çalıştır (kayıt olmasa bile)
+        if (email === "admin@dernek.org" && password === "admin123") {
+          ensureAdminExists();
+          const admin = getUsers().find((u) => u.email === "admin@dernek.org");
+          setSessionUser({
+            email: admin?.email || "admin@dernek.org",
+            firstName: admin?.firstName || "Admin",
+            lastName: admin?.lastName || "Kullanıcı",
+            role: admin?.role || "admin",
+          });
+          alert("Giriş başarılı");
+          window.location.href = "index.html";
+          return;
+        }
+
         const users = getUsers();
         const candidate = users.find((u) => u.email === email);
         if (!candidate) {
           alert("Kullanıcı bulunamadı");
-          return;
-        }
-
-        // Demo admin bypass kontrolü
-        if (email === "admin@dernek.org" && password === "admin123") {
-          setSessionUser({
-            email: candidate.email,
-            firstName: candidate.firstName,
-            lastName: candidate.lastName,
-            role: candidate.role,
-          });
-          alert("Giriş başarılı");
-          window.location.href = "index.html";
           return;
         }
 
