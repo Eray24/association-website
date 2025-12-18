@@ -1,5 +1,4 @@
-localStorage.setItem('user', JSON.stringify({id:1,name:'Admin',email:'admin@local',role:'admin'}));
-location.reload();<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
@@ -45,81 +44,6 @@ location.reload();<!DOCTYPE html>
     </section>
 
     <section class="management-content">
-      <div class="team-grid">
-        <div class="team-member">
-          <div class="member-avatar">👔</div>
-          <h3>Ali Zengin</h3>
-          <p class="position">Başkan</p>
-          <p class="bio">
-            15 yıllık sosyal girişimcilik deneyimi. Toplumsal değişim ve
-            dayanışmaya inanır.
-          </p>
-          <p class="contact">📧 ali@dernek.org</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-avatar">👔</div>
-          <h3>Eray Sarıbaş</h3>
-          <p class="position">Başkan</p>
-          <p class="bio">
-            Derneğin stratejik kararlarında aktif rol oynayan, vizyoncu lider.
-          </p>
-          <p class="contact">📧 eray@dernek.org</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-avatar">📋</div>
-          <h3>Fatma Kara</h3>
-          <p class="position">Genel Sekreteri</p>
-          <p class="bio">
-            Derneğin günlük operasyonlarından sorumlu. Kurucu üyelerden biri.
-          </p>
-          <p class="contact">📧 fatma@dernek.org</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-avatar">💰</div>
-          <h3>Mehmet Demir</h3>
-          <p class="position">Mali İşler Müdürü</p>
-          <p class="bio">
-            Muhasebe ve bütçe yönetiminde uzman. Finansal şeffaflığın
-            savunucusu.
-          </p>
-          <p class="contact">📧 mehmet@dernek.org</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-avatar">🎯</div>
-          <h3>Zeynep Aydın</h3>
-          <p class="position">Projeleri Koordinatörü</p>
-          <p class="bio">
-            Sosyal projeler ve etkinliklerin yöneticisi. Gönüllülük hareketinin
-            lideri.
-          </p>
-          <p class="contact">📧 zeynep@dernek.org</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-avatar">🌍</div>
-          <h3>İbrahim Çalık</h3>
-          <p class="position">Toplum İlişkileri Müdürü</p>
-          <p class="bio">
-            Dış kurumlarla işbirliği ve yönetim. Ağ oluşturma uzmanı.
-          </p>
-          <p class="contact">📧 ibrahim@dernek.org</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-avatar">📱</div>
-          <h3>Gül Yavuz</h3>
-          <p class="position">Dijital Medya Müdürü</p>
-          <p class="bio">
-            Sosyal medya ve web varlığından sorumlu. İletişim stratejisti.
-          </p>
-          <p class="contact">📧 gul@dernek.org</p>
-        </div>
-      </div>
-
       <div id="team-grid" class="team-grid"></div>
 
       <div class="management-info">
@@ -153,13 +77,30 @@ location.reload();<!DOCTYPE html>
           <li>Üye sayısı: <span id="memberCount">0</span></li>
         </ul>
         <button id="logoutBtn" style="background: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Çıkış Yap</button>
+
+        <div id="admin-team-manager" style="margin-top:20px; background:#fff; padding:16px; border-radius:8px; display:none;">
+          <h3 style="margin:0 0 10px 0;">Yönetim Üyelerini Yönet</h3>
+          <form id="teamForm" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:center;">
+            <input type="text" id="avatar" placeholder="Avatar (emoji veya simge)" />
+            <input type="text" id="name" placeholder="İsim Soyisim" />
+            <input type="text" id="position" placeholder="Pozisyon" />
+            <input type="text" id="contact" placeholder="E-posta / İletişim" />
+            <textarea id="bio" placeholder="Kısa biyografi" style="grid-column:1/3; height:80px;"></textarea>
+            <input type="hidden" id="editIndex" />
+            <div style="grid-column:1/3; display:flex; gap:8px;">
+              <button type="button" id="addBtn" style="background:#0066cc;color:white;border:none;padding:8px 12px;border-radius:6px;">Ekle</button>
+              <button type="button" id="saveBtn" style="background:#2e7d32;color:white;border:none;padding:8px 12px;border-radius:6px;display:none;">Güncelle</button>
+              <button type="button" id="cancelBtn" style="background:#777;color:white;border:none;padding:8px 12px;border-radius:6px;display:none;">İptal</button>
+            </div>
+          </form>
+        </div>
       </div>
 
       <div data-member-only style="display: none; margin-top: 40px; padding: 30px; background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 12px;">
         <h2 style="color: #2e7d32; margin-top: 0;">Üye Bilgileri</h2>
         <p><strong>Sizin Oturum Bilgileriniz</strong></p>
         <p id="memberInfo">Bilgiler yükleniyor...</p>
-        <button id="logoutBtn" style="background: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Çıkış Yap</button>
+        <button id="logoutBtnMember" style="background: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Çıkış Yap</button>
       </div>
     </section>
 
@@ -182,6 +123,123 @@ location.reload();<!DOCTYPE html>
           document.getElementById("memberInfo").textContent =
             `Adı: ${su.firstName} ${su.lastName} | E-posta: ${su.email} | Rol: ${su.role}`;
         }
+
+        // Admin team manager visibility
+        if (su.role === 'admin') {
+          const manager = document.getElementById('admin-team-manager');
+          if (manager) manager.style.display = 'block';
+        }
+
+        // Team management
+        const defaultTeam = [
+          {avatar:'👔', name:'Ali Zengin', position:'Başkan', bio:'15 yıllık sosyal girişimcilik deneyimi. Toplumsal değişim ve dayanışmaya inanır.', contact:'ali@dernek.org'},
+          {avatar:'👔', name:'Eray Sarıbaş', position:'Başkan', bio:'Derneğin stratejik kararlarında aktif rol oynayan, vizyoncu lider.', contact:'eray@dernek.org'},
+          {avatar:'📋', name:'Fatma Kara', position:'Genel Sekreteri', bio:'Derneğin günlük operasyonlarından sorumlu. Kurucu üyelerden biri.', contact:'fatma@dernek.org'},
+          {avatar:'💰', name:'Mehmet Demir', position:'Mali İşler Müdürü', bio:'Muhasebe ve bütçe yönetiminde uzman. Finansal şeffaflığın savunucusu.', contact:'mehmet@dernek.org'},
+          {avatar:'🎯', name:'Zeynep Aydın', position:'Projeleri Koordinatörü', bio:'Sosyal projeler ve etkinliklerin yöneticisi. Gönüllülük hareketinin lideri.', contact:'zeynep@dernek.org'},
+          {avatar:'🌍', name:'İbrahim Çalık', position:'Toplum İlişkileri Müdürü', bio:'Dış kurumlarla işbirliği ve yönetim. Ağ oluşturma uzmanı.', contact:'ibrahim@dernek.org'},
+          {avatar:'📱', name:'Gül Yavuz', position:'Dijital Medya Müdürü', bio:'Sosyal medya ve web varlığından sorumlu. İletişim stratejisti.', contact:'gul@dernek.org'}
+        ];
+
+        function getTeam() {
+          try { return JSON.parse(localStorage.getItem('team')) || defaultTeam.slice(); } catch { return defaultTeam.slice(); }
+        }
+
+        let team = getTeam();
+        const teamGrid = document.getElementById('team-grid');
+
+        function renderTeam() {
+          if (!teamGrid) return;
+          teamGrid.innerHTML = '';
+          team.forEach((m, idx) => {
+            const card = document.createElement('div');
+            card.className = 'team-member';
+            card.innerHTML = `\n              <div class="member-avatar">${m.avatar || '🙂'}</div>\n              <h3>${m.name || ''}</h3>\n              <p class="position">${m.position || ''}</p>\n              <p class="bio">${m.bio || ''}</p>\n              <p class="contact">📧 ${m.contact || ''}</p>\n            `;
+            if (su && su.role === 'admin') {
+              const controls = document.createElement('div');
+              controls.style.marginTop = '8px';
+              const editBtn = document.createElement('button');
+              editBtn.textContent = 'Düzenle';
+              editBtn.style.marginRight = '8px';
+              editBtn.onclick = () => startEdit(idx);
+              const delBtn = document.createElement('button');
+              delBtn.textContent = 'Sil';
+              delBtn.style.background = '#d32f2f';
+              delBtn.style.color = 'white';
+              delBtn.onclick = () => deleteMember(idx);
+              controls.appendChild(editBtn);
+              controls.appendChild(delBtn);
+              card.appendChild(controls);
+            }
+            teamGrid.appendChild(card);
+          });
+        }
+
+        function saveTeam() {
+          localStorage.setItem('team', JSON.stringify(team));
+          renderTeam();
+        }
+
+        function startEdit(i) {
+          const m = team[i];
+          document.getElementById('avatar').value = m.avatar || '';
+          document.getElementById('name').value = m.name || '';
+          document.getElementById('position').value = m.position || '';
+          document.getElementById('bio').value = m.bio || '';
+          document.getElementById('contact').value = m.contact || '';
+          document.getElementById('editIndex').value = i;
+          document.getElementById('addBtn').style.display = 'none';
+          document.getElementById('saveBtn').style.display = 'inline-block';
+          document.getElementById('cancelBtn').style.display = 'inline-block';
+        }
+
+        function deleteMember(i) {
+          if (!confirm('Bu üyeyi silmek istediğinizden emin misiniz?')) return;
+          team.splice(i,1);
+          saveTeam();
+        }
+
+        document.getElementById('addBtn')?.addEventListener('click', () => {
+          const m = {
+            avatar: document.getElementById('avatar').value.trim() || '🙂',
+            name: document.getElementById('name').value.trim(),
+            position: document.getElementById('position').value.trim(),
+            bio: document.getElementById('bio').value.trim(),
+            contact: document.getElementById('contact').value.trim()
+          };
+          if (!m.name) { alert('Lütfen isim girin'); return; }
+          team.push(m);
+          saveTeam();
+          document.getElementById('teamForm').reset();
+        });
+
+        document.getElementById('saveBtn')?.addEventListener('click', () => {
+          const idx = parseInt(document.getElementById('editIndex').value,10);
+          if (isNaN(idx)) return;
+          team[idx] = {
+            avatar: document.getElementById('avatar').value.trim() || '🙂',
+            name: document.getElementById('name').value.trim(),
+            position: document.getElementById('position').value.trim(),
+            bio: document.getElementById('bio').value.trim(),
+            contact: document.getElementById('contact').value.trim()
+          };
+          document.getElementById('teamForm').reset();
+          document.getElementById('editIndex').value = '';
+          document.getElementById('addBtn').style.display = 'inline-block';
+          document.getElementById('saveBtn').style.display = 'none';
+          document.getElementById('cancelBtn').style.display = 'none';
+          saveTeam();
+        });
+
+        document.getElementById('cancelBtn')?.addEventListener('click', () => {
+          document.getElementById('teamForm').reset();
+          document.getElementById('editIndex').value = '';
+          document.getElementById('addBtn').style.display = 'inline-block';
+          document.getElementById('saveBtn').style.display = 'none';
+          document.getElementById('cancelBtn').style.display = 'none';
+        });
+
+        renderTeam();
       });
     </script>
     </section>
