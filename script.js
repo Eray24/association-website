@@ -499,5 +499,64 @@
         window.location.href = "index.html";
       }
     }
+
+    // Tema toggle işlevi
+    const toggleBtn = document.getElementById("theme-toggle");
+    if (toggleBtn) {
+      // Kaydedilmiş temayı uygula
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+        toggleBtn.textContent = "☀️";
+      } else {
+        document.body.classList.remove("dark");
+        toggleBtn.textContent = "🌙";
+      }
+
+      // Toggle butonuna tıklama olayı
+      toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+
+        if (document.body.classList.contains("dark")) {
+          toggleBtn.textContent = "☀️";
+          localStorage.setItem("theme", "dark");
+        } else {
+          toggleBtn.textContent = "🌙";
+          localStorage.setItem("theme", "light");
+        }
+      });
+    }
   });
+})();
+
+// Tema toggle (tüm sayfalarda çalışacak)
+(function initTheme() {
+  // Sayfa yüklendiğinde kaydedilmiş tema tercihini uygula
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+  
+  // Tema toggle butonu
+  const toggleBtn = document.getElementById('theme-toggle');
+  if (toggleBtn) {
+    // Icon'u güncelle
+    if (document.body.classList.contains('dark')) {
+      toggleBtn.textContent = '☀️';
+    } else {
+      toggleBtn.textContent = '🌙';
+    }
+    
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      
+      if (document.body.classList.contains('dark')) {
+        toggleBtn.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        toggleBtn.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
 })();
