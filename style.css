@@ -40,6 +40,16 @@ body {
   color: #16a34a;
 }
 
+.logo-link {
+  color: #16a34a;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.logo-link:hover {
+  color: #15803d;
+}
+
 .login {
   background: white;
   color: #1f2937;
