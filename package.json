@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "association-website-server",
   "version": "2.0.0",
   "description": "Small API server for association-website (register/login) - Multi-database support",
@@ -29,4 +30,16 @@
   "devDependencies": {
     "nodemon": "^2.0.22"
   }
+=======
+  "name": "association-website",
+  "version": "1.0.0",
+  "description": "Small API server for association-website (register/login)",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'No backend. Open index.html'",
+    "dev": "echo 'No backend. Use live server'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+>>>>>>> 067a523c25989e24a7cb98f3c67ba17c35b64c56
 }

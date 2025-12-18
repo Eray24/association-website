@@ -17,9 +17,10 @@ body {
   padding: 18px 60px;
   background-color: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  gap: 8px;
 }
 
-.navbar a {
+.navbar a:not(.logo-link) {
   margin: 0 12px;
   text-decoration: none;
   color: #1f2937;
@@ -29,7 +30,7 @@ body {
   transition: all 0.3s;
 }
 
-.navbar a:hover {
+.navbar a:not(.logo-link):hover {
   background-color: #1f2937;
   color: white;
 }
@@ -38,6 +39,16 @@ body {
   font-size: 22px;
   font-weight: 700;
   color: #16a34a;
+}
+
+.logo-link {
+  color: #16a34a !important;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.logo-link:hover {
+  color: #15803d;
 }
 
 .login {

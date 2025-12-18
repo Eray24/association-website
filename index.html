@@ -12,17 +12,34 @@
 
   <body>
     <header class="navbar">
-      <div class="logo">UFUK DERNEĞİ</div>
+      <div class="logo">
+        <a href="index.html" class="logo-link">UFUK DERNEĞİ</a>
+      </div>
       <nav>
         <a href="index.html">Ana Sayfa</a>
         <a href="about.html">Hakkımızda</a>
         <a href="management.html">Yönetim</a>
         <a href="announcements.html">Duyurular</a>
+        <a href="announcements.html">Faaliyetlerimiz</a>
         <a href="contact.html">İletişim</a>
         <button id="theme-toggle" class="theme-toggle">🌙</button>
-        <a href="login.html" class="login">Giriş Yap</a>
+        <a href="login.html" class="login" id="userLoginBtn">Giriş Yap</a>
       </nav>
     </header>
+
+    <style>
+      @keyframes glow {
+        0%,
+        100% {
+          box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4),
+            0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        50% {
+          box-shadow: 0 8px 35px rgba(255, 215, 0, 0.6),
+            0 0 25px rgba(255, 215, 0, 0.5);
+        }
+      }
+    </style>
 
     <section class="hero">
       <h1>
@@ -131,5 +148,7 @@
         <button class="donate-button">Bağış Yap</button>
       </div>
     </section>
+
+    <script src="script.js"></script>
   </body>
 </html>

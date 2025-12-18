@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test - Session Kontrolü</title>
+  </head>
+  <body>
+    <h1>Session Test</h1>
+    <button onclick="checkSession()">Session Kontrol Et</button>
+    <button onclick="adminLogin()">Admin Giriş Yap</button>
+    <button onclick="clearAll()">Temizle</button>
+    <pre id="result"></pre>
+
+    <script>
+      function checkSession() {
+        const user = sessionStorage.getItem("user");
+        const users = localStorage.getItem("users");
+        document.getElementById("result").textContent =
+          "Session User: " + user + "\n\n" + "LocalStorage Users: " + users;
+      }
+
+      function adminLogin() {
+        const adminUser = {
+          email: "admin@dernek.org",
+          firstName: "Admin",
+          lastName: "Kullanıcı",
+          role: "admin",
+        };
+        sessionStorage.setItem("user", JSON.stringify(adminUser));
+        alert("Admin girişi yapıldı! Şimdi index.html'e gidin.");
+      }
+
+      function clearAll() {
+        sessionStorage.clear();
+        localStorage.clear();
+        alert("Temizlendi!");
+        checkSession();
+      }
+
+      checkSession();
+    </script>
+  </body>
+</html>
