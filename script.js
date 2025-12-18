@@ -85,6 +85,7 @@
     memberSections.forEach((el) => {
       el.style.display = isMember(su) || isAdmin(su) ? "block" : "none";
     });
+    const currentPage = location.pathname.split('/').pop();
 
     // Navbar ve çıkış butonu yönetimi
     const userLoginBtn = document.getElementById("userLoginBtn");
@@ -201,155 +202,158 @@
     }
 
     // --- Yönetim sayfası: üye listeleme ve CRUD (admin) ---
-    const teamGrid = document.getElementById('team-grid');
-    const memberForm = document.getElementById('memberForm');
-    const adminPanel = document.getElementById('admin-panel');
-    const newMemberBtn = document.getElementById('new-member');
-    const cancelMemberBtn = document.getElementById('cancel-member');
+    // Skip legacy remote-API team logic on the local `management.html` page
+    if (currentPage !== 'management.html') {
+      const teamGrid = document.getElementById('team-grid');
+      const memberForm = document.getElementById('memberForm');
+      const adminPanel = document.getElementById('admin-panel');
+      const newMemberBtn = document.getElementById('new-member');
+      const cancelMemberBtn = document.getElementById('cancel-member');
 
-    const adminMode = isAdmin(su);
+      const adminMode = isAdmin(su);
 
-    if (adminPanel) {
-      adminPanel.style.display = adminMode ? 'block' : 'none';
-    }
-
-    function escapeHtml(str) {
-      if (!str && str !== 0) return '';
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-
-    async function fetchMembers() {
-      try {
-        const res = await fetch('/api/members');
-        const data = await res.json().catch(() => null);
-        if (res.ok && Array.isArray(data.members)) return data.members;
-        return [];
-      } catch (err) {
-        console.error('fetchMembers error', err);
-        return [];
+      if (adminPanel) {
+        adminPanel.style.display = adminMode ? 'block' : 'none';
       }
-    }
 
-    function attachHandlers() {
-      if (!adminMode || !teamGrid) return;
-      teamGrid.querySelectorAll('button.edit').forEach((b) => {
-        b.addEventListener('click', async (e) => {
-          const id = e.target.dataset.id;
-          const members = await fetchMembers();
-          const m = members.find((x) => String(x.id) === String(id));
-          if (!m) return alert('Üye bulunamadı');
-          document.getElementById('member-id').value = m.id;
-          document.getElementById('member-name').value = m.name || '';
-          document.getElementById('member-position').value = m.position || '';
-          document.getElementById('member-bio').value = m.bio || '';
-          document.getElementById('member-contact').value = m.contact || '';
-          adminPanel.style.display = 'block';
+      function escapeHtml(str) {
+        if (!str && str !== 0) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+
+      async function fetchMembers() {
+        try {
+          const res = await fetch('/api/members');
+          const data = await res.json().catch(() => null);
+          if (res.ok && Array.isArray(data.members)) return data.members;
+          return [];
+        } catch (err) {
+          console.error('fetchMembers error', err);
+          return [];
+        }
+      }
+
+      function attachHandlers() {
+        if (!adminMode || !teamGrid) return;
+        teamGrid.querySelectorAll('button.edit').forEach((b) => {
+          b.addEventListener('click', async (e) => {
+            const id = e.target.dataset.id;
+            const members = await fetchMembers();
+            const m = members.find((x) => String(x.id) === String(id));
+            if (!m) return alert('Üye bulunamadı');
+            document.getElementById('member-id').value = m.id;
+            document.getElementById('member-name').value = m.name || '';
+            document.getElementById('member-position').value = m.position || '';
+            document.getElementById('member-bio').value = m.bio || '';
+            document.getElementById('member-contact').value = m.contact || '';
+            adminPanel.style.display = 'block';
+          });
         });
-      });
 
-      teamGrid.querySelectorAll('button.delete').forEach((b) => {
-        b.addEventListener('click', async (e) => {
-          const id = e.target.dataset.id;
-          if (!confirm('Üyeyi silmek istediğinize emin misiniz?')) return;
-          try {
-            const res = await fetch('/api/members/' + id, { method: 'DELETE' });
-            if (res.ok) {
-              alert('Üye silindi');
-              load();
-            } else {
-              const d = await res.json().catch(() => null);
-              alert(d?.message || 'Silinemedi');
+        teamGrid.querySelectorAll('button.delete').forEach((b) => {
+          b.addEventListener('click', async (e) => {
+            const id = e.target.dataset.id;
+            if (!confirm('Üyeyi silmek istediğinize emin misiniz?')) return;
+            try {
+              const res = await fetch('/api/members/' + id, { method: 'DELETE' });
+              if (res.ok) {
+                alert('Üye silindi');
+                load();
+              } else {
+                const d = await res.json().catch(() => null);
+                alert(d?.message || 'Silinemedi');
+              }
+            } catch (err) {
+              console.error(err);
+              alert('Sunucu hatası');
             }
-          } catch (err) {
-            console.error(err);
-            alert('Sunucu hatası');
-          }
+          });
         });
-      });
-    }
-
-    function renderMembers(members) {
-      if (!teamGrid) return;
-      teamGrid.innerHTML = '';
-      members.forEach((m) => {
-        const div = document.createElement('div');
-        div.className = 'team-member';
-        div.innerHTML = `
-          <div class="member-avatar">👤</div>
-          <h3>${escapeHtml(m.name)}</h3>
-          <p class="position">${escapeHtml(m.position || '')}</p>
-          <p class="bio">${escapeHtml(m.bio || '')}</p>
-          <p class="contact">${escapeHtml(m.contact || '')}</p>
-        `;
-        if (adminMode) {
-          const controls = document.createElement('div');
-          controls.className = 'member-controls';
-          controls.innerHTML = `<button class="edit" data-id="${m.id}">Düzenle</button> <button class="delete" data-id="${m.id}">Sil</button>`;
-          div.appendChild(controls);
-        }
-        teamGrid.appendChild(div);
-      });
-      attachHandlers();
-    }
-
-    memberForm?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!adminMode) return alert('Yönetici değilsiniz');
-      const id = document.getElementById('member-id').value;
-      const payload = {
-        name: document.getElementById('member-name').value,
-        position: document.getElementById('member-position').value,
-        bio: document.getElementById('member-bio').value,
-        contact: document.getElementById('member-contact').value,
-      };
-      try {
-        let res;
-        if (id) {
-          res = await fetch('/api/members/' + id, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-        } else {
-          res = await fetch('/api/members', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-        }
-        if (res.ok) {
-          alert('Kaydedildi');
-          document.getElementById('member-id').value = '';
-          memberForm.reset();
-          load();
-        } else {
-          const d = await res.json().catch(() => null);
-          alert(d?.message || 'Kaydedilemedi');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Sunucu hatası');
       }
-    });
 
-    newMemberBtn?.addEventListener('click', () => {
-      document.getElementById('member-id').value = '';
-      memberForm.reset();
-      adminPanel.style.display = 'block';
-    });
+      function renderMembers(members) {
+        if (!teamGrid) return;
+        teamGrid.innerHTML = '';
+        members.forEach((m) => {
+          const div = document.createElement('div');
+          div.className = 'team-member';
+          div.innerHTML = `
+            <div class="member-avatar">👤</div>
+            <h3>${escapeHtml(m.name)}</h3>
+            <p class="position">${escapeHtml(m.position || '')}</p>
+            <p class="bio">${escapeHtml(m.bio || '')}</p>
+            <p class="contact">${escapeHtml(m.contact || '')}</p>
+          `;
+          if (adminMode) {
+            const controls = document.createElement('div');
+            controls.className = 'member-controls';
+            controls.innerHTML = `<button class="edit" data-id="${m.id}">Düzenle</button> <button class="delete" data-id="${m.id}">Sil</button>`;
+            div.appendChild(controls);
+          }
+          teamGrid.appendChild(div);
+        });
+        attachHandlers();
+      }
 
-    cancelMemberBtn?.addEventListener('click', () => {
-      document.getElementById('member-id').value = '';
-      memberForm.reset();
-      adminPanel.style.display = adminMode ? 'block' : 'none';
-    });
+      memberForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!adminMode) return alert('Yönetici değilsiniz');
+        const id = document.getElementById('member-id').value;
+        const payload = {
+          name: document.getElementById('member-name').value,
+          position: document.getElementById('member-position').value,
+          bio: document.getElementById('member-bio').value,
+          contact: document.getElementById('member-contact').value,
+        };
+        try {
+          let res;
+          if (id) {
+            res = await fetch('/api/members/' + id, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+          } else {
+            res = await fetch('/api/members', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+          }
+          if (res.ok) {
+            alert('Kaydedildi');
+            document.getElementById('member-id').value = '';
+            memberForm.reset();
+            load();
+          } else {
+            const d = await res.json().catch(() => null);
+            alert(d?.message || 'Kaydedilemedi');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Sunucu hatası');
+        }
+      });
 
-    async function load() {
-      const members = await fetchMembers();
-      renderMembers(members);
+      newMemberBtn?.addEventListener('click', () => {
+        document.getElementById('member-id').value = '';
+        memberForm.reset();
+        adminPanel.style.display = 'block';
+      });
+
+      cancelMemberBtn?.addEventListener('click', () => {
+        document.getElementById('member-id').value = '';
+        memberForm.reset();
+        adminPanel.style.display = adminMode ? 'block' : 'none';
+      });
+
+      async function load() {
+        const members = await fetchMembers();
+        renderMembers(members);
+      }
+
+      if (teamGrid) load();
     }
-
-    if (teamGrid) load();
 
     const registerForm = document.getElementById("registerForm");
     if (registerForm) {

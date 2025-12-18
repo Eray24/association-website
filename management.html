@@ -108,9 +108,8 @@
       // Admin ve member alanları için kullanıcı bilgileri göster
       document.addEventListener("DOMContentLoaded", () => {
         const su = JSON.parse(sessionStorage.getItem("user") || "null");
-        if (!su) return;
 
-        if (su.role === "admin") {
+        if (su && su.role === "admin") {
           try {
             const users = JSON.parse(localStorage.getItem("users") || "[]");
             document.getElementById("totalUsers").textContent = users.length;
@@ -119,13 +118,13 @@
           } catch {}
         }
 
-        if (su.role === "member" || su.role === "admin") {
+        if (su && (su.role === "member" || su.role === "admin")) {
           document.getElementById("memberInfo").textContent =
             `Adı: ${su.firstName} ${su.lastName} | E-posta: ${su.email} | Rol: ${su.role}`;
         }
 
         // Admin team manager visibility
-        if (su.role === 'admin') {
+        if (su && su.role === 'admin') {
           const manager = document.getElementById('admin-team-manager');
           if (manager) manager.style.display = 'block';
         }
@@ -150,12 +149,15 @@
 
         function renderTeam() {
           if (!teamGrid) return;
+          // ensure grid is visible for all visitors
+          teamGrid.style.display = '';
           teamGrid.innerHTML = '';
+          const currentUser = JSON.parse(sessionStorage.getItem('user') || 'null');
           team.forEach((m, idx) => {
             const card = document.createElement('div');
             card.className = 'team-member';
             card.innerHTML = `\n              <div class="member-avatar">${m.avatar || '🙂'}</div>\n              <h3>${m.name || ''}</h3>\n              <p class="position">${m.position || ''}</p>\n              <p class="bio">${m.bio || ''}</p>\n              <p class="contact">📧 ${m.contact || ''}</p>\n            `;
-            if (su && su.role === 'admin') {
+            if (currentUser && currentUser.role === 'admin') {
               const controls = document.createElement('div');
               controls.style.marginTop = '8px';
               const editBtn = document.createElement('button');
@@ -173,6 +175,9 @@
             }
             teamGrid.appendChild(card);
           });
+          // show/hide admin manager according to current session
+          const manager = document.getElementById('admin-team-manager');
+          if (manager) manager.style.display = (currentUser && currentUser.role === 'admin') ? 'block' : 'none';
         }
 
         function saveTeam() {
@@ -194,12 +199,14 @@
         }
 
         function deleteMember(i) {
+          if (!(su && su.role === 'admin')) { alert('Yetkiniz yok'); return; }
           if (!confirm('Bu üyeyi silmek istediğinizden emin misiniz?')) return;
           team.splice(i,1);
           saveTeam();
         }
 
         document.getElementById('addBtn')?.addEventListener('click', () => {
+          if (!(su && su.role === 'admin')) { alert('Yetkiniz yok'); return; }
           const m = {
             avatar: document.getElementById('avatar').value.trim() || '🙂',
             name: document.getElementById('name').value.trim(),
@@ -214,6 +221,7 @@
         });
 
         document.getElementById('saveBtn')?.addEventListener('click', () => {
+          if (!(su && su.role === 'admin')) { alert('Yetkiniz yok'); return; }
           const idx = parseInt(document.getElementById('editIndex').value,10);
           if (isNaN(idx)) return;
           team[idx] = {
@@ -240,6 +248,18 @@
         });
 
         renderTeam();
+
+        // Keep team visible after navigation / tab focus
+        window.addEventListener('pageshow', () => renderTeam());
+        window.addEventListener('load', () => renderTeam());
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') renderTeam();
+        });
+
+        // If navigation uses client-side routing or the link is clicked, ensure render
+        document.querySelectorAll('a[href="management.html"]').forEach(a => {
+          a.addEventListener('click', () => setTimeout(() => { if (location.pathname.split('/').pop() === 'management.html') renderTeam(); }, 250));
+        });
       });
     </script>
     </section>
