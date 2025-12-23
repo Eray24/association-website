@@ -970,5 +970,109 @@
         }
       });
     }
+
+    // Site Arama Fonksiyonalitesi
+    const siteSearchInput = document.getElementById('site-search');
+    const searchResultsDiv = document.getElementById('search-results');
+
+    if (siteSearchInput && searchResultsDiv) {
+      const searchableContent = [
+        // Duyurular - localStorage'dan yüklenecek
+        // Faaliyetler
+        { title: 'Eğitim Desteği', summary: 'Maddi imkanı kısıtlı öğrencilere burs ve eğitim materyali desteği', category: 'Faaliyetlerimiz', url: 'activities.html#egitim' },
+        { title: 'Sağlık Yardımı', summary: 'İhtiyaç sahibi ailelere ilaç ve tedavi desteği sağlanması', category: 'Faaliyetlerimiz', url: 'activities.html#saglik' },
+        { title: 'Gıda Yardımı', summary: 'Düzenli gıda kolisi ve sıcak yemek dağıtımı programı', category: 'Faaliyetlerimiz', url: 'activities.html#gida' },
+        { title: 'Kültür ve Sanat', summary: 'Toplumsal kültür ve sanat etkinlikleri düzenlenmesi', category: 'Faaliyetlerimiz', url: 'activities.html#kultur' },
+        { title: 'Çevre Projeleri', summary: 'Ağaçlandırma ve çevre bilinci oluşturma kampanyaları', category: 'Faaliyetlerimiz', url: 'activities.html#cevre' },
+        { title: 'Meslek Edindirme', summary: 'İşsiz gençlere meslek edindirme ve istihdam desteği', category: 'Faaliyetlerimiz', url: 'activities.html#meslek' },
+        // Diğer sayfalar
+        { title: 'Hakkımızda', summary: 'Dernek hakkında bilgi, misyon, vizyon', category: 'Diğer', url: 'about.html' },
+        { title: 'Yönetim', summary: 'Dernek yönetim kurulu üyeleri', category: 'Diğer', url: 'management.html' },
+        { title: 'İletişim', summary: 'İletişim bilgileri ve formu', category: 'Diğer', url: 'contact.html' },
+        { title: 'Bağış Yap', summary: 'Derneğimize bağış yapın, IBAN ve kripto adresleri', category: 'Diğer', url: 'index.html#bagis' },
+      ];
+
+      const performSearch = (query) => {
+        if (!query || query.trim().length < 2) {
+          searchResultsDiv.style.display = 'none';
+          return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        const allContent = [...searchableContent];
+
+        // Duyuruları ekle
+        const announcements = loadAnnouncements();
+        announcements.forEach(ann => {
+          allContent.push({
+            title: ann.title || '',
+            summary: ann.summary || '',
+            category: 'Duyurular',
+            url: 'announcements.html'
+          });
+        });
+
+        // Arama yap
+        const results = allContent.filter(item => {
+          return item.title.toLowerCase().includes(lowerQuery) ||
+                 item.summary.toLowerCase().includes(lowerQuery);
+        });
+
+        if (results.length === 0) {
+          searchResultsDiv.innerHTML = '<div class="search-no-results">Sonuç bulunamadı</div>';
+          searchResultsDiv.style.display = 'block';
+          return;
+        }
+
+        // Kategorilere göre grupla
+        const grouped = {
+          'Duyurular': results.filter(r => r.category === 'Duyurular'),
+          'Faaliyetlerimiz': results.filter(r => r.category === 'Faaliyetlerimiz'),
+          'Diğer': results.filter(r => r.category === 'Diğer')
+        };
+
+        let html = '';
+        for (const [category, items] of Object.entries(grouped)) {
+          if (items.length > 0) {
+            html += `<div class="search-category">
+              <h4 class="search-category-title">${category}</h4>
+              <div class="search-category-items">`;
+            items.forEach(item => {
+              const icon = category === 'Duyurular' ? '📢' : category === 'Faaliyetlerimiz' ? '🎯' : '📄';
+              html += `<a href="${item.url}" class="search-result-item">
+                <span class="search-result-icon">${icon}</span>
+                <div class="search-result-content">
+                  <div class="search-result-title">${item.title}</div>
+                  <div class="search-result-summary">${item.summary}</div>
+                </div>
+              </a>`;
+            });
+            html += `</div></div>`;
+          }
+        }
+
+        searchResultsDiv.innerHTML = html;
+        searchResultsDiv.style.display = 'block';
+      };
+
+      let searchTimeout;
+      siteSearchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => performSearch(e.target.value), 300);
+      });
+
+      siteSearchInput.addEventListener('focus', (e) => {
+        if (e.target.value.trim().length >= 2) {
+          performSearch(e.target.value);
+        }
+      });
+
+      // Dışarı tıklayınca kapat
+      document.addEventListener('click', (e) => {
+        if (!siteSearchInput.contains(e.target) && !searchResultsDiv.contains(e.target)) {
+          searchResultsDiv.style.display = 'none';
+        }
+      });
+    }
   });
 })();
