@@ -87,6 +87,132 @@
     });
     const currentPage = location.pathname.split('/').pop();
 
+    // Duyuru yardımcıları
+    const monthNamesShort = [
+      "Oca",
+      "Şub",
+      "Mar",
+      "Nis",
+      "May",
+      "Haz",
+      "Tem",
+      "Ağu",
+      "Eyl",
+      "Eki",
+      "Kas",
+      "Ara",
+    ];
+
+    const defaultAnnouncements = [
+      {
+        title: "Yaz Kamp Başvuruları Açıldı",
+        summary:
+          "Derneğimizin yıllık yaz kampı için başvurular başlamıştır. Genç üyelerimiz için 2 haftalık bir program hazırlandı.",
+        date: "2025-12-07",
+        tags: ["Etkinlik", "Gençlik"],
+      },
+      {
+        title: "Yeni Proje: Eğitim İçin Kaynaklar",
+        summary:
+          "Ücretsiz Python, İngilizce ve dijital pazarlama kursları tüm üyelerimizin başvurusuna açıldı.",
+        date: "2025-12-05",
+        tags: ["Eğitim", "Program"],
+      },
+      {
+        title: "Aralık Ayı Gönüllülük Faaliyetleri",
+        summary:
+          "Çevre temizliği, yaşlı bakım evi ziyareti ve yetim öğrencilere ders anlatma aktiviteleri için kayıtlar başladı.",
+        date: "2025-12-03",
+        tags: ["Gönüllülük", "Sosyal Sorumluluk"],
+      },
+      {
+        title: "Yıl Sonu Genel Kurul Duyurusu",
+        summary:
+          "15 Ocak 2026'da genel kurul yapılacaktır. Tüm üyeler oy kullanma hakkına sahiptir.",
+        date: "2025-11-28",
+        tags: ["Yönetim", "Önemli"],
+      },
+      {
+        title: "Haftalık Sosyalleşme Etkinlikleri",
+        summary:
+          "Her cuma 19:00'da sosyalleşme buluşmaları. Kahve, çay ve sohbet ortamında üyeler bir araya geliyor.",
+        date: "2025-11-20",
+        tags: ["Sosyal", "Düzenli Etkinlik"],
+      },
+      {
+        title: "Yeni Üyelik Kampanyası",
+        summary:
+          "Ekim ayında üye olanlara ilk 3 ay özel avantajlar, öncelikli erişim ve etkinlik davetiyesi.",
+        date: "2025-11-10",
+        tags: ["Üyelik", "Kampanya"],
+      },
+    ];
+
+    const getDayMonth = (ann) => {
+      if (ann?.date) {
+        const d = new Date(ann.date);
+        if (!Number.isNaN(d.getTime())) {
+          return {
+            day: String(d.getDate()).padStart(2, "0"),
+            month: monthNamesShort[d.getMonth()] || "",
+          };
+        }
+      }
+      return {
+        day: ann?.day || "--",
+        month: ann?.month || "",
+      };
+    };
+
+    const formatDateLabel = (ann) => {
+      if (ann?.date) {
+        const d = new Date(ann.date);
+        if (!Number.isNaN(d.getTime())) {
+          return d.toLocaleDateString("tr-TR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          });
+        }
+      }
+      const dm = getDayMonth(ann);
+      return `${dm.day} ${dm.month}`.trim();
+    };
+
+    const normalizeAnnouncement = (ann) => {
+      const safeTags = Array.isArray(ann?.tags)
+        ? ann.tags.filter((t) => t && t.trim())
+        : [];
+      const { day, month } = getDayMonth(ann || {});
+      return {
+        title: ann?.title || "",
+        summary: ann?.summary || ann?.body || "",
+        date: ann?.date || "",
+        tags: safeTags,
+        day,
+        month,
+      };
+    };
+
+    const loadAnnouncements = () => {
+      try {
+        const raw = localStorage.getItem("announcements");
+        const arr = raw ? JSON.parse(raw) : [];
+        const base = Array.isArray(arr) && arr.length > 0 ? arr : defaultAnnouncements;
+        return base.map((a) => normalizeAnnouncement(a)).sort((a, b) => {
+          const da = new Date(a.date || 0).getTime();
+          const db = new Date(b.date || 0).getTime();
+          return db - da;
+        });
+      } catch {
+        return defaultAnnouncements.map((a) => normalizeAnnouncement(a));
+      }
+    };
+
+    const saveAnnouncements = (list) => {
+      localStorage.setItem("announcements", JSON.stringify(list));
+    };
+
     // Navbar ve çıkış butonu yönetimi
     const userLoginBtn = document.getElementById("userLoginBtn");
     const userLogoutBtn = document.getElementById("userLogoutBtn");
@@ -486,58 +612,161 @@
     const pageRoles = {};
     const path = location.pathname.split("/").pop();
 
+    // Duyurular sayfası yönetimi (admin CRUD)
+    if (currentPage === "announcements.html") {
+      const annListEl = document.getElementById("ann-list");
+      const annForm = document.getElementById("annForm");
+      const annNewBtn = document.getElementById("annNewBtn");
+      const annEditIndex = document.getElementById("annEditIndex");
+      const annTitle = document.getElementById("annTitle");
+      const annDate = document.getElementById("annDate");
+      const annBody = document.getElementById("annBody");
+      const annTags = document.getElementById("annTags");
+      const annCancelBtn = document.getElementById("annCancelBtn");
+
+      let announcements = loadAnnouncements();
+
+      const renderAnnPage = () => {
+        if (!annListEl) return;
+        const list = [...announcements].sort((a, b) => {
+          const da = new Date(a.date || 0).getTime();
+          const db = new Date(b.date || 0).getTime();
+          return db - da;
+        });
+
+        annListEl.innerHTML = list
+          .map((ann, idx) => {
+            const tagsHtml = (ann.tags || [])
+              .map((t) => `<span class="tag">${t}</span>`)
+              .join("");
+            const dateLabel = formatDateLabel(ann);
+            const actions = isAdmin(su)
+              ? `<div class="ann-card-actions">
+                  <button class="edit-btn" data-idx="${idx}">Düzenle</button>
+                  <button class="delete-btn" data-idx="${idx}">Sil</button>
+                </div>`
+              : "";
+            return `<article class="announcement-card">
+                <div class="announcement-header">
+                  <h3>${ann.title}</h3>
+                  <span class="date">${dateLabel}</span>
+                </div>
+                <p class="announcement-body">${ann.summary}</p>
+                <div class="announcement-tags">${tagsHtml}</div>
+                ${actions}
+              </article>`;
+          })
+          .join("");
+
+        if (isAdmin(su)) {
+          annListEl.querySelectorAll(".edit-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const idx = Number(btn.dataset.idx);
+              const ann = announcements[idx];
+              if (!ann) return;
+              annEditIndex.value = String(idx);
+              annTitle.value = ann.title || "";
+              annDate.value = ann.date || "";
+              annBody.value = ann.summary || "";
+              annTags.value = (ann.tags || []).join(", ");
+              if (annForm) annForm.style.display = "block";
+              window.scrollTo({ top: annForm.offsetTop - 40, behavior: "smooth" });
+            });
+          });
+
+          annListEl.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const idx = Number(btn.dataset.idx);
+              if (Number.isNaN(idx)) return;
+              const ok = confirm("Bu duyuruyu silmek istiyor musunuz?");
+              if (!ok) return;
+              announcements.splice(idx, 1);
+              saveAnnouncements(announcements);
+              renderAnnPage();
+            });
+          });
+        }
+      };
+
+      const resetForm = () => {
+        annEditIndex.value = "";
+        annTitle.value = "";
+        annDate.value = "";
+        annBody.value = "";
+        annTags.value = "";
+        if (annForm) annForm.style.display = "none";
+      };
+
+      if (annNewBtn && isAdmin(su)) {
+        annNewBtn.addEventListener("click", () => {
+          resetForm();
+          if (annForm) annForm.style.display = "block";
+        });
+      }
+
+      if (annCancelBtn) {
+        annCancelBtn.addEventListener("click", resetForm);
+      }
+
+      if (annForm) {
+        annForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const title = annTitle?.value.trim();
+          const date = annDate?.value || "";
+          const summary = annBody?.value.trim();
+          const tags = (annTags?.value || "")
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
+          if (!title || !date || !summary) {
+            alert("Lütfen başlık, tarih ve açıklama alanlarını doldurun.");
+            return;
+          }
+
+          const { day, month } = getDayMonth({ date });
+          const newAnn = {
+            title,
+            summary,
+            date,
+            tags,
+            day,
+            month,
+          };
+
+          const idx = annEditIndex.value;
+          if (idx !== "" && !Number.isNaN(Number(idx))) {
+            announcements[Number(idx)] = newAnn;
+          } else {
+            announcements.push(newAnn);
+          }
+          saveAnnouncements(announcements);
+          resetForm();
+          renderAnnPage();
+        });
+      }
+
+      renderAnnPage();
+    }
+
     // Duyuru merkezi (yalnızca anasayfa)
     if (currentPage === "" || currentPage === "index.html") {
-      const announcementData = [
-        {
-          day: "07",
-          month: "Ara",
-          title: "Yaz Kamp Başvuruları Açıldı",
-          summary:
-            "Derneğimizin yıllık yaz kampı için başvurular başlamıştır. Genç üyelerimiz için 2 haftalık bir program hazırlandı.",
-          tags: ["Etkinlik", "Gençlik"],
-        },
-        {
-          day: "05",
-          month: "Ara",
-          title: "Yeni Proje: Eğitim İçin Kaynaklar",
-          summary:
-            "Ücretsiz Python, İngilizce ve dijital pazarlama kursları tüm üyelerimizin başvurusuna açıldı.",
-          tags: ["Eğitim", "Program"],
-        },
-        {
-          day: "03",
-          month: "Ara",
-          title: "Aralık Ayı Gönüllülük Faaliyetleri",
-          summary:
-            "Çevre temizliği, yaşlı bakım evi ziyareti ve yetim öğrencilere ders anlatma aktiviteleri için kayıtlar başladı.",
-          tags: ["Gönüllülük", "Sosyal Sorumluluk"],
-        },
-        {
-          day: "28",
-          month: "Kas",
-          title: "Yıl Sonu Genel Kurul Duyurusu",
-          summary:
-            "15 Ocak 2026'da genel kurul yapılacaktır. Tüm üyeler oy kullanma hakkına sahiptir.",
-          tags: ["Yönetim", "Önemli"],
-        },
-        {
-          day: "20",
-          month: "Kas",
-          title: "Haftalık Sosyalleşme Etkinlikleri",
-          summary:
-            "Her cuma 19:00'da sosyalleşme buluşmaları. Kahve, çay ve sohbet ortamında üyeler bir araya geliyor.",
-          tags: ["Sosyal", "Düzenli Etkinlik"],
-        },
-        {
-          day: "10",
-          month: "Kas",
-          title: "Yeni Üyelik Kampanyası",
-          summary:
-            "Ekim ayında üye olanlara ilk 3 ay özel avantajlar, öncelikli erişim ve etkinlik davetiyesi.",
-          tags: ["Üyelik", "Kampanya"],
-        },
-      ];
+      const announcementData = loadAnnouncements()
+        .sort((a, b) => {
+          const da = new Date(a.date || 0).getTime();
+          const db = new Date(b.date || 0).getTime();
+          return db - da;
+        })
+        .slice(0, 8)
+        .map((a) => {
+          const dm = getDayMonth(a);
+          return {
+            day: dm.day,
+            month: dm.month,
+            title: a.title,
+            summary: a.summary,
+            tags: a.tags || [],
+          };
+        });
 
       const center = document.getElementById("announcement-center");
       const listEl = document.getElementById("announcement-list");
@@ -551,24 +780,24 @@
 
         const getItemMarkup = (item) => {
           const tagsHtml = (item.tags || [])
-            .map((t) => `<span class="ann-tag">${t}</span>`)
+            .map((t) => `<span class=\"ann-tag\">${t}</span>`)
             .join("");
-          return `<div class="announcement-item">
-              <div class="ann-date">
-                <div class="day">${item.day}</div>
-                <div class="month">${item.month}</div>
-              </div>
-              <div class="ann-content">
-                <h4>${item.title}</h4>
-                <p>${item.summary}</p>
-                <div class="ann-tags">${tagsHtml}</div>
-              </div>
+          return `<div class=\"announcement-item\">\
+              <div class=\"ann-date\">\
+                <div class=\"day\">${item.day}</div>\
+                <div class=\"month\">${item.month}</div>\
+              </div>\
+              <div class=\"ann-content\">\
+                <h4>${item.title}</h4>\
+                <p>${item.summary}</p>\
+                <div class=\"ann-tags\">${tagsHtml}</div>\
+              </div>\
             </div>`;
         };
 
         const buildList = () => {
           if (announcementData.length === 0) {
-            listEl.innerHTML = "<div class=\"announcement-item\"><div class=\"ann-content\"><h4>Henüz duyuru yok</h4><p>Daha sonra tekrar kontrol edin.</p></div></div>";
+            listEl.innerHTML = "<div class=\\\"announcement-item\\\"><div class=\\\"ann-content\\\"><h4>Henüz duyuru yok</h4><p>Daha sonra tekrar kontrol edin.</p></div></div>";
             itemHeight = listEl.firstElementChild?.getBoundingClientRect().height || 64;
             return;
           }
@@ -587,8 +816,7 @@
 
         const goNext = () => {
           if (listEl.children.length <= 1 || itemHeight === 0) return;
-          listEl.style.transition = "transform 0.55s ease";
-            listEl.style.transition = "transform 0.45s ease";
+          listEl.style.transition = "transform 0.45s ease";
           listEl.style.transform = `translateY(-${itemHeight}px)`;
 
           const handle = () => {
@@ -597,24 +825,10 @@
             listEl.style.transition = "none";
             listEl.style.transform = "translateY(0)";
             requestAnimationFrame(() => {
-              listEl.style.transition = "transform 0.55s ease";
-                listEl.style.transition = "transform 0.45s ease";
+              listEl.style.transition = "transform 0.45s ease";
             });
           };
           listEl.addEventListener("transitionend", handle);
-        };
-
-        const goPrev = () => {
-          if (listEl.children.length <= 1 || itemHeight === 0) return;
-          const last = listEl.lastElementChild;
-          if (!last) return;
-          listEl.style.transition = "none";
-          listEl.insertBefore(last, listEl.firstElementChild);
-          listEl.style.transform = `translateY(-${itemHeight}px)`;
-          requestAnimationFrame(() => {
-            listEl.style.transition = "transform 0.45s ease";
-            listEl.style.transform = "translateY(0)";
-          });
         };
 
         const startAuto = () => {

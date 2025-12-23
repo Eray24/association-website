@@ -32,104 +32,37 @@
     </section>
 
     <section class="announcements-content">
-      <div class="announcements-list">
-        <article class="announcement-card">
-          <div class="announcement-header">
-            <h3>Yaz Kamp Başvuruları Açıldı</h3>
-            <span class="date">7 Aralık 2025</span>
-          </div>
-          <p class="announcement-body">
-            Derneğimizin yıllık yaz kampı için başvurular başlamıştır. Genç
-            üyelerimiz için 2 haftalık bir program hazırladık. İlgilenenlerin
-            hemen başvuru yapması gerekmektedir.
-          </p>
-          <div class="announcement-tags">
-            <span class="tag">Etkinlik</span>
-            <span class="tag">Gençlik</span>
-          </div>
-        </article>
-
-        <article class="announcement-card">
-          <div class="announcement-header">
-            <h3>Yeni Proje: Eğitim İçin Kaynaklar</h3>
-            <span class="date">5 Aralık 2025</span>
-          </div>
-          <p class="announcement-body">
-            Toplum üyelerine ücretsiz eğitim kaynakları sağlamaya başladık.
-            Python programlama, İngilizce ve dijital pazarlama kursları
-            mevcuttur. Tüm üyeler başvuru yapabilir.
-          </p>
-          <div class="announcement-tags">
-            <span class="tag">Eğitim</span>
-            <span class="tag">Program</span>
-          </div>
-        </article>
-
-        <article class="announcement-card">
-          <div class="announcement-header">
-            <h3>Aralık Ayı Gönüllülük Faaliyetleri</h3>
-            <span class="date">3 Aralık 2025</span>
-          </div>
-          <p class="announcement-body">
-            Bu ay üç farklı gönüllülük projesi yapılacaktır. Çevre temizliği,
-            yaşlı bakım evi ziyareti ve yetim öğrencilere ders anlatma
-            aktiviteleri planlanmıştır. Katılmak isteyen üyeler lütfen
-            kaydolsun.
-          </p>
-          <div class="announcement-tags">
-            <span class="tag">Gönüllülük</span>
-            <span class="tag">Sosyal Sorumluluk</span>
-          </div>
-        </article>
-
-        <article class="announcement-card">
-          <div class="announcement-header">
-            <h3>Yıl Sonu Genel Kurul Duyurusu</h3>
-            <span class="date">28 Kasım 2025</span>
-          </div>
-          <p class="announcement-body">
-            Derneğimizin yıl sonu genel kurulu 15 Ocak 2026'da yapılacaktır. Tüm
-            üyelerimiz oy kullanma hakkına sahiptir. Yönetim kurulunun raporları
-            sunulacak ve yeni projeler tartışılacaktır.
-          </p>
-          <div class="announcement-tags">
-            <span class="tag">Yönetim</span>
-            <span class="tag">Önemli</span>
-          </div>
-        </article>
-
-        <article class="announcement-card">
-          <div class="announcement-header">
-            <h3>Haftalık Sosyalleşme Etkinlikleri Başladı</h3>
-            <span class="date">20 Kasım 2025</span>
-          </div>
-          <p class="announcement-body">
-            Her cuma akşamı saat 19:00'da sosyalleşme etkinlikleri yapılacaktır.
-            Kahve, çay ve sohbet ortamında üyelerimiz bir araya gelecek. Herkes
-            katılmaya davetlidir.
-          </p>
-          <div class="announcement-tags">
-            <span class="tag">Sosyal</span>
-            <span class="tag">Düzenli Etkinlik</span>
-          </div>
-        </article>
-
-        <article class="announcement-card">
-          <div class="announcement-header">
-            <h3>Yeni Üyelik Kampanyası: Ekim Ayında Katılın!</h3>
-            <span class="date">10 Kasım 2025</span>
-          </div>
-          <p class="announcement-body">
-            Ekim ayında üye olan herkes ilk 3 ayında özel faydalanacaktır.
-            Networking olanakları, eğitim programlarına öncelikli erişim ve özel
-            etkinliklere davetiye sunulmaktadır.
-          </p>
-          <div class="announcement-tags">
-            <span class="tag">Üyelik</span>
-            <span class="tag">Kampanya</span>
-          </div>
-        </article>
+      <div class="ann-admin-bar" data-admin-only>
+        <button id="annNewBtn" class="btn-green">Yeni Duyuru Ekle</button>
       </div>
+
+      <form id="annForm" class="ann-form" data-admin-only style="display:none;">
+        <input type="hidden" id="annEditIndex" value="" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="annTitle">Başlık</label>
+            <input type="text" id="annTitle" placeholder="Duyuru başlığı" required />
+          </div>
+          <div class="form-group">
+            <label for="annDate">Tarih</label>
+            <input type="date" id="annDate" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="annBody">Açıklama</label>
+          <textarea id="annBody" rows="3" placeholder="Kısa açıklama" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="annTags">Etiketler (virgülle ayırın)</label>
+          <input type="text" id="annTags" placeholder="Örn: Eğitim, Program" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-green" id="annSaveBtn">Kaydet</button>
+          <button type="button" class="btn-secondary" id="annCancelBtn">İptal</button>
+        </div>
+      </form>
+
+      <div class="announcements-list" id="ann-list"></div>
     </section>
 
     <footer class="site-footer">
