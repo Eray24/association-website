@@ -59,6 +59,36 @@
         </div>
       </div>
 
+      <div class="donation-amounts" aria-label="Bağış tutarı seçimi">
+        <h3>Bağış Tutarı</h3>
+        <p class="amount-subtext">Hazır tutarlardan birini seçin veya kendi tutarınızı girin.</p>
+        <div class="amount-card-grid">
+          <button type="button" class="amount-card active" data-amount="50">
+            <span class="amount-label">Destek</span>
+            <span class="amount-value">₺50</span>
+            <span class="amount-cta">Seç</span>
+          </button>
+          <button type="button" class="amount-card" data-amount="100">
+            <span class="amount-label">Güç</span>
+            <span class="amount-value">₺100</span>
+            <span class="amount-cta">Seç</span>
+          </button>
+          <button type="button" class="amount-card" data-amount="250">
+            <span class="amount-label">Dayanışma</span>
+            <span class="amount-value">₺250</span>
+            <span class="amount-cta">Seç</span>
+          </button>
+          <div class="amount-card custom-card">
+            <span class="amount-label">İstediğin Miktar</span>
+            <label class="sr-only" for="customAmount">İstediğin miktarı gir</label>
+            <div class="amount-custom-input">
+              <span class="currency">₺</span>
+              <input type="tel" id="customAmount" inputmode="numeric" placeholder="Örn. 500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <form class="donate-form" id="donateForm" autocomplete="off">
         <div class="form-row">
           <div class="form-group">
@@ -90,7 +120,37 @@
         </div>
       </form>
     </section>
+ 
+    <section class="donation-inline">
+    <div class="donation-box donation-box-wide">
+        <div class="donation-item">
+          <strong>Banka:</strong> Türkiye Cumhuriyeti Ziraat Bankası
+        </div>
+        <div class="donation-item">
+          <strong>IBAN:</strong> TR33 0001 2009 7610 0012 3456 78
+        </div>
+        <div class="donation-item">
+          <strong>Alıcı Adı:</strong> Ufuk Derneği
+        </div>
 
+        <div class="donation-section-title">Kripto Adresleri:</div>
+
+        <div class="donation-item crypto">
+          <strong>Bitcoin (BTC):</strong> <span class="crypto-addr">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span>
+        </div>
+        <div class="donation-item crypto">
+          <strong>Ethereum (ETH):</strong> <span class="crypto-addr">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</span>
+        </div>
+        <div class="donation-item crypto">
+          <strong>TRX / TRC20:</strong> <span class="crypto-addr">TXapV4386dKd9cOzq46Es1jh92dQQisAq6</span>
+        </div>
+
+        <div class="donation-item crypto" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+           <strong>Western Union:</strong> <span class="crypto-addr">274 581 9032</span>
+        </div>
+
+      </div>
+    </section>
     <footer class="site-footer">
       <div class="footer-top">
         <div class="footer-brand">

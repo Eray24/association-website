@@ -23,6 +23,126 @@
   gap: 24px;
 }
 
+.donation-inline {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+
+.donation-box-wide {
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Bağış sayfası: banka/kripto kutusu hizalama */
+.donation-inline .donation-box {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.donation-amounts {
+  max-width: 900px;
+  margin: 0 auto -6px;
+  padding: 0 20px;
+}
+.donation-amounts h3 {
+  margin: 0 0 4px;
+  color: #0f172a;
+  font-size: 20px;
+}
+.donation-amounts .amount-subtext {
+  margin: 0 0 12px;
+  color: #475569;
+  font-size: 14px;
+}
+.amount-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+.amount-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f172a 0%, #111827 45%, #0ea5e9 100%);
+  color: #ffffff;
+  padding: 14px 12px 12px;
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(2,6,23,0.12);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  min-height: 170px;
+  width: 100%;
+}
+.amount-card .amount-label { font-weight: 700; opacity: 0.9; }
+.amount-card .amount-value { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+.amount-card .amount-cta {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: #e0f2fe;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.amount-card:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(2,6,23,0.16); }
+.amount-card.active { border-color: #22c55e; box-shadow: 0 18px 32px rgba(34,197,94,0.18); }
+.amount-card.active .amount-cta { background: rgba(34,197,94,0.18); color: #dcfce7; border-color: rgba(34,197,94,0.32); }
+
+.amount-card.custom-card {
+  background: #ffffff;
+  color: #0f172a;
+  border-style: dashed;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 24px rgba(2,6,23,0.06);
+  grid-template-rows: auto auto;
+  justify-items: stretch;
+  align-content: center;
+  gap: 12px;
+  padding: 16px 14px;
+}
+.amount-custom-input {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.amount-custom-input .currency { font-weight: 800; color: #0f172a; }
+.amount-custom-input input {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+  color: #0f172a;
+  width: 100%;
+  min-width: 0;
+}
+.amount-card.custom-card:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(2,6,23,0.12); }
+
+@media (max-width: 768px) {
+  .donation-amounts { padding: 0 16px; }
+  .amount-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .card-scene {
   display: flex;
   justify-content: center;
@@ -163,6 +283,20 @@ body.dark .donate-hero p { color: #cbd5e1; }
 body.dark .donate-form { background: #0f172a; border-color: #1f2937; }
 body.dark .donate-form label { color: #e5e7eb; }
 body.dark .donate-form input { background: #111827; color: #e5e7eb; border-color: #1f2937; }
+body.dark .donation-amounts h3 { color: #e5e7eb; }
+body.dark .donation-amounts .amount-subtext { color: #cbd5e1; }
+body.dark .amount-card.custom-card {
+  background: #0f172a;
+  color: #e5e7eb;
+  border-color: #1f2937;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+}
+body.dark .amount-custom-input {
+  background: #111827;
+  border-color: #1f2937;
+}
+body.dark .amount-custom-input .currency,
+body.dark .amount-custom-input input { color: #e5e7eb; }
 * {
   box-sizing: border-box;
 }

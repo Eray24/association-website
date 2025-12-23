@@ -1383,6 +1383,11 @@
       const mInput = document.getElementById('cardExpMonth');
       const yInput = document.getElementById('cardExpYear');
       const cvvInput = document.getElementById('cardCvv');
+      const amountButtons = Array.from(document.querySelectorAll('.amount-card[data-amount]'));
+      const customAmountInput = document.getElementById('customAmount');
+      const customCard = document.querySelector('.amount-card.custom-card');
+      const donateForm = document.getElementById('donateForm');
+      let selectedAmount = amountButtons[0]?.dataset.amount || '';
 
       const nameDisplay = document.getElementById('cardNameDisplay');
       const numDisplay = document.getElementById('cardNumDisplay');
@@ -1392,6 +1397,40 @@
       const formatNum = (v) => v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
       const clampNum = (v, max) => v.replace(/\D/g, '').slice(0, max);
       const pad2 = (v) => (v || '').replace(/\D/g, '').slice(0, 2).padStart(2, '0');
+
+      const setSelectedAmount = (val, isCustom = false) => {
+        selectedAmount = val;
+        if (donateForm) donateForm.dataset.amount = val;
+        amountButtons.forEach((btn) => {
+          btn.classList.toggle('active', !isCustom && btn.dataset.amount === val);
+        });
+        if (customCard) {
+          customCard.classList.toggle('active', isCustom);
+        }
+      };
+
+      amountButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const amt = btn.dataset.amount || '';
+          setSelectedAmount(amt, false);
+          if (customAmountInput) customAmountInput.value = amt;
+        });
+      });
+
+      if (customAmountInput) {
+        const normalizeAmount = (v) => (v || '').replace(/[^0-9]/g, '').slice(0, 7);
+        customAmountInput.addEventListener('input', () => {
+          const clean = normalizeAmount(customAmountInput.value);
+          customAmountInput.value = clean;
+          setSelectedAmount(clean, true);
+        });
+        customAmountInput.addEventListener('focus', () => {
+          const clean = normalizeAmount(customAmountInput.value);
+          setSelectedAmount(clean, true);
+        });
+      }
+
+      setSelectedAmount(selectedAmount, false);
 
       const updateFront = () => {
         const nm = (nameInput.value || '').trim();
