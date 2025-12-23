@@ -640,6 +640,9 @@
               .map((t) => `<span class="tag">${t}</span>`)
               .join("");
             const dateLabel = formatDateLabel(ann);
+            const thumbnailHtml = ann.image
+              ? `<img src="${ann.image}" alt="${ann.title}" class="announcement-thumbnail" />`
+              : `<div class="announcement-thumbnail placeholder">📰</div>`;
             const actions = isAdmin(su)
               ? `<div class="ann-card-actions">
                   <button class="edit-btn" data-idx="${idx}">Düzenle</button>
@@ -647,13 +650,16 @@
                 </div>`
               : "";
             return `<article class="announcement-card">
-                <div class="announcement-header">
-                  <h3>${ann.title}</h3>
-                  <span class="date">${dateLabel}</span>
+                ${thumbnailHtml}
+                <div>
+                  <div class="announcement-header">
+                    <h3>${ann.title}</h3>
+                    <span class="date">${dateLabel}</span>
+                  </div>
+                  <p class="announcement-body">${ann.summary}</p>
+                  <div class="announcement-tags">${tagsHtml}</div>
+                  ${actions}
                 </div>
-                <p class="announcement-body">${ann.summary}</p>
-                <div class="announcement-tags">${tagsHtml}</div>
-                ${actions}
               </article>`;
           })
           .join("");
@@ -668,6 +674,7 @@
               annTitle.value = ann.title || "";
               annDate.value = ann.date || "";
               annBody.value = ann.summary || "";
+              document.getElementById("annImage").value = ann.image || "";
               annTags.value = (ann.tags || []).join(", ");
               if (annForm) annForm.style.display = "block";
               window.scrollTo({ top: annForm.offsetTop - 40, behavior: "smooth" });
@@ -714,6 +721,7 @@
           const title = annTitle?.value.trim();
           const date = annDate?.value || "";
           const summary = annBody?.value.trim();
+          const image = document.getElementById("annImage")?.value.trim() || "";
           const tags = (annTags?.value || "")
             .split(",")
             .map((t) => t.trim())
@@ -728,6 +736,7 @@
             title,
             summary,
             date,
+            image,
             tags,
             day,
             month,
@@ -778,6 +787,7 @@
             month: dm.month,
             title: a.title,
             summary: a.summary,
+            image: a.image || "",
             tags: a.tags || [],
           };
         });
@@ -796,7 +806,11 @@
           const tagsHtml = (item.tags || [])
             .map((t) => `<span class=\"ann-tag\">${t}</span>`)
             .join("");
+          const thumbnailHtml = item.image
+            ? `<img src="${item.image}" alt="${item.title}" class=\"ann-thumbnail\" />`
+            : `<div class=\"ann-thumbnail placeholder\">📰</div>`;
           return `<div class=\"announcement-item\">\
+              ${thumbnailHtml}\
               <div class=\"ann-date\">\
                 <div class=\"day\">${item.day}</div>\
                 <div class=\"month\">${item.month}</div>\
