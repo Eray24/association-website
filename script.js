@@ -934,6 +934,15 @@
         let itemHeight = 0;
         let autoTimer = null;
 
+        const updateViewportHeight = () => {
+          if (!viewport) return;
+          const h = computeItemHeight();
+          if (h > 0) {
+            // 3 duyuru görünecek şekilde yüksekliği sabitle
+            viewport.style.height = `${Math.round(h * 3)}px`;
+          }
+        };
+
         const getItemMarkup = (item) => {
           const tagsHtml = (item.tags || [])
             .map((t) => `<span class=\"ann-tag\">${t}</span>`)
@@ -974,6 +983,7 @@
 
           requestAnimationFrame(() => {
             itemHeight = computeItemHeight();
+            updateViewportHeight();
           });
         };
 
@@ -989,6 +999,7 @@
             listEl.style.transition = "none";
             listEl.style.transform = "translateY(0)";
             itemHeight = computeItemHeight();
+            updateViewportHeight();
             requestAnimationFrame(() => {
               listEl.style.transition = "transform 0.45s ease";
             });
@@ -1028,6 +1039,12 @@
 
         buildList();
         startAuto();
+
+        // Resize olduğunda öğe yüksekliği değişebilir
+        window.addEventListener("resize", () => {
+          itemHeight = computeItemHeight();
+          updateViewportHeight();
+        });
       }
     }
 
@@ -1142,7 +1159,11 @@
               <div class="search-category-items">`;
             items.forEach(item => {
               const icon = category === 'Duyurular' ? '📢' : category === 'Faaliyetlerimiz' ? '🎯' : '📄';
-              html += `<a href="${item.url}" class="search-result-item">
+              const hashIndex = item.url.indexOf('#');
+              const base = hashIndex >= 0 ? item.url.slice(0, hashIndex) : item.url;
+              const hash = hashIndex >= 0 ? item.url.slice(hashIndex) : '';
+              const href = `${base}${base.includes('?') ? '&' : '?'}q=${encodeURIComponent(query)}${hash}`;
+              html += `<a href="${href}" class="search-result-item">
                 <span class="search-result-icon">${icon}</span>
                 <div class="search-result-content">
                   <div class="search-result-title">${item.title}</div>
@@ -1176,6 +1197,132 @@
           searchResultsDiv.style.display = 'none';
         }
       });
+    }
+    
+    // Sayfa açılışında ?q=... varsa: otomatik highlight ve ilk eşleşmeye kaydır
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = (urlParams.get('q') || '').trim();
+    if (initialQuery.length > 0) {
+      const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const SKIP_SELECTOR = 'script, style, noscript, header, nav, footer, .navbar, .search-results, .site-footer, .announcement-controls';
+
+      // Yardımcı: Belirli bir kökte highlight uygula
+      const highlightWithin = (root, query) => {
+        const regex = new RegExp(escapeRegExp(query), 'gi');
+        let highlighted = 0;
+        const walk = (node) => {
+          if (node.nodeType === 1) {
+            const el = node;
+            if (el.matches && el.matches(SKIP_SELECTOR)) return;
+            const cs = window.getComputedStyle(el);
+            if (cs && (cs.visibility === 'hidden' || cs.display === 'none')) return;
+            Array.from(el.childNodes).forEach(walk);
+          } else if (node.nodeType === 3) {
+            const text = node.nodeValue;
+            if (!text || !regex.test(text)) return;
+            regex.lastIndex = 0;
+            const frag = document.createDocumentFragment();
+            let lastIndex = 0;
+            let m;
+            while ((m = regex.exec(text)) !== null) {
+              const before = text.slice(lastIndex, m.index);
+              if (before) frag.appendChild(document.createTextNode(before));
+              const mark = document.createElement('mark');
+              mark.className = 'search-highlight';
+              mark.textContent = m[0];
+              frag.appendChild(mark);
+              highlighted++;
+              lastIndex = regex.lastIndex;
+            }
+            const after = text.slice(lastIndex);
+            if (after) frag.appendChild(document.createTextNode(after));
+            node.parentNode.replaceChild(frag, node);
+          }
+        };
+        walk(root);
+        return highlighted;
+      };
+
+      // Navigasyon UI
+      let navState = { index: 0, marks: [] };
+      const collectMarks = () => Array.from(document.querySelectorAll('mark.search-highlight'));
+      const focusMark = (i) => {
+        if (!navState.marks.length) return;
+        navState.index = (i + navState.marks.length) % navState.marks.length;
+        navState.marks.forEach(m => m.classList.remove('active'));
+        const el = navState.marks[navState.index];
+        if (el) {
+          el.classList.add('active');
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        const counter = document.getElementById('search-nav-counter');
+        if (counter) counter.textContent = `${navState.index + 1}/${navState.marks.length}`;
+      };
+      const ensureNavUI = () => {
+        if (document.getElementById('search-nav')) return;
+        const nav = document.createElement('div');
+        nav.id = 'search-nav';
+        nav.className = 'search-nav';
+        nav.innerHTML = `
+          <button type="button" id="search-prev" aria-label="Önceki">◀</button>
+          <span id="search-nav-counter">0/0</span>
+          <button type="button" id="search-next" aria-label="Sonraki">▶</button>
+        `;
+        document.body.appendChild(nav);
+        document.getElementById('search-prev').addEventListener('click', () => focusMark(navState.index - 1));
+        document.getElementById('search-next').addEventListener('click', () => focusMark(navState.index + 1));
+      };
+
+      const afterHighlighted = () => {
+        navState.marks = collectMarks();
+        if (navState.marks.length) {
+          ensureNavUI();
+          focusMark(0);
+          // Eğer ilk eşleşme duyuru/aktivite kartının içindeyse modalı aç
+          const first = navState.marks[0];
+          const annCard = first.closest && first.closest('.announcement-card');
+          const actCard = first.closest && first.closest('.activity-card');
+          if (annCard) {
+            annCard.click();
+            // Modal içerik yüklendikten sonra modal içinde de highlight uygula
+            setTimeout(() => {
+              const modal = document.getElementById('announcementModal');
+              if (modal) {
+                highlightWithin(modal, initialQuery);
+                navState.marks = collectMarks();
+                focusMark(navState.marks.findIndex(m => modal.contains(m)) || 0);
+              }
+            }, 200);
+          } else if (actCard) {
+            actCard.click();
+            setTimeout(() => {
+              const modal = document.getElementById('activityModal');
+              if (modal) {
+                highlightWithin(modal, initialQuery);
+                navState.marks = collectMarks();
+                focusMark(navState.marks.findIndex(m => modal.contains(m)) || 0);
+              }
+            }, 200);
+          }
+        }
+      };
+
+      const tryHighlight = (attemptsLeft = 12) => {
+        let highlighted = 0;
+        const containers = document.querySelectorAll('main, .announcement-center, .about-content, .activities, .container, section');
+        if (containers.length > 0) {
+          containers.forEach(c => highlighted += highlightWithin(c, initialQuery));
+        } else {
+          highlighted += highlightWithin(document.body, initialQuery);
+        }
+        if (highlighted > 0) {
+          afterHighlighted();
+        } else if (attemptsLeft > 0) {
+          setTimeout(() => tryHighlight(attemptsLeft - 1), 200);
+        }
+      };
+
+      setTimeout(() => tryHighlight(), 50);
     }
   });
 })();
