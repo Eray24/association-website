@@ -3045,3 +3045,19 @@ body.dark .footer-social-link[aria-label="Instagram"] {
 body.dark .footer-social-link[aria-label="Instagram"]:hover {
   border-color: #D62976;
 }
+
+/* Admin Panel Dark Mode */
+body.dark [data-admin-only] {
+  background: #1f2937 !important;
+  border: 1px solid #374151 !important;
+  color: #10b981 !important;
+}
+
+/* Admin Team Manager */
+#admin-team-manager {
+  background: #f3f4f6 !important;
+}
+
+body.dark #admin-team-manager {
+  background: #1f2937 !important;
+}
