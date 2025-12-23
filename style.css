@@ -1354,6 +1354,281 @@ body.dark .btn-green:hover {
   background-color: #16a34a;
 }
 
+/* Duyuru Merkezi */
+.announcement-center {
+  max-width: 1180px;
+  margin: 60px auto;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.announcement-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.announcement-icon {
+  font-size: 28px;
+}
+
+.announcement-eyebrow {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: #16a34a;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.announcement-title h2 {
+  margin: 2px 0 0 0;
+  font-size: 26px;
+  color: #0f172a;
+}
+
+.announcement-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.announcement-filters.single {
+  justify-content: flex-start;
+}
+
+.announcement-filter {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #0f172a;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.announcement-filter.active {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.25);
+}
+
+.announcement-filter:hover {
+  border-color: #16a34a;
+}
+
+.announcement-body {
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.announcement-viewport {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
+}
+
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.announcement-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  transition: background 0.2s ease;
+}
+
+.announcement-item:last-child {
+  border-bottom: none;
+}
+
+.ann-date {
+  display: grid;
+  place-items: center;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.ann-date .day {
+  font-size: 20px;
+}
+
+.ann-date .month {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.ann-content h4 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.ann-content p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.ann-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.ann-tag {
+  background: #ecfeff;
+  color: #0ea5e9;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.announcement-item:hover {
+  background: #f8fafc;
+}
+
+.announcement-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.ann-btn {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 50px;
+  font-weight: 800;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+
+.ann-btn:hover {
+  border-color: #16a34a;
+  color: #16a34a;
+  box-shadow: 0 10px 18px rgba(22, 163, 74, 0.16);
+}
+
+@media (max-width: 768px) {
+  .announcement-center {
+    padding: 20px;
+  }
+
+  .announcement-body {
+    grid-template-columns: 1fr;
+  }
+
+  .announcement-controls {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .ann-btn {
+    width: 56px;
+  }
+}
+
+/* Duyuru Merkezi - Dark Mode */
+body.dark .announcement-center {
+  background: #0f172a;
+  border-color: #1f2937;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+
+body.dark .announcement-viewport {
+  border-color: #1f2937;
+  background: linear-gradient(135deg, #0b1628, #0f172a);
+}
+
+body.dark .announcement-title h2,
+body.dark .ann-content h4 {
+  color: #e5e7eb;
+}
+
+body.dark .announcement-filter {
+  border-color: #1f2937;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+body.dark .announcement-filter:hover {
+  border-color: #22c55e;
+}
+
+body.dark .announcement-filter.active {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #0b1628;
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.25);
+}
+
+body.dark .announcement-item {
+  background: #0f172a;
+  border-color: #1f2937;
+}
+
+body.dark .announcement-item:hover {
+  background: #111827;
+}
+
+body.dark .ann-content p {
+  color: #cbd5e1;
+}
+
+body.dark .ann-tag {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+}
+
+body.dark .ann-date {
+  background: rgba(251, 191, 36, 0.18);
+  color: #facc15;
+}
+
+body.dark .ann-btn {
+  background: #0f172a;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark .ann-btn:hover {
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
 /* GLOBAL FOOTER */
 .site-footer {
   margin-top: 60px;

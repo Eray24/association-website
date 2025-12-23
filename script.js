@@ -485,6 +485,173 @@
     // Korunan sayfalar ve rol kontrolleri
     const pageRoles = {};
     const path = location.pathname.split("/").pop();
+
+    // Duyuru merkezi (yalnızca anasayfa)
+    if (currentPage === "" || currentPage === "index.html") {
+      const announcementData = [
+        {
+          day: "07",
+          month: "Ara",
+          title: "Yaz Kamp Başvuruları Açıldı",
+          summary:
+            "Derneğimizin yıllık yaz kampı için başvurular başlamıştır. Genç üyelerimiz için 2 haftalık bir program hazırlandı.",
+          tags: ["Etkinlik", "Gençlik"],
+        },
+        {
+          day: "05",
+          month: "Ara",
+          title: "Yeni Proje: Eğitim İçin Kaynaklar",
+          summary:
+            "Ücretsiz Python, İngilizce ve dijital pazarlama kursları tüm üyelerimizin başvurusuna açıldı.",
+          tags: ["Eğitim", "Program"],
+        },
+        {
+          day: "03",
+          month: "Ara",
+          title: "Aralık Ayı Gönüllülük Faaliyetleri",
+          summary:
+            "Çevre temizliği, yaşlı bakım evi ziyareti ve yetim öğrencilere ders anlatma aktiviteleri için kayıtlar başladı.",
+          tags: ["Gönüllülük", "Sosyal Sorumluluk"],
+        },
+        {
+          day: "28",
+          month: "Kas",
+          title: "Yıl Sonu Genel Kurul Duyurusu",
+          summary:
+            "15 Ocak 2026'da genel kurul yapılacaktır. Tüm üyeler oy kullanma hakkına sahiptir.",
+          tags: ["Yönetim", "Önemli"],
+        },
+        {
+          day: "20",
+          month: "Kas",
+          title: "Haftalık Sosyalleşme Etkinlikleri",
+          summary:
+            "Her cuma 19:00'da sosyalleşme buluşmaları. Kahve, çay ve sohbet ortamında üyeler bir araya geliyor.",
+          tags: ["Sosyal", "Düzenli Etkinlik"],
+        },
+        {
+          day: "10",
+          month: "Kas",
+          title: "Yeni Üyelik Kampanyası",
+          summary:
+            "Ekim ayında üye olanlara ilk 3 ay özel avantajlar, öncelikli erişim ve etkinlik davetiyesi.",
+          tags: ["Üyelik", "Kampanya"],
+        },
+      ];
+
+      const center = document.getElementById("announcement-center");
+      const listEl = document.getElementById("announcement-list");
+      if (center && listEl) {
+        const upBtn = document.getElementById("ann-up");
+        const downBtn = document.getElementById("ann-down");
+        const viewport = center.querySelector(".announcement-viewport");
+
+        let itemHeight = 0;
+        let autoTimer = null;
+
+        const getItemMarkup = (item) => {
+          const tagsHtml = (item.tags || [])
+            .map((t) => `<span class="ann-tag">${t}</span>`)
+            .join("");
+          return `<div class="announcement-item">
+              <div class="ann-date">
+                <div class="day">${item.day}</div>
+                <div class="month">${item.month}</div>
+              </div>
+              <div class="ann-content">
+                <h4>${item.title}</h4>
+                <p>${item.summary}</p>
+                <div class="ann-tags">${tagsHtml}</div>
+              </div>
+            </div>`;
+        };
+
+        const buildList = () => {
+          if (announcementData.length === 0) {
+            listEl.innerHTML = "<div class=\"announcement-item\"><div class=\"ann-content\"><h4>Henüz duyuru yok</h4><p>Daha sonra tekrar kontrol edin.</p></div></div>";
+            itemHeight = listEl.firstElementChild?.getBoundingClientRect().height || 64;
+            return;
+          }
+
+          listEl.innerHTML = announcementData.map(getItemMarkup).join("");
+
+          requestAnimationFrame(() => {
+            const first = listEl.querySelector(".announcement-item");
+            if (first) {
+              const style = getComputedStyle(first);
+              const mb = parseFloat(style.marginBottom || "0");
+              itemHeight = first.getBoundingClientRect().height + mb;
+            }
+          });
+        };
+
+        const goNext = () => {
+          if (listEl.children.length <= 1 || itemHeight === 0) return;
+          listEl.style.transition = "transform 0.55s ease";
+            listEl.style.transition = "transform 0.45s ease";
+          listEl.style.transform = `translateY(-${itemHeight}px)`;
+
+          const handle = () => {
+            listEl.removeEventListener("transitionend", handle);
+            listEl.appendChild(listEl.firstElementChild);
+            listEl.style.transition = "none";
+            listEl.style.transform = "translateY(0)";
+            requestAnimationFrame(() => {
+              listEl.style.transition = "transform 0.55s ease";
+                listEl.style.transition = "transform 0.45s ease";
+            });
+          };
+          listEl.addEventListener("transitionend", handle);
+        };
+
+        const goPrev = () => {
+          if (listEl.children.length <= 1 || itemHeight === 0) return;
+          const last = listEl.lastElementChild;
+          if (!last) return;
+          listEl.style.transition = "none";
+          listEl.insertBefore(last, listEl.firstElementChild);
+          listEl.style.transform = `translateY(-${itemHeight}px)`;
+          requestAnimationFrame(() => {
+            listEl.style.transition = "transform 0.45s ease";
+            listEl.style.transform = "translateY(0)";
+          });
+        };
+
+        const startAuto = () => {
+          clearInterval(autoTimer);
+          autoTimer = setInterval(() => {
+            goNext();
+          }, 2600);
+        };
+
+        const pauseAuto = () => {
+          clearInterval(autoTimer);
+        };
+
+        if (upBtn) {
+          upBtn.addEventListener("click", () => {
+            goNext();
+            startAuto();
+          });
+        }
+
+        if (downBtn) {
+          downBtn.addEventListener("click", () => {
+            goNext();
+            startAuto();
+          });
+        }
+
+        if (viewport) {
+          viewport.addEventListener("mouseenter", pauseAuto);
+          viewport.addEventListener("mouseleave", startAuto);
+        }
+
+        buildList();
+        startAuto();
+      }
+    }
+
     if (pageRoles[path]) {
       const su = getSessionUser();
       if (!su) {
