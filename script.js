@@ -750,6 +750,20 @@
 
     // Duyuru merkezi (yalnızca anasayfa)
     if (currentPage === "" || currentPage === "index.html") {
+      // Donation progress (hero) init
+      const dp = document.getElementById("donation-progress");
+      if (dp) {
+        const current = Number(dp.dataset.current || 0);
+        const goal = Number(dp.dataset.goal || 100);
+        const pct = goal > 0 ? Math.min(100, Math.max(0, Math.round((current / goal) * 100))) : 0;
+        const fill = dp.querySelector('.dp-fill');
+        const bar = dp.querySelector('.dp-bar');
+        const percentEl = dp.querySelector('.dp-percent');
+        if (fill) fill.style.width = pct + '%';
+        if (bar) bar.setAttribute('aria-valuenow', String(pct));
+        if (percentEl) percentEl.textContent = pct + '%';
+      }
+
       const announcementData = loadAnnouncements()
         .sort((a, b) => {
           const da = new Date(a.date || 0).getTime();
