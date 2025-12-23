@@ -188,6 +188,7 @@
         title: ann?.title || "",
         summary: ann?.summary || ann?.body || "",
         date: ann?.date || "",
+        image: ann?.image || "",
         tags: safeTags,
         day,
         month,
@@ -643,6 +644,13 @@
             const thumbnailHtml = ann.image
               ? `<img src="${ann.image}" alt="${ann.title}" class="announcement-thumbnail" />`
               : `<div class="announcement-thumbnail placeholder">📰</div>`;
+            const baseUrl = (location.protocol === 'http:' || location.protocol === 'https:')
+              ? (location.origin + '/announcements.html')
+              : '';
+            const shareText = `${ann.title}\n\n${ann.summary}` + (baseUrl ? `\n\n${baseUrl}` : '');
+            const waUrl = `https://api.whatsapp.com/send/?text=${encodeURIComponent(shareText)}`;
+            const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
             const actions = isAdmin(su)
               ? `<div class="ann-card-actions">
                   <button class="edit-btn" data-idx="${idx}">Düzenle</button>
@@ -658,6 +666,11 @@
                   </div>
                   <p class="announcement-body">${ann.summary}</p>
                   <div class="announcement-tags">${tagsHtml}</div>
+                  <div class="ann-share">
+                    <a class="share-btn whatsapp" href="${waUrl}" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><span class="sr-only">WhatsApp</span></a>
+                    <button class="share-btn instagram" data-idx="${idx}" type="button" aria-label="Instagram" title="Instagram"><span class="sr-only">Instagram</span></button>
+                    <a class="share-btn x" href="${xUrl}" target="_blank" rel="noopener" aria-label="X" title="X"><span class="sr-only">X</span></a>
+                  </div>
                   ${actions}
                 </div>
               </article>`;
@@ -693,6 +706,22 @@
             });
           });
         }
+
+        // Instagram paylaşım: metni panoya kopyala ve instagram.com'a yönlendir
+        annListEl.querySelectorAll('.share-btn.instagram').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.idx);
+            const ann = announcements[idx];
+            if (!ann) return;
+            const text = `${ann.title}\n\n${ann.summary}`; // URL eklemeyelim (file:// sızıntısını engelle)
+            const openIg = () => window.open('https://www.instagram.com/', '_blank');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(openIg).catch(openIg);
+            } else {
+              openIg();
+            }
+          });
+        });
       };
 
       const resetForm = () => {

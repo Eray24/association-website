@@ -1089,6 +1089,74 @@ body.dark .announcement-thumbnail.placeholder {
   transition: all 0.2s ease;
 }
 
+/* Share buttons in announcement card */
+.ann-share {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  text-decoration: none;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 22px 22px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.share-btn:hover { box-shadow: 0 6px 14px rgba(0,0,0,0.12); transform: translateY(-1px); }
+
+.share-btn.whatsapp {
+  border-color: #22c55e;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0%' y1='0%' x2='0%' y2='100%'><stop stop-color='%2325D366' offset='0%'/><stop stop-color='%23128C7E' offset='100%'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='url(%23g)'/><path fill='%23fff' d='M31.9 14c-9.7 0-17.5 7.2-17.5 16.1 0 3 .9 5.8 2.5 8.2l-2.2 8.1 8.4-2.2c2.3 1.3 5 2 7.9 2 9.7 0 17.5-7.2 17.5-16.1S41.6 14 31.9 14zm9.8 21c-.3 1-1.7 1.9-2.9 2.1-.7.1-1.6.1-2.6-.1-.6-.1-1.4-.3-2.4-.8-4.1-1.8-6.7-6-6.9-6.3-.2-.3-1.6-2.1-1.6-3.9s1-2.8 1.4-3.2c.3-.4.7-.5 1-.5.2 0 .5 0 .7.1.2 0 .5 0 .7.6.3.7.9 2.4 1 2.5.1.2.1.4 0 .6-.1.2-.1.4-.3.6-.1.2-.3.4-.5.7-.1.1-.3.3-.1.7.2.3.9 1.5 1.9 2.5 1.3 1.2 2.3 1.6 2.7 1.8.4.2.6.1.9-.1.3-.3 1-1.2 1.3-1.6.3-.4.5-.3.8-.2.3.1 2.1 1 2.5 1.2.4.2.7.3.8.5.1.2.1 1.3-.2 2.3z'/></svg>");
+}
+
+.share-btn.instagram {
+  border-color: #f472b6;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='ig' x1='0%' y1='0%' x2='100%' y2='100%'><stop stop-color='%23f58529' offset='0%'/><stop stop-color='%23dd2a7b' offset='40%'/><stop stop-color='%238134af' offset='70%'/><stop stop-color='%23515bd4' offset='100%'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='url(%23ig)'/><rect x='18' y='18' width='28' height='28' rx='9' fill='none' stroke='%23fff' stroke-width='4'/><circle cx='32' cy='32' r='9' stroke='%23fff' stroke-width='4' fill='none'/><circle cx='44' cy='20' r='3.2' fill='%23fff'/></svg>");
+}
+
+.share-btn.x {
+  border-color: #111827;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23111827'/><path fill='%23fff' d='M18 14h7.2l9.8 13.1L44 14h6l-13 17 13 19h-7.2L32 35.4 21 50H15l13.9-18.2z'/></svg>");
+}
+
+body.dark .ann-share .share-btn {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+}
+body.dark .share-btn:hover {
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.2);
+}
+body.dark .share-btn.whatsapp { border-color: #22c55e; }
+body.dark .share-btn.x { border-color: #e5e7eb; }
+body.dark .share-btn.instagram { border-color: #f472b6; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .ann-card-actions .edit-btn {
   color: #2563eb;
   border-color: #bfdbfe;
