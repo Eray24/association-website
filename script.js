@@ -795,6 +795,14 @@
             </div>`;
         };
 
+        const computeItemHeight = () => {
+          const first = listEl.firstElementChild;
+          if (!first) return itemHeight || 0;
+          const style = getComputedStyle(first);
+          const mb = parseFloat(style.marginBottom || "0");
+          return first.getBoundingClientRect().height + mb;
+        };
+
         const buildList = () => {
           if (announcementData.length === 0) {
             listEl.innerHTML = "<div class=\\\"announcement-item\\\"><div class=\\\"ann-content\\\"><h4>Henüz duyuru yok</h4><p>Daha sonra tekrar kontrol edin.</p></div></div>";
@@ -805,25 +813,22 @@
           listEl.innerHTML = announcementData.map(getItemMarkup).join("");
 
           requestAnimationFrame(() => {
-            const first = listEl.querySelector(".announcement-item");
-            if (first) {
-              const style = getComputedStyle(first);
-              const mb = parseFloat(style.marginBottom || "0");
-              itemHeight = first.getBoundingClientRect().height + mb;
-            }
+            itemHeight = computeItemHeight();
           });
         };
 
         const goNext = () => {
-          if (listEl.children.length <= 1 || itemHeight === 0) return;
+          const moveHeight = computeItemHeight();
+          if (listEl.children.length <= 1 || moveHeight === 0) return;
           listEl.style.transition = "transform 0.45s ease";
-          listEl.style.transform = `translateY(-${itemHeight}px)`;
+          listEl.style.transform = `translateY(-${moveHeight}px)`;
 
           const handle = () => {
             listEl.removeEventListener("transitionend", handle);
             listEl.appendChild(listEl.firstElementChild);
             listEl.style.transition = "none";
             listEl.style.transform = "translateY(0)";
+            itemHeight = computeItemHeight();
             requestAnimationFrame(() => {
               listEl.style.transition = "transform 0.45s ease";
             });
