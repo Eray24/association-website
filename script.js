@@ -107,44 +107,50 @@
       {
         title: "Yaz Kamp Başvuruları Açıldı",
         summary:
-          "Derneğimizin yıllık yaz kampı için başvurular başlamıştır. Genç üyelerimiz için 2 haftalık bir program hazırlandı.",
+          "Derneğimizin yıllık yaz kampı için başvurular başlamıştır. Genç üyelerimiz için 2 haftalık bir program hazırlandı. Kampda doğa yürüyüşleri, spor aktiviteleri, sanat atölyeleri ve kamp ateşi etkinlikleri yer alacaktır. Tüm barınma ve yemek giderleri dernek tarafından karşılanacaktır. Başvuru için iletişim formunu doldurun ya da dernek yöneticilerine başvurun. Başvuru süresi 30 Aralık 2025'e kadardir. Sınırlı sayıda yer mevcuttur.",
         date: "2025-12-07",
         tags: ["Etkinlik", "Gençlik"],
+        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
       },
       {
         title: "Yeni Proje: Eğitim İçin Kaynaklar",
         summary:
-          "Ücretsiz Python, İngilizce ve dijital pazarlama kursları tüm üyelerimizin başvurusuna açıldı.",
+          "Ücretsiz Python, İngilizce ve dijital pazarlama kursları tüm üyelerimizin başvurusuna açıldı. Bu kurslar uzman eğitmenlerce hazırlanmış olup, online ve yüz yüze olarak sunulacaktır. Python kursu 8 hafta, İngilizce kursu 12 hafta ve dijital pazarlama kursu 6 hafta sürecektir. Kurslar tamamlandıktan sonra katılımcılara sertifikat verilecektir. Başvuru için adınız, soyadınız ve tercih ettiğiniz kurs ismini iletişim formu aracılığıyla gönderin. Bu proje, gençlerin iş piyasasına hazırlanmasını hedeflemektedir.",
         date: "2025-12-05",
         tags: ["Eğitim", "Program"],
+        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop",
       },
       {
         title: "Aralık Ayı Gönüllülük Faaliyetleri",
         summary:
-          "Çevre temizliği, yaşlı bakım evi ziyareti ve yetim öğrencilere ders anlatma aktiviteleri için kayıtlar başladı.",
+          "Çevre temizliği, yaşlı bakım evi ziyareti ve yetim öğrencilere ders anlatma aktiviteleri için kayıtlar başladı. Çevre temizliği projesi her pazartesi sabah 09:00'da gerçekleştirilecektir. Yaşlı bakım evi ziyaretleri çarşamba öğleden sonra saat 14:00'de yapılacak olup, misafirleri sevindirmek için konservatuar öğrencilerimiz müzik performansı sunacaktır. Yetim öğrencilere ders anlatmak isteyen gönüllüler matematik, fizik, kimya ve İngilizce derslerini verebilirler. Aktivitelere katılım tamamen gönüllü ve ücretsizdir.",
         date: "2025-12-03",
         tags: ["Gönüllülük", "Sosyal Sorumluluk"],
+        image: "https://images.unsplash.com/photo-1559027615-cd2628902d4a?w=600&h=400&fit=crop&q=80",
       },
       {
         title: "Yıl Sonu Genel Kurul Duyurusu",
         summary:
-          "15 Ocak 2026'da genel kurul yapılacaktır. Tüm üyeler oy kullanma hakkına sahiptir.",
+          "15 Ocak 2026'da genel kurul yapılacaktır. Tüm üyeler oy kullanma hakkına sahiptir. Genel kurulda dernek yönetiminin 2025 yılı faaliyet raporu sunulacak ve 2026 yılı bütçesi görüşülecektir. Ayrıca yönetim kurulu seçimleri gerçekleştirilecektir. Toplantı saat 19:00'da dernek merkezinde başlayacaktır. Katılmak isteyen tüm üyeler lütfen öncesinde kayıt yaptırsınlar. Çevrimiçi katılım da mümkün olacaktır.",
         date: "2025-11-28",
         tags: ["Yönetim", "Önemli"],
+        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
       },
       {
         title: "Haftalık Sosyalleşme Etkinlikleri",
         summary:
-          "Her cuma 19:00'da sosyalleşme buluşmaları. Kahve, çay ve sohbet ortamında üyeler bir araya geliyor.",
+          "Her cuma 19:00'da sosyalleşme buluşmaları. Kahve, çay ve sohbet ortamında üyeler bir araya geliyor. Bu buluşmalar dernek merkezinin bahçesinde yapılmaktadır. Üyelerimiz burada yeni insanlar tanıyabilir, fikir paylaşabilir ve sosyal ağını genişletebilir. Bazı haftalar özel konuşmacılar davet edilmektedir. Üyelik kartı getirmek gerekmektedir. Davetiye gerekmez, tüm üyeler hoş geldiniz.",
         date: "2025-11-20",
         tags: ["Sosyal", "Düzenli Etkinlik"],
+        image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop",
       },
       {
         title: "Yeni Üyelik Kampanyası",
         summary:
-          "Ekim ayında üye olanlara ilk 3 ay özel avantajlar, öncelikli erişim ve etkinlik davetiyesi.",
+          "Ekim ayında üye olanlara ilk 3 ay özel avantajlar, öncelikli erişim ve etkinlik davetiyesi. Bu kampanya dahilinde yeni üyeler tüm etkinliklere ücretsiz katılabilecekler, dernek kütüphanesine sınırsız erişim sağlanacak ve ayda bir kişisel gelişim semineri almaya hak kazanacaklardır. Ayrıca dernek yayınlarının abone süresi 3 ay uzatılacaktır. Bu fırsat kaçmadan derneğimize katıl, dayanışma ağımızın bir parçası ol.",
         date: "2025-11-10",
         tags: ["Üyelik", "Kampanya"],
+        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
       },
     ];
 
@@ -657,7 +663,7 @@
                   <button class="delete-btn" data-idx="${idx}">Sil</button>
                 </div>`
               : "";
-            return `<article class="announcement-card">
+            return `<article class="announcement-card" data-idx="${idx}" role="button" tabindex="0">
                 ${thumbnailHtml}
                 <div>
                   <div class="announcement-header">
@@ -666,7 +672,7 @@
                   </div>
                   <p class="announcement-body">${ann.summary}</p>
                   <div class="announcement-tags">${tagsHtml}</div>
-                  <div class="ann-share">
+                  <div class="ann-share" onclick="event.stopPropagation();">
                     <a class="share-btn whatsapp" href="${waUrl}" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><span class="sr-only">WhatsApp</span></a>
                     <button class="share-btn instagram" data-idx="${idx}" type="button" aria-label="Instagram" title="Instagram"><span class="sr-only">Instagram</span></button>
                     <a class="share-btn x" href="${xUrl}" target="_blank" rel="noopener" aria-label="X" title="X"><span class="sr-only">X</span></a>
@@ -709,7 +715,8 @@
 
         // Instagram paylaşım: metni panoya kopyala ve instagram.com'a yönlendir
         annListEl.querySelectorAll('.share-btn.instagram').forEach((btn) => {
-          btn.addEventListener('click', () => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const idx = Number(btn.dataset.idx);
             const ann = announcements[idx];
             if (!ann) return;
@@ -722,7 +729,103 @@
             }
           });
         });
+
+        // Announcement Modal
+        const announcementModal = document.getElementById('announcementModal');
+        if (announcementModal) {
+          const modalClose = announcementModal.querySelector('.modal-close');
+          
+          // Modal kapatma
+          if (modalClose) {
+            modalClose.addEventListener('click', () => {
+              announcementModal.style.display = 'none';
+            });
+          }
+
+          window.addEventListener('click', (e) => {
+            if (e.target === announcementModal) {
+              announcementModal.style.display = 'none';
+            }
+          });
+
+          // Kart tıklaması
+          annListEl.querySelectorAll('.announcement-card').forEach((card) => {
+            card.addEventListener('click', (e) => {
+              // Eğer paylaş butonuna tıklanmışsa modal açma
+              if (e.target.closest('.ann-share') || e.target.closest('.ann-card-actions')) {
+                return;
+              }
+
+              const idx = Number(card.dataset.idx);
+              const ann = announcements[idx];
+              if (!ann) return;
+
+              // Modal içeriğini doldur
+              document.getElementById('announcementModalTitle').textContent = ann.title;
+              document.getElementById('announcementModalDate').textContent = formatDateLabel(ann);
+              
+              // Görsel
+              const imageEl = document.getElementById('announcementModalImage');
+              if (ann.image) {
+                imageEl.innerHTML = `<img src="${ann.image}" alt="${ann.title}" style="width:100%; border-radius:12px; object-fit:cover; max-height:400px;" />`;
+              } else {
+                imageEl.innerHTML = `<div style="width:100%; height:300px; background:#f3f4f6; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:64px;">📰</div>`;
+              }
+
+              // Etiketler
+              const tagsDiv = document.getElementById('announcementModalTags');
+              if (ann.tags && ann.tags.length > 0) {
+                tagsDiv.innerHTML = ann.tags.map(t => `<span class="tag">${t}</span>`).join('');
+              } else {
+                tagsDiv.innerHTML = '';
+              }
+
+              // Metin
+              document.getElementById('announcementModalText').textContent = ann.summary;
+
+              // Paylaş butonları
+              const baseUrl = (location.protocol === 'http:' || location.protocol === 'https:')
+                ? (location.origin + '/announcements.html')
+                : '';
+              const shareText = `${ann.title}\n\n${ann.summary}` + (baseUrl ? `\n\n${baseUrl}` : '');
+              const waUrl = `https://api.whatsapp.com/send/?text=${encodeURIComponent(shareText)}`;
+              const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+              const shareHtml = `
+                <div class="ann-share">
+                  <a class="share-btn whatsapp" href="${waUrl}" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><span class="sr-only">WhatsApp</span></a>
+                  <button class="share-btn instagram" data-idx="${idx}" type="button" aria-label="Instagram" title="Instagram"><span class="sr-only">Instagram</span></button>
+                  <a class="share-btn x" href="${xUrl}" target="_blank" rel="noopener" aria-label="X" title="X"><span class="sr-only">X</span></a>
+                </div>
+              `;
+              document.getElementById('announcementModalShare').innerHTML = shareHtml;
+
+              // Instagram butonu için event listener ekle
+              document.querySelector('#announcementModalShare .share-btn.instagram').addEventListener('click', () => {
+                const text = `${ann.title}\n\n${ann.summary}`;
+                const openIg = () => window.open('https://www.instagram.com/', '_blank');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(text).then(openIg).catch(openIg);
+                } else {
+                  openIg();
+                }
+              });
+
+              // Modal aç
+              announcementModal.style.display = 'flex';
+            });
+
+            // Keyboard erişilebilirliği
+            card.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+              }
+            });
+          });
+        }
       };
+
 
       const resetForm = () => {
         annEditIndex.value = "";
