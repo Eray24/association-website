@@ -1,3 +1,168 @@
+/* Donate Page */
+.donate-hero {
+  max-width: 1100px;
+  margin: 40px auto 20px;
+  padding: 0 20px;
+  text-align: center;
+}
+.donate-hero h1 {
+  font-size: 28px;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+.donate-hero p {
+  color: #475569;
+}
+
+.donate-content {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.card-scene {
+  display: flex;
+  justify-content: center;
+  perspective: 1200px;
+}
+
+.pay-card {
+  width: 360px;
+  height: 220px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+}
+.pay-card.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 20px 40px rgba(2,6,23,0.18);
+  border: 1px solid #0ea5e9;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+.card-front::after {
+  /* nokta desenli overlay */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#0ea5e9 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  opacity: 0.35;
+}
+
+.card-brand {
+  position: absolute;
+  left: 18px; top: 14px;
+  font-weight: 800; color: #ffffff;
+}
+.card-brand span { font-weight: 600; opacity: 0.9; }
+
+.card-chip {
+  position: absolute; left: 20px; top: 60px;
+  width: 52px; height: 36px; border-radius: 6px;
+  background: linear-gradient(135deg, #b1b5b9, #6b7280);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.35);
+  border: 1px solid #9ca3af;
+}
+.card-contactless {
+  position: absolute; right: 20px; top: 74px;
+  color: #ffffff; font-weight: 800;
+}
+
+.card-number {
+  position: absolute; left: 20px; right: 20px; top: 120px;
+  font-size: 22px; letter-spacing: 2px; color: #ffffff;
+  font-weight: 700;
+}
+.card-exp-center {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  backdrop-filter: blur(2px);
+}
+.card-footer {
+  position: absolute; left: 20px; right: 20px; bottom: 46px;
+  display: flex; justify-content: space-between; align-items: center;
+  color: #ffffff; font-weight: 700;
+}
+.card-name { text-transform: uppercase; }
+.card-exp { font-variant-numeric: tabular-nums; }
+
+.card-logo {
+  position: absolute; right: 16px; bottom: 14px;
+  color: #0b5faf; /* VISA mavi */
+  font-weight: 900; font-style: italic; font-size: 22px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-shadow: 0 6px 12px rgba(2,6,23,0.12);
+}
+.card-logo::before {
+  content: "";
+  position: absolute; left: 0; top: 0;
+  width: 0; height: 0;
+  border-top: 12px solid #f59e0b; /* VISA sarı köşe vurgusu */
+  border-right: 12px solid transparent;
+  border-bottom: 0; border-left: 0;
+  border-top-left-radius: 6px;
+}
+
+.card-back { transform: rotateY(180deg); }
+.card-strip {
+  position: absolute; left: 0; right: 0; top: 28px; height: 50px;
+  background: #0f172a;
+}
+.card-sign-line {
+  position: absolute; left: 20px; right: 20px; top: 98px; height: 42px;
+  background: #ffffff; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; box-shadow: inset 0 0 0 1px #e5e7eb;
+}
+.cvv-label { color: #0f172a; font-weight: 800; }
+.cvv-value { color: #ef4444; font-weight: 800; letter-spacing: 2px; }
+
+.donate-form {
+  background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;
+  padding: 16px; box-shadow: 0 10px 24px rgba(2,6,23,0.06);
+}
+.donate-form .form-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+.donate-form .form-row:last-of-type {
+  grid-template-columns: 1fr 1fr 1fr auto;
+  align-items: end;
+}
+.donate-form .form-group { display: flex; flex-direction: column; gap: 6px; }
+.donate-form .form-group.small { grid-template-columns: 1fr; }
+.donate-form label { font-weight: 700; color: #0f172a; }
+.donate-form input {
+  border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 12px;
+  font-size: 14px;
+}
+.donate-continue { align-self: end; justify-self: end; }
+.donate-form input:focus { outline: none; border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+@media (max-width: 768px) {
+  .donate-content { grid-template-columns: 1fr; }
+  .donate-form .form-row { grid-template-columns: 1fr; }
+}
+
+/* Dark mode */
+body.dark .donate-hero h1 { color: #e5e7eb; }
+body.dark .donate-hero p { color: #cbd5e1; }
+body.dark .donate-form { background: #0f172a; border-color: #1f2937; }
+body.dark .donate-form label { color: #e5e7eb; }
+body.dark .donate-form input { background: #111827; color: #e5e7eb; border-color: #1f2937; }
 * {
   box-sizing: border-box;
 }
@@ -2545,31 +2710,45 @@ body.dark .ann-btn:hover {
 }
 
 .footer-social-link[aria-label="Instagram"] {
-  /* Uygulama stili: gradient dolgu + beyaz kamera çizimi */
+  /* Beyaz kart + içte gradient kare + beyaz kamera */
   font-size: 0;
-  background: linear-gradient(135deg, #515bd4, #8134af, #dd2a7b, #f58529);
-  border: 0;
+  background-color: #ffffff;
 }
 .footer-social-link[aria-label="Instagram"]:hover {
-  box-shadow: 0 10px 22px rgba(214, 41, 118, 0.18);
-  border-color: transparent; /* varsayılan hover kenarlığını geçersiz kıl */
+  border-color: #D62976;
+  box-shadow: 0 8px 18px rgba(214, 41, 118, 0.18);
 }
 
-.footer-social-link[aria-label="Instagram"]::before {
-  /* Beyaz kamera çerçevesi (dış kare + lens + flaş) */
+.footer-social-link[aria-label="Instagram"]::after {
+  /* İçte gradient kare */
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #515bd4, #8134af, #dd2a7b, #f58529);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  z-index: 1;
+}
+
+.footer-social-link[aria-label="Instagram"]::before {
+  /* Beyaz kamera çerçevesi (dış rounded kare + lens + flaş) */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
   transform: translate(-50%, -50%);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   pointer-events: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='18' height='18' rx='5'/><circle cx='12' cy='12' r='5'/><circle cx='18' cy='6' r='1.5' fill='%23FFFFFF' stroke='none'/></svg>");
-  z-index: 1;
+  z-index: 2;
 }
 
 .footer-social-link[aria-label="LinkedIn"] {
@@ -2727,9 +2906,8 @@ body.dark .footer-social-link:hover {
 
 /* Dark mode'da Instagram kartı: beyaz iç, gradient çerçeve korunur */
 body.dark .footer-social-link[aria-label="Instagram"] {
-  background: linear-gradient(135deg, #515bd4, #8134af, #dd2a7b, #f58529);
-  border-color: transparent;
+  background-color: #ffffff;
 }
 body.dark .footer-social-link[aria-label="Instagram"]:hover {
-  border-color: transparent;
+  border-color: #D62976;
 }

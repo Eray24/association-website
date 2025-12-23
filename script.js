@@ -1254,6 +1254,55 @@
         if (el) {
           el.classList.add('active');
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Eğer işaret duyuru/aktivite kartında ise modalı aç ve modal içinde vurgula
+          const annCard = el.closest && el.closest('.announcement-card');
+          const actCard = el.closest && el.closest('.activity-card');
+          if (annCard) {
+            annCard.click();
+            setTimeout(() => {
+              const modal = document.getElementById('announcementModal');
+              if (modal) {
+                // Modal içinde de vurgula
+                highlightWithin(modal, initialQuery);
+                // Listeyi güncelle ve modal içindeki ilk eşleşmeye odaklan
+                navState.marks = collectMarks();
+                const modalIdx = navState.marks.findIndex(m => modal.contains(m));
+                if (modalIdx >= 0) {
+                  // sonsuz döngüyü önlemek için doğrudan index ataması ve kaydırma
+                  navState.index = modalIdx;
+                  navState.marks.forEach(m => m.classList.remove('active'));
+                  const modalEl = navState.marks[navState.index];
+                  if (modalEl) {
+                    modalEl.classList.add('active');
+                    modalEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }
+              }
+              const counter = document.getElementById('search-nav-counter');
+              if (counter) counter.textContent = `${navState.index + 1}/${navState.marks.length}`;
+            }, 200);
+          } else if (actCard) {
+            actCard.click();
+            setTimeout(() => {
+              const modal = document.getElementById('activityModal');
+              if (modal) {
+                highlightWithin(modal, initialQuery);
+                navState.marks = collectMarks();
+                const modalIdx = navState.marks.findIndex(m => modal.contains(m));
+                if (modalIdx >= 0) {
+                  navState.index = modalIdx;
+                  navState.marks.forEach(m => m.classList.remove('active'));
+                  const modalEl = navState.marks[navState.index];
+                  if (modalEl) {
+                    modalEl.classList.add('active');
+                    modalEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }
+              }
+              const counter = document.getElementById('search-nav-counter');
+              if (counter) counter.textContent = `${navState.index + 1}/${navState.marks.length}`;
+            }, 200);
+          }
         }
         const counter = document.getElementById('search-nav-counter');
         if (counter) counter.textContent = `${navState.index + 1}/${navState.marks.length}`;
@@ -1324,5 +1373,99 @@
 
       setTimeout(() => tryHighlight(), 50);
     }
+
+    // Donate (Bağış) sayfası kart etkileşimi
+    (function initDonatePage() {
+      const payCard = document.getElementById('payCard');
+      if (!payCard) return;
+      const nameInput = document.getElementById('cardName');
+      const numInput = document.getElementById('cardNumber');
+      const mInput = document.getElementById('cardExpMonth');
+      const yInput = document.getElementById('cardExpYear');
+      const cvvInput = document.getElementById('cardCvv');
+
+      const nameDisplay = document.getElementById('cardNameDisplay');
+      const numDisplay = document.getElementById('cardNumDisplay');
+      const expDisplay = document.getElementById('cardExpDisplay');
+      const cvvDisplay = document.getElementById('cardCvvDisplay');
+
+      const formatNum = (v) => v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+      const clampNum = (v, max) => v.replace(/\D/g, '').slice(0, max);
+      const pad2 = (v) => (v || '').replace(/\D/g, '').slice(0, 2).padStart(2, '0');
+
+      const updateFront = () => {
+        const nm = (nameInput.value || '').trim();
+        nameDisplay.textContent = nm ? nm.toUpperCase() : 'AD SOYAD';
+        const numFmt = formatNum(numInput.value || '');
+        numDisplay.textContent = numFmt || '#### #### #### ####';
+        const mm = pad2(mInput.value || '');
+        let yy = clampNum(yInput.value || '', 2);
+        yy = yy.length === 2 ? yy : 'YY';
+        expDisplay.textContent = (mm !== '00' && yy !== 'YY') ? `${mm}/${yy}` : 'MM/YY';
+      };
+
+      const checkFlipToBack = () => {
+        const nmOk = (nameInput.value || '').trim().length > 0;
+        const numDigits = (numInput.value || '').replace(/\D/g, '').length;
+        const mmOk = (mInput.value || '').replace(/\D/g, '').length === 2;
+        const yyOk = (yInput.value || '').replace(/\D/g, '').length === 2;
+        if (nmOk && numDigits === 16 && mmOk && yyOk) {
+          payCard.classList.add('flipped');
+        }
+      };
+
+      ['input', 'blur'].forEach(evt => {
+        nameInput.addEventListener(evt, () => { updateFront(); checkFlipToBack(); });
+        numInput.addEventListener(evt, () => {
+          const raw = numInput.value || '';
+          const digits = raw.replace(/\D/g, '').slice(0, 16);
+          numInput.value = formatNum(digits);
+          updateFront();
+          checkFlipToBack();
+        });
+        mInput.addEventListener(evt, () => {
+          let mm = mInput.value.replace(/\D/g, '').slice(0, 2);
+          if (mm.length === 2) {
+            const n = Number(mm);
+            if (n < 1) mm = '01';
+            if (n > 12) mm = '12';
+          }
+          mInput.value = mm;
+          updateFront();
+          checkFlipToBack();
+        });
+        yInput.addEventListener(evt, () => {
+          let yy = yInput.value.replace(/\D/g, '').slice(0, 2);
+          yInput.value = yy;
+          updateFront();
+          checkFlipToBack();
+        });
+      });
+
+      cvvInput.addEventListener('focus', () => {
+        payCard.classList.add('flipped');
+      });
+      cvvInput.addEventListener('input', () => {
+        let cv = cvvInput.value.replace(/\D/g, '').slice(0, 4);
+        cvvInput.value = cv;
+        cvvDisplay.textContent = cv || 'CVV';
+      });
+
+      // Ön yüze ait alanlara gelince kartı ön yüze döndür
+      const flipFront = () => payCard.classList.remove('flipped');
+      nameInput.addEventListener('focus', flipFront);
+      numInput.addEventListener('focus', flipFront);
+      mInput.addEventListener('focus', flipFront);
+      yInput.addEventListener('focus', flipFront);
+
+      // Ön yüz alanlarında giriş yapılırken de ön yüz açık kalsın
+      nameInput.addEventListener('input', flipFront);
+      numInput.addEventListener('input', flipFront);
+      mInput.addEventListener('input', flipFront);
+      yInput.addEventListener('input', flipFront);
+
+      // İlk render
+      updateFront();
+    })();
   });
 })();
