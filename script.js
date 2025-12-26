@@ -1599,6 +1599,108 @@
       // İlk render
       updateFront();
 
+      // ==================== BAĞIŞ MODALİ ====================
+      const donationModal = document.getElementById('donation-modal');
+      const donationModalMessage = document.getElementById('donation-modal-message');
+      const donationModalClose = document.getElementById('donation-modal-close');
+      const donationInvoiceBtn = document.getElementById('donation-invoice-btn');
+      const donationShareButtons = document.querySelectorAll('.donation-share button[data-share]');
+      let lastDonationText = '0 TL';
+
+      const formatTLText = (value) => `${Math.floor(value).toLocaleString('tr-TR')} TL`;
+
+      const setModalVisibility = (visible) => {
+        if (!donationModal) return;
+        donationModal.classList.toggle('open', visible);
+        donationModal.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      };
+
+      const openDonationModal = (amountText) => {
+        lastDonationText = amountText;
+        if (donationModalMessage) {
+          donationModalMessage.textContent = `${amountText} tutarındaki değerli bağışınız başarıyla alınmıştır.`;
+        }
+        setModalVisibility(true);
+      };
+
+      const closeDonationModal = () => setModalVisibility(false);
+
+      const copyToClipboard = async (text) => {
+        try {
+          if (navigator?.clipboard?.writeText) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (err) {
+          return false;
+        }
+        return false;
+      };
+
+      const buildShareMessage = (amountText) => {
+        return `İyiliğe küçük bir katkı bıraktım. ${amountText} bağış yaparak bu yolculuğun parçası oldum.`;
+      };
+
+      if (donationModalClose) {
+        donationModalClose.addEventListener('click', closeDonationModal);
+      }
+
+      if (donationModal) {
+        donationModal.addEventListener('click', (e) => {
+          if (e.target === donationModal) closeDonationModal();
+        });
+      }
+
+      if (donationInvoiceBtn) {
+        donationInvoiceBtn.addEventListener('click', () => {
+          const now = new Date();
+          const content = [
+            'Ufuk Derneği Bağış Makbuzu',
+            '----------------------------',
+            `Tutar: ${lastDonationText}`,
+            `Tarih: ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`,
+            'Bağışınız için teşekkür ederiz.'
+          ].join('\n');
+
+          const blob = new Blob([content], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `bagis-makbuzu-${now.toISOString().slice(0, 10)}.txt`;
+          link.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      if (donationShareButtons && donationShareButtons.length) {
+        donationShareButtons.forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const platform = btn.getAttribute('data-share');
+            const shareText = buildShareMessage(lastDonationText);
+            const encoded = encodeURIComponent(shareText);
+
+            if (platform === 'twitter') {
+              window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank');
+              return;
+            }
+
+            if (platform === 'whatsapp') {
+              window.open(`https://wa.me/?text=${encoded}`, '_blank');
+              return;
+            }
+
+            if (platform === 'instagram') {
+              const copied = await copyToClipboard(shareText);
+              window.open('https://www.instagram.com', '_blank');
+              if (copied) {
+                alert('Mesaj panonuza kopyalandı. Instagram paylaşımınızda yapıştırabilirsiniz.');
+              }
+              return;
+            }
+          });
+        });
+      }
+
       // ==================== DEVAM ET BUTONU İŞLEVSELLİĞİ ====================
       const continueBtn = document.getElementById('donateContinue');
       if (continueBtn) {
@@ -1719,9 +1821,9 @@
           const newTotal = currentTotal + donationAmount;
           localStorage.setItem(DONATION_KEY, newTotal.toString());
           
-          // Başarı mesajı
-          const formattedAmount = Math.floor(donationAmount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-          alert(`Bağışınız başarıyla alındı! 🎉\n\nBağış Miktarı: ${formattedAmount}₺\n\nDesteğiniz için teşekkür ederiz!`);
+          // Başarı modalini göster
+          const formattedAmount = formatTLText(donationAmount);
+          openDonationModal(formattedAmount);
           
           // Formu temizle
           nameInput.value = '';
@@ -1738,11 +1840,6 @@
           
           // İlk tutarı seç
           setSelectedAmount(amountButtons[0]?.dataset.amount || '50', false);
-          
-          // Ana sayfaya yönlendir
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 2000);
         });
       }
       // ==================== DEVAM ET BUTONU İŞLEVSELLİĞİ BİTİŞ ====================
