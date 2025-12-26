@@ -54,6 +54,69 @@
       return raw ? JSON.parse(raw) : null;
     };
 
+    // ==================== BAĞIŞ SİSTEMİ BAŞLANGIÇ ====================
+    // LocalStorage'da bağış bilgilerini sakla ve oku
+    const DONATION_KEY = 'totalDonations';
+    const DONATION_GOAL = 1000000; // 1 milyon TL
+    
+    // Mevcut toplam bağış miktarını al
+    const getDonationAmount = () => {
+      const stored = localStorage.getItem(DONATION_KEY);
+      return stored ? parseFloat(stored) : 0;
+    };
+    
+    // Yeni bağış ekle
+    const addDonation = (amount) => {
+      const currentAmount = getDonationAmount();
+      const newAmount = currentAmount + parseFloat(amount);
+      localStorage.setItem(DONATION_KEY, newAmount.toString());
+      return newAmount;
+    };
+    
+    // Ana sayfadaki bağış göstergesini güncelle
+    const updateDonationProgress = () => {
+      const progressContainer = document.getElementById('donation-progress');
+      if (!progressContainer) return;
+      
+      const currentAmount = getDonationAmount();
+      const goal = DONATION_GOAL;
+      const percentage = Math.min((currentAmount / goal) * 100, 100);
+      
+      // Sayıları formatla (örn: 123456 -> 123.456)
+      const formatNumber = (num) => {
+        return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      };
+      
+      // HTML güncellemeleri
+      const amountsEl = progressContainer.querySelector('.dp-amounts');
+      const fillEl = progressContainer.querySelector('.dp-fill');
+      const percentEl = progressContainer.querySelector('.dp-percent');
+      const barEl = progressContainer.querySelector('.dp-bar');
+      
+      if (amountsEl) {
+        amountsEl.innerHTML = `<strong>${formatNumber(currentAmount)}₺</strong> / ${formatNumber(goal)}₺`;
+      }
+      
+      if (fillEl) {
+        fillEl.style.width = `${percentage}%`;
+      }
+      
+      if (percentEl) {
+        percentEl.textContent = `${Math.floor(percentage)}%`;
+      }
+      
+      if (barEl) {
+        barEl.setAttribute('aria-valuenow', Math.floor(percentage));
+      }
+      
+      // data-current attribute'u da güncelle
+      progressContainer.setAttribute('data-current', currentAmount);
+    };
+    
+    // Sayfa yüklendiğinde bağış durumunu güncelle (index.html için)
+    updateDonationProgress();
+    // ==================== BAĞIŞ SİSTEMİ BİTİŞ ====================
+
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
@@ -1387,7 +1450,7 @@
       const customAmountInput = document.getElementById('customAmount');
       const customCard = document.querySelector('.amount-card.custom-card');
       const donateForm = document.getElementById('donateForm');
-      let selectedAmount = amountButtons[0]?.dataset.amount || '';
+      let selectedAmount = ''; // Başlangıçta hiçbir miktar seçili olmasın
 
       const nameDisplay = document.getElementById('cardNameDisplay');
       const numDisplay = document.getElementById('cardNumDisplay');
@@ -1428,9 +1491,18 @@
           const clean = normalizeAmount(customAmountInput.value);
           setSelectedAmount(clean, true);
         });
+          // Custom input blur olduğunda boşsa seçimi kaldır
+          customAmountInput.addEventListener('blur', () => {
+            const clean = normalizeAmount(customAmountInput.value);
+            if (!clean || clean === '0') {
+              setSelectedAmount('', false);
+              if (customCard) customCard.classList.remove('active');
+            }
+          });
       }
 
-      setSelectedAmount(selectedAmount, false);
+        // İlk yüklemede hiçbir hazır tutar seçili olmasın; kullanıcı seçsin
+        setSelectedAmount('', false);
 
       const updateFront = () => {
         const nm = (nameInput.value || '').trim();
@@ -1505,6 +1577,154 @@
 
       // İlk render
       updateFront();
+
+      // ==================== DEVAM ET BUTONU İŞLEVSELLİĞİ ====================
+      const continueBtn = document.getElementById('donateContinue');
+      if (continueBtn) {
+        continueBtn.addEventListener('click', () => {
+          // Form validasyonu
+          const name = (nameInput.value || '').trim();
+          const cardNum = (numInput.value || '').replace(/\D/g, '');
+          const expMonth = (mInput.value || '').replace(/\D/g, '');
+          const expYear = (yInput.value || '').replace(/\D/g, '');
+          const cvv = (cvvInput.value || '').replace(/\D/g, '');
+          const amount = selectedAmount;
+          const isCustomAmount = customCard && customCard.classList.contains('active');
+
+          // BAĞIŞ MİKTARI KONTROLÜ (ÖNCELİKLE)
+          if (!amount || amount === '' || amount === '0' || parseFloat(amount) <= 0) {
+            if (isCustomAmount) {
+              alert('⚠️ Lütfen "İstediğin Miktar" alanına geçerli bir tutar giriniz.\n\nÖrnek: 500');
+              if (customAmountInput) customAmountInput.focus();
+            } else {
+              alert('⚠️ Lütfen bir bağış miktarı seçiniz veya kendi tutarınızı giriniz.');
+            }
+            return;
+          }
+
+          // KART AD-SOYAD KONTROLÜ
+          if (!name || name.length < 3) {
+            alert('⚠️ Lütfen kart üzerindeki ad ve soyad bilgisini tam olarak giriniz.\n\nÖrnek: Ahmet Yılmaz');
+            nameInput.focus();
+            return;
+          }
+          
+          // SOYAD KONTROLÜ - En az bir boşluk olmalı (ad soyad ayrımı için)
+          if (!name.includes(' ') || name.trim().split(/\s+/).length < 2) {
+            alert('⚠️ Lütfen hem adınızı hem de soyadınızı giriniz.\n\nÖrnek: Ahmet Yılmaz');
+            nameInput.focus();
+            return;
+          }
+          
+          // Her iki kelime de en az 2 karakter olmalı
+          const nameParts = name.trim().split(/\s+/);
+          if (nameParts[0].length < 2 || nameParts[1].length < 2) {
+            alert('⚠️ Ad ve soyad en az 2 karakter olmalıdır.\n\nÖrnek: Ahmet Yılmaz');
+            nameInput.focus();
+            return;
+          }
+          
+          // KART NUMARASI KONTROLÜ
+          if (!cardNum || cardNum.length === 0) {
+            alert('⚠️ Lütfen kart numaranızı giriniz.\n\n16 haneli kart numaranızı eksiksiz yazınız.');
+            numInput.focus();
+            return;
+          }
+          
+          if (cardNum.length < 16) {
+            alert(`⚠️ Kart numarası eksik!\n\nGirilen: ${cardNum.length} hane\nGerekli: 16 hane\n\nLütfen kart numaranızı eksiksiz giriniz.`);
+            numInput.focus();
+            return;
+          }
+          
+          if (cardNum.length > 16) {
+            alert('⚠️ Kart numarası 16 haneden fazla olamaz.\n\nLütfen kontrol ediniz.');
+            numInput.focus();
+            return;
+          }
+          
+          // SON KULLANMA TARİHİ - AY KONTROLÜ
+          if (!expMonth || expMonth.length === 0) {
+            alert('⚠️ Lütfen kartın son kullanma ayını giriniz.\n\nÖrnek: 12 (Aralık ayı için)');
+            mInput.focus();
+            return;
+          }
+          
+          if (expMonth.length < 2) {
+            alert('⚠️ Ay bilgisi eksik!\n\nLütfen 2 haneli ay bilgisi giriniz.\nÖrnek: 01, 06, 12');
+            mInput.focus();
+            return;
+          }
+          
+          const monthNum = parseInt(expMonth);
+          if (monthNum < 1 || monthNum > 12) {
+            alert('⚠️ Geçersiz ay!\n\nAy bilgisi 01 ile 12 arasında olmalıdır.\nÖrnek: 01 (Ocak), 12 (Aralık)');
+            mInput.focus();
+            return;
+          }
+          
+          // SON KULLANMA TARİHİ - YIL KONTROLÜ
+          if (!expYear || expYear.length === 0) {
+            alert('⚠️ Lütfen kartın son kullanma yılını giriniz.\n\nÖrnek: 27 (2027 yılı için)');
+            yInput.focus();
+            return;
+          }
+          
+          if (expYear.length < 2) {
+            alert('⚠️ Yıl bilgisi eksik!\n\nLütfen 2 haneli yıl bilgisi giriniz.\nÖrnek: 25, 26, 27');
+            yInput.focus();
+            return;
+          }
+          
+          // CVV KONTROLÜ
+          if (!cvv || cvv.length === 0) {
+            alert('⚠️ Lütfen kartınızın arkasındaki CVV kodunu giriniz.\n\nCVV kodu 3 veya 4 haneli güvenlik kodudur.');
+            cvvInput.focus();
+            return;
+          }
+          
+          if (cvv.length < 3) {
+            alert(`⚠️ CVV kodu eksik!\n\nGirilen: ${cvv.length} hane\nGerekli: En az 3 hane\n\nLütfen kartınızın arkasındaki güvenlik kodunu tam olarak giriniz.`);
+            cvvInput.focus();
+            return;
+          }
+
+          // Bağışı işle
+          const donationAmount = parseFloat(amount);
+          
+          // LocalStorage'a bağışı ekle
+          const DONATION_KEY = 'totalDonations';
+          const currentTotal = parseFloat(localStorage.getItem(DONATION_KEY) || '0');
+          const newTotal = currentTotal + donationAmount;
+          localStorage.setItem(DONATION_KEY, newTotal.toString());
+          
+          // Başarı mesajı
+          const formattedAmount = Math.floor(donationAmount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          alert(`Bağışınız başarıyla alındı! 🎉\n\nBağış Miktarı: ${formattedAmount}₺\n\nDesteğiniz için teşekkür ederiz!`);
+          
+          // Formu temizle
+          nameInput.value = '';
+          numInput.value = '';
+          mInput.value = '';
+          yInput.value = '';
+          cvvInput.value = '';
+          if (customAmountInput) customAmountInput.value = '';
+          
+          // Kartı sıfırla
+          updateFront();
+          cvvDisplay.textContent = 'CVV';
+          payCard.classList.remove('flipped');
+          
+          // İlk tutarı seç
+          setSelectedAmount(amountButtons[0]?.dataset.amount || '50', false);
+          
+          // Ana sayfaya yönlendir
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        });
+      }
+      // ==================== DEVAM ET BUTONU İŞLEVSELLİĞİ BİTİŞ ====================
     })();
   });
 })();
