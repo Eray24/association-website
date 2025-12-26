@@ -1756,8 +1756,27 @@
       const lineGroup = document.getElementById('line-group');
       const xAxisGroup = document.getElementById('x-axis-group');
       const pointsGroup = document.getElementById('points-group');
+      const resetBtn = document.getElementById('donation-reset-btn');
 
       if (!svg || !yAxisGroup || !lineGroup || !xAxisGroup || !pointsGroup) return;
+
+      const DEFAULT_FIXED_VALUES = [0, 120000, 250000, 400000, 580000, 760000];
+      const FIXED_VALUES_KEY = 'donationFixedValues';
+
+      const getFixedValues = () => {
+        const stored = localStorage.getItem(FIXED_VALUES_KEY);
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length === 6) {
+              return parsed.map((v) => Number(v) || 0);
+            }
+          } catch (err) {
+            // ignore parse errors and fallback
+          }
+        }
+        return DEFAULT_FIXED_VALUES;
+      };
 
       // Grafik boyutları ve padding
       const width = 800;
@@ -1770,118 +1789,145 @@
       const goal = DONATION_GOAL; // 1.000.000
       const currentDonation = getDonationAmount();
       
-      // 7 aylık veri - İlk 6 ay sabit, sadece Ocak ayı değişken
-      const days = ['Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık', 'Ocak'];
-      const fixedValues = [0, 120000, 250000, 400000, 580000, 760000]; // İlk 6 ayın sabit değerleri
-      
-      const dataPoints = days.map((day, index) => ({
-        day: day,
-        value: index < 6 ? fixedValues[index] : currentDonation // Ocak ayı (index=6) mevcut bağış tutarı
-      }));
+      // Grafiği çizmek için fonksiyon
+      const drawChart = () => {
+        // Grupları temizle
+        yAxisGroup.innerHTML = '';
+        lineGroup.innerHTML = '';
+        xAxisGroup.innerHTML = '';
+        pointsGroup.innerHTML = '';
 
-      // Y ekseni scale
-      const yScale = (value) => {
-        const ratio = value / goal;
-        return padding.top + chartHeight - (ratio * chartHeight);
+        // Mevcut bağış tutarını al
+        const current = getDonationAmount();
+
+        // 7 aylık veri - İlk 6 ay sabit, sadece Ocak ayı değişken
+        const days = ['Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık', 'Ocak'];
+        const fixedValues = getFixedValues(); // İlk 6 ayın değerleri (reset sonrası 0 olabilir)
+        
+        const dataPoints = days.map((day, index) => ({
+          day: day,
+          value: index < 6 ? fixedValues[index] : current // Ocak ayı (index=6) mevcut bağış tutarı
+        }));
+
+        // Y ekseni scale
+        const yScale = (value) => {
+          const ratio = value / goal;
+          return padding.top + chartHeight - (ratio * chartHeight);
+        };
+
+        // X ekseni scale
+        const xScale = (index) => {
+          return padding.left + (index * (chartWidth / (days.length - 1)));
+        };
+
+        // Y ekseni ızgarası ve etiketleri
+        const yTicks = [0, 0.25, 0.5, 0.75, 1];
+        yTicks.forEach(tick => {
+          const value = goal * tick;
+          const y = yScale(value);
+          
+          // Yatay ızgara çizgisi
+          const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          gridLine.setAttribute('x1', padding.left);
+          gridLine.setAttribute('x2', width - padding.right);
+          gridLine.setAttribute('y1', y);
+          gridLine.setAttribute('y2', y);
+          gridLine.setAttribute('stroke', '#e5e7eb');
+          gridLine.setAttribute('stroke-width', '1');
+          gridLine.setAttribute('stroke-dasharray', tick === 0 || tick === 1 ? '0' : '4,4');
+          yAxisGroup.appendChild(gridLine);
+
+          // Y ekseni değer etiketi
+          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          label.setAttribute('x', padding.left - 10);
+          label.setAttribute('y', y + 5);
+          label.setAttribute('text-anchor', 'end');
+          label.setAttribute('fill', '#475569');
+          label.setAttribute('font-size', '14');
+          label.setAttribute('font-weight', '500');
+          
+          // Değeri formatla (örn: 1.000.000)
+          const formattedValue = Math.floor(value).toLocaleString('tr-TR');
+          label.textContent = formattedValue + '₺';
+          yAxisGroup.appendChild(label);
+        });
+
+        // Çizgi grafiği çiz
+        const linePoints = dataPoints.map((point, index) => {
+          const x = xScale(index);
+          const y = yScale(point.value);
+          return `${x},${y}`;
+        }).join(' ');
+
+        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        polyline.setAttribute('points', linePoints);
+        polyline.setAttribute('fill', 'none');
+        polyline.setAttribute('stroke', '#3b82f6');
+        polyline.setAttribute('stroke-width', '3');
+        polyline.setAttribute('stroke-linejoin', 'round');
+        polyline.setAttribute('stroke-linecap', 'round');
+        lineGroup.appendChild(polyline);
+
+        // X ekseni gün etiketleri
+        dataPoints.forEach((point, index) => {
+          const x = xScale(index);
+          const y = height - padding.bottom + 30;
+          
+          const dayLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          dayLabel.setAttribute('x', x);
+          dayLabel.setAttribute('y', y);
+          dayLabel.setAttribute('text-anchor', 'middle');
+          dayLabel.setAttribute('fill', '#475569');
+          dayLabel.setAttribute('font-size', '14');
+          dayLabel.setAttribute('font-weight', '500');
+          dayLabel.textContent = point.day;
+          xAxisGroup.appendChild(dayLabel);
+        });
+
+        // Veri noktaları ve değer etiketleri
+        dataPoints.forEach((point, index) => {
+          const x = xScale(index);
+          const y = yScale(point.value);
+
+          // Nokta
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', x);
+          circle.setAttribute('cy', y);
+          circle.setAttribute('r', '5');
+          circle.setAttribute('fill', '#3b82f6');
+          circle.setAttribute('stroke', '#ffffff');
+          circle.setAttribute('stroke-width', '2');
+          pointsGroup.appendChild(circle);
+
+          // Değer etiketi (noktanın üzerinde)
+          const valueLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          valueLabel.setAttribute('x', x);
+          valueLabel.setAttribute('y', y - 15);
+          valueLabel.setAttribute('text-anchor', 'middle');
+          valueLabel.setAttribute('fill', '#0f172a');
+          valueLabel.setAttribute('font-size', '13');
+          valueLabel.setAttribute('font-weight', '600');
+          
+          const formattedValue = Math.floor(point.value).toLocaleString('tr-TR');
+          valueLabel.textContent = formattedValue + '₺';
+          pointsGroup.appendChild(valueLabel);
+        });
       };
 
-      // X ekseni scale
-      const xScale = (index) => {
-        return padding.left + (index * (chartWidth / (days.length - 1)));
-      };
+      // Grafiği ilk çiz
+      drawChart();
 
-      // Y ekseni ızgarası ve etiketleri
-      const yTicks = [0, 0.25, 0.5, 0.75, 1];
-      yTicks.forEach(tick => {
-        const value = goal * tick;
-        const y = yScale(value);
-        
-        // Yatay ızgara çizgisi
-        const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        gridLine.setAttribute('x1', padding.left);
-        gridLine.setAttribute('x2', width - padding.right);
-        gridLine.setAttribute('y1', y);
-        gridLine.setAttribute('y2', y);
-        gridLine.setAttribute('stroke', '#e5e7eb');
-        gridLine.setAttribute('stroke-width', '1');
-        gridLine.setAttribute('stroke-dasharray', tick === 0 || tick === 1 ? '0' : '4,4');
-        yAxisGroup.appendChild(gridLine);
-
-        // Y ekseni değer etiketi
-        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', padding.left - 10);
-        label.setAttribute('y', y + 5);
-        label.setAttribute('text-anchor', 'end');
-        label.setAttribute('fill', '#475569');
-        label.setAttribute('font-size', '14');
-        label.setAttribute('font-weight', '500');
-        
-        // Değeri formatla (örn: 1.000.000)
-        const formattedValue = Math.floor(value).toLocaleString('tr-TR');
-        label.textContent = formattedValue + '₺';
-        yAxisGroup.appendChild(label);
-      });
-
-      // Çizgi grafiği çiz
-      const linePoints = dataPoints.map((point, index) => {
-        const x = xScale(index);
-        const y = yScale(point.value);
-        return `${x},${y}`;
-      }).join(' ');
-
-      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-      polyline.setAttribute('points', linePoints);
-      polyline.setAttribute('fill', 'none');
-      polyline.setAttribute('stroke', '#3b82f6');
-      polyline.setAttribute('stroke-width', '3');
-      polyline.setAttribute('stroke-linejoin', 'round');
-      polyline.setAttribute('stroke-linecap', 'round');
-      lineGroup.appendChild(polyline);
-
-      // X ekseni gün etiketleri
-      dataPoints.forEach((point, index) => {
-        const x = xScale(index);
-        const y = height - padding.bottom + 30;
-        
-        const dayLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        dayLabel.setAttribute('x', x);
-        dayLabel.setAttribute('y', y);
-        dayLabel.setAttribute('text-anchor', 'middle');
-        dayLabel.setAttribute('fill', '#475569');
-        dayLabel.setAttribute('font-size', '14');
-        dayLabel.setAttribute('font-weight', '500');
-        dayLabel.textContent = point.day;
-        xAxisGroup.appendChild(dayLabel);
-      });
-
-      // Veri noktaları ve değer etiketleri
-      dataPoints.forEach((point, index) => {
-        const x = xScale(index);
-        const y = yScale(point.value);
-
-        // Nokta
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', x);
-        circle.setAttribute('cy', y);
-        circle.setAttribute('r', '5');
-        circle.setAttribute('fill', '#3b82f6');
-        circle.setAttribute('stroke', '#ffffff');
-        circle.setAttribute('stroke-width', '2');
-        pointsGroup.appendChild(circle);
-
-        // Değer etiketi (noktanın üzerinde)
-        const valueLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        valueLabel.setAttribute('x', x);
-        valueLabel.setAttribute('y', y - 15);
-        valueLabel.setAttribute('text-anchor', 'middle');
-        valueLabel.setAttribute('fill', '#0f172a');
-        valueLabel.setAttribute('font-size', '13');
-        valueLabel.setAttribute('font-weight', '600');
-        
-        const formattedValue = Math.floor(point.value).toLocaleString('tr-TR');
-        valueLabel.textContent = formattedValue + '₺';
-        pointsGroup.appendChild(valueLabel);
-      });
+      // Sıfırla butonu
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (confirm('Tüm bağış verilerini sıfırlamak istediğinize emin misiniz?')) {
+            localStorage.setItem('totalDonations', '0');
+            localStorage.setItem(FIXED_VALUES_KEY, JSON.stringify(new Array(6).fill(0)));
+            alert('Bağış verileri sıfırlandı.');
+            drawChart();
+          }
+        });
+      }
     })();
   });
 })();
