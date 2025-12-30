@@ -2335,6 +2335,44 @@ body.dark .activities-hero p {
   color: #f3f4f6;
 }
 
+body.dark .blog-card {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+body.dark .blog-card:hover {
+  background: #252f3f;
+  border-color: #4b5563;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+}
+
+body.dark .blog-details h3 {
+  color: #f3f4f6;
+}
+
+body.dark .blog-summary {
+  color: #d1d5db;
+}
+
+body.dark .blog-footer {
+  border-top-color: #374151;
+}
+
+body.dark .budget-badge {
+  background: linear-gradient(135deg, #065f46, #047857);
+  color: #d1fae5;
+}
+
+body.dark .read-more {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+body.dark .read-more:hover {
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
 body.dark .activity-card {
   background: #1f2937;
   border-color: #374151;
@@ -3090,23 +3128,28 @@ body.dark #admin-team-manager {
     padding: 20px 0 10px;
     max-width: 1400px;
     margin: 0 auto;
+    width: 100%;
+    padding-left: calc((100% - 1400px) / 2);
+    padding-right: calc((100% - 1400px) / 2);
 }
 
 /* Blog Kartı Tasarımı */
 .blog-card {
     background: white;
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
-    cursor: pointer; /* Tıklanabilir hissi verir */
+    cursor: pointer;
+    border: 1px solid #f3f4f6;
 }
 
 .blog-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    border-color: #e5e7eb;
 }
 
 /* Görsel Alanı */
@@ -3142,28 +3185,30 @@ body.dark #admin-team-manager {
 
 /* İçerik Alanı */
 .blog-details {
-    padding: 25px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    gap: 8px;
 }
 
 .blog-details h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: #2c3e50;
+    font-size: 1.35rem;
+    margin: 0;
+    color: #0f172a;
+    font-weight: 700;
 }
 
 .blog-summary {
-    color: #555;
+    color: #475569;
     line-height: 1.6;
-    font-size: 0.95rem;
-    margin-bottom: 20px;
+    font-size: 0.9rem;
+    margin: 0;
     display: -webkit-box;
-   /* Metni 3 satırla sınırlar (İsteğe bağlı) */
     -webkit-box-orient: vertical;
     overflow: hidden;
-    flex-grow: 1; /* Alt kısmın en alta itilmesini sağlar */
+    flex-grow: 1;
+    -webkit-line-clamp: 3;
 }
 
 /* Alt Bilgi (Bütçe ve Buton) */
@@ -3171,40 +3216,47 @@ body.dark #admin-team-manager {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 16px;
     margin-top: auto;
+    gap: 10px;
 }
 
 .budget-badge {
     font-size: 0.85rem;
-    color: #27ae60;
-    font-weight: 600;
-    background: #e8f8f5;
-    padding: 5px 10px;
-    border-radius: 5px;
+    color: #16a34a;
+    font-weight: 700;
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    padding: 6px 12px;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .read-more {
-    background: none;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     border: none;
-    color: #3498db;
-    font-weight: 600;
+    color: #ffffff;
+    font-weight: 700;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: color 0.2s;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    white-space: nowrap;
 }
 
 .read-more:hover {
-    color: #2980b9;
-    text-decoration: underline;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 /* Faaliyetler - Admin yönetim bloğu */
 .activities-content {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto 30px;
-  padding: 0 5% 20px;
+  padding: 20px 0 10px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -3258,34 +3310,92 @@ body.dark #admin-team-manager {
 }
 
 .activities-admin button.primary {
-  background: #16a34a;
+  background: linear-gradient(135deg, #16a34a, #15803d);
   color: #ffffff;
-  border: 1px solid #16a34a;
+  border: 1px solid #15803d;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(22,163,74,0.18);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  transition: all 0.3s ease;
+}
+
+.activities-admin button.primary:hover {
+  background: linear-gradient(135deg, #15803d, #127a3f);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4);
+  transform: translateY(-2px);
 }
 
 .activities-admin button.secondary {
-  background: #ffffff;
-  color: #2563eb;
-  border: 1px solid #2563eb;
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  color: #0369a1;
+  border: 1px solid #0369a1;
   padding: 9px 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(3, 105, 161, 0.12);
+}
+
+.activities-admin button.secondary:hover {
+  background: linear-gradient(135deg, #bae6fd, #7dd3fc);
+  box-shadow: 0 4px 10px rgba(3, 105, 161, 0.2);
+  transform: translateY(-1px);
 }
 
 .activities-admin button.danger {
-  background: #ffffff;
-  color: #b91c1c;
-  border: 1px solid #b91c1c;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border: 1px solid #991b1b;
   padding: 9px 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(153, 27, 27, 0.12);
+}
+
+.activities-admin button.danger:hover {
+  background: linear-gradient(135deg, #fecaca, #fca5a5);
+  box-shadow: 0 4px 10px rgba(153, 27, 27, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Grid Kartları Butonları */
+button.secondary {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #0369a1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+}
+
+button.secondary:hover {
+  background: #bae6fd;
+  transform: translateY(-1px);
+}
+
+button.danger {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #991b1b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+}
+
+button.danger:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
 }
 
 .activities-admin button.ghost {
