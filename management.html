@@ -53,28 +53,6 @@
     <section class="management-content">
       <div id="team-grid" class="team-grid"></div>
 
-      <div class="management-info">
-        <h2>Yönetim İlkeleri</h2>
-        <ul>
-          <li>
-            <strong>Şeffaflık:</strong> Tüm kararlar açık ve halkçı bir şekilde
-            alınır
-          </li>
-          <li>
-            <strong>Hesap Verebilirlik:</strong> Yönetim kurulu üyeleri
-            faaliyetleri için sorumludur
-          </li>
-          <li>
-            <strong>Katılımcılık:</strong> Önemli kararlar tüm üyeler tarafından
-            onaylanır
-          </li>
-          <li>
-            <strong>Profesyonellik:</strong> En yüksek etik standartlarında
-            çalışmayız
-          </li>
-        </ul>
-      </div>
-
       <div data-admin-only style="display: none; margin-top: 40px; padding: 30px; background: #e7f3ff; border: 2px solid #0066cc; border-radius: 12px;">
         <h2 style="color: #0066cc; margin-top: 0;">Admin Yönetim Alanı</h2>
         <p><strong>Sistem Kontrol Paneli</strong></p>
@@ -100,6 +78,11 @@
               <button type="button" id="cancelBtn" style="background:#777;color:white;border:none;padding:8px 12px;border-radius:6px;display:none;">İptal</button>
             </div>
           </form>
+        </div>
+
+        <div id="admin-members-list" style="margin-top:30px; background:#fff; padding:20px; border-radius:8px; display:none;">
+          <h3 style="margin:0 0 15px 0; color:#0066cc;">Kayıtlı Üyeler</h3>
+          <div id="membersList" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;"></div>
         </div>
       </div>
 
@@ -134,6 +117,91 @@
         if (su && su.role === 'admin') {
           const manager = document.getElementById('admin-team-manager');
           if (manager) manager.style.display = 'block';
+          const membersList = document.getElementById('admin-members-list');
+          if (membersList) membersList.style.display = 'block';
+          renderMembers();
+        }
+
+        // Render members list for admin
+        function renderMembers() {
+          if (!(su && su.role === 'admin')) return;
+          const membersContainer = document.getElementById('membersList');
+          if (!membersContainer) return;
+          
+          const users = JSON.parse(localStorage.getItem('users') || '[]');
+          const donations = JSON.parse(localStorage.getItem('donations') || '[]');
+          
+          membersContainer.innerHTML = '';
+          
+          // Admin kendini görmemeli - sadece diğer kullanıcıları göster
+          const filteredUsers = users.filter(user => user.email !== su.email);
+          
+          filteredUsers.forEach((user, idx) => {
+            const userDonations = donations.filter(d => d.email === user.email);
+            const totalDonation = userDonations.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+            
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:16px; position:relative;';
+            
+            const roleColor = user.role === 'admin' ? '#0066cc' : '#2e7d32';
+            const roleBadge = user.role === 'admin' ? '👑 Admin' : '👤 Üye';
+            
+            card.innerHTML = `
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <div style="width:48px; height:48px; background:#e5e7eb; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                  ${user.role === 'admin' ? '👑' : '👤'}
+                </div>
+                <div style="flex:1;">
+                  <h4 style="margin:0; color:#1f2937; font-size:16px;">${user.firstName} ${user.lastName}</h4>
+                  <p style="margin:2px 0 0 0; color:${roleColor}; font-size:13px; font-weight:600;">${roleBadge}</p>
+                </div>
+              </div>
+              <div style="font-size:13px; color:#6b7280; line-height:1.6;">
+                <p style="margin:4px 0;"><strong>📧 E-posta:</strong> ${user.email}</p>
+                <p style="margin:4px 0;"><strong>📞 Telefon:</strong> ${user.phone || 'Belirtilmemiş'}</p>
+                <p style="margin:4px 0;"><strong>💰 Toplam Bağış:</strong> <span style="color:#2e7d32; font-weight:600;">${totalDonation.toFixed(2)} ₺</span></p>
+                <p style="margin:4px 0;"><strong>📊 Bağış Sayısı:</strong> ${userDonations.length}</p>
+              </div>
+            `;
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Sil';
+            deleteBtn.style.cssText = 'margin-top:12px; background:#d32f2f; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; width:100%;';
+            // Orijinal users dizisindeki indexi bul
+            const originalIdx = users.findIndex(u => u.email === user.email);
+            deleteBtn.onclick = () => deleteMemberUser(originalIdx, user.email);
+            card.appendChild(deleteBtn);
+            
+            membersContainer.appendChild(card);
+          });
+        }
+
+        function deleteMemberUser(idx, email) {
+          if (!(su && su.role === 'admin')) {
+            alert('Yetkiniz yok!');
+            return;
+          }
+          
+          if (!confirm(`Bu üyeyi silmek istediğinizden emin misiniz?\n\nE-posta: ${email}\n\nNot: Bu işlem geri alınamaz!`)) {
+            return;
+          }
+          
+          try {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            users.splice(idx, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Update counts
+            document.getElementById("totalUsers").textContent = users.length;
+            document.getElementById("adminCount").textContent = users.filter((u) => u.role === "admin").length;
+            document.getElementById("memberCount").textContent = users.filter((u) => u.role === "member").length;
+            
+            renderMembers();
+            alert('Üye başarıyla silindi!');
+          } catch (e) {
+            alert('Üye silinirken bir hata oluştu!');
+            console.error(e);
+          }
         }
 
         // Team management

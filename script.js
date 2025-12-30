@@ -1821,6 +1821,20 @@
           const newTotal = currentTotal + donationAmount;
           localStorage.setItem(DONATION_KEY, newTotal.toString());
           
+          // Kullanıcının bağış detayını kaydet
+          const currentUser = JSON.parse(sessionStorage.getItem('user') || 'null');
+          if (currentUser && currentUser.email) {
+            const donations = JSON.parse(localStorage.getItem('donations') || '[]');
+            donations.push({
+              email: currentUser.email,
+              name: `${currentUser.firstName} ${currentUser.lastName}`,
+              amount: donationAmount,
+              date: new Date().toISOString(),
+              timestamp: Date.now()
+            });
+            localStorage.setItem('donations', JSON.stringify(donations));
+          }
+          
           // Başarı modalini göster
           const formattedAmount = formatTLText(donationAmount);
           openDonationModal(formattedAmount);
