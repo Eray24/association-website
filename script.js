@@ -1623,6 +1623,7 @@
       const donationInvoiceBtn = document.getElementById('donation-invoice-btn');
       const donationShareButtons = document.querySelectorAll('.donation-share button[data-share]');
       let lastDonationText = '0 TL';
+      let lastDonationName = 'Bağışçı';
 
       const formatTLText = (value) => `${Math.floor(value).toLocaleString('tr-TR')} TL`;
 
@@ -1632,8 +1633,9 @@
         donationModal.setAttribute('aria-hidden', visible ? 'false' : 'true');
       };
 
-      const openDonationModal = (amountText) => {
+      const openDonationModal = (amountText, donorName = 'Bağışçı') => {
         lastDonationText = amountText;
+        lastDonationName = donorName;
         if (donationModalMessage) {
           donationModalMessage.textContent = `${amountText} tutarındaki değerli bağışınız başarıyla alınmıştır.`;
         }
@@ -1801,8 +1803,7 @@
           <body>
             <div class="container">
               <div class="header">
-                <h1>💝 Bağış Teşekkürü</h1>
-                <p class="subtitle">Bağışınız için teşekkür ederiz</p>
+                <h1>💝 Bağışınız için Teşekkür Ederiz</h1>
               </div>
               
               <div class="amount-box">
@@ -1812,6 +1813,10 @@
 
               <div class="details-box">
                 <div class="details-grid">
+                  <div class="detail-item">
+                    <p class="detail-label">Bağışçı Adı</p>
+                    <p class="detail-value">${lastDonationName}</p>
+                  </div>
                   <div class="detail-item">
                     <p class="detail-label">Tarih</p>
                     <p class="detail-value">${dateStr}</p>
@@ -2026,7 +2031,7 @@
           
           // Başarı modalini göster
           const formattedAmount = formatTLText(donationAmount);
-          openDonationModal(formattedAmount);
+          openDonationModal(formattedAmount, name);
           
           // Formu temizle
           nameInput.value = '';
