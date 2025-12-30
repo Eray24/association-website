@@ -1671,21 +1671,193 @@
       if (donationInvoiceBtn) {
         donationInvoiceBtn.addEventListener('click', () => {
           const now = new Date();
-          const content = [
-            'Ufuk Derneği Bağış Makbuzu',
-            '----------------------------',
-            `Tutar: ${lastDonationText}`,
-            `Tarih: ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`,
-            'Bağışınız için teşekkür ederiz.'
-          ].join('\n');
+          const dateStr = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+          const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+          const referenceNum = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+          
+          // PDF içeriğini oluştur
+          const pdfContent = `
+          <!DOCTYPE html>
+          <html lang="tr">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Bağış Makbuzu</title>
+            <style>
+              body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 40px;
+                background: white;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 40px;
+              }
+              h1 {
+                margin: 0 0 10px;
+                color: #1b5e20;
+                font-size: 32px;
+              }
+              .subtitle {
+                margin: 0;
+                color: #666;
+                font-size: 16px;
+              }
+              .amount-box {
+                background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+              }
+              .amount-label {
+                margin: 0 0 10px;
+                color: #666;
+                font-size: 14px;
+              }
+              .amount-value {
+                margin: 0;
+                color: #1b5e20;
+                font-size: 48px;
+                font-weight: bold;
+              }
+              .details-box {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 30px;
+              }
+              .details-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+              }
+              .detail-item {
+                margin: 0;
+              }
+              .detail-label {
+                margin: 0 0 5px;
+                color: #999;
+                font-size: 12px;
+                text-transform: uppercase;
+                font-weight: bold;
+              }
+              .detail-value {
+                margin: 0;
+                color: #333;
+                font-size: 16px;
+                font-weight: 600;
+              }
+              .status {
+                color: #2e7d32;
+              }
+              .message-box {
+                background: #f9f9f9;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 30px;
+                text-align: center;
+              }
+              .message-text {
+                margin: 0 0 15px;
+                color: #666;
+                font-size: 14px;
+                line-height: 1.6;
+              }
+              .message-thanks {
+                margin: 0;
+                color: #2e7d32;
+                font-size: 12px;
+                font-weight: 600;
+              }
+              .footer {
+                border-top: 2px solid #e0e0e0;
+                padding-top: 20px;
+                text-align: center;
+              }
+              .footer-text {
+                margin: 0;
+                color: #999;
+                font-size: 12px;
+              }
+              .footer-small {
+                margin: 15px 0 0;
+                color: #999;
+                font-size: 11px;
+              }
+              @media print {
+                body {
+                  margin: 0;
+                  padding: 20px;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>💝 Bağış Teşekkürü</h1>
+                <p class="subtitle">Bağışınız için teşekkür ederiz</p>
+              </div>
+              
+              <div class="amount-box">
+                <p class="amount-label">Bağış Tutarı</p>
+                <p class="amount-value">${lastDonationText}</p>
+              </div>
 
-          const blob = new Blob([content], { type: 'text/plain' });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `bagis-makbuzu-${now.toISOString().slice(0, 10)}.txt`;
-          link.click();
-          URL.revokeObjectURL(url);
+              <div class="details-box">
+                <div class="details-grid">
+                  <div class="detail-item">
+                    <p class="detail-label">Tarih</p>
+                    <p class="detail-value">${dateStr}</p>
+                  </div>
+                  <div class="detail-item">
+                    <p class="detail-label">Saat</p>
+                    <p class="detail-value">${timeStr}</p>
+                  </div>
+                  <div class="detail-item">
+                    <p class="detail-label">Durum</p>
+                    <p class="detail-value status">✓ Başarılı</p>
+                  </div>
+                  <div class="detail-item">
+                    <p class="detail-label">İşlem No</p>
+                    <p class="detail-value">#${referenceNum}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="message-box">
+              </div>
+
+              <div class="footer">
+                <p class="footer-text">
+                  📧 info@ufukdernegi.org | 📞 0 (312) 310 10 10<br/>
+                  📍 Ankara, Türkiye
+                </p>
+                <p class="footer-small">
+                  Ufuk Derneği © 2025. Tüm hakları saklıdır.
+                </p>
+              </div>
+            </div>
+            <script>
+              window.onload = function() {
+                window.print();
+                setTimeout(() => window.close(), 500);
+              };
+            </script>
+          </body>
+          </html>
+          `;
+          
+          // Yeni pencere aç ve PDF olarak yazdır
+          const printWindow = window.open('', '', 'width=800,height=600');
+          printWindow.document.write(pdfContent);
+          printWindow.document.close();
         });
       }
 

@@ -260,6 +260,58 @@
         </div>
       </div>
     </div>
+
+    <!-- Gizli PDF kartı (PDF'e dönüştürülecek) -->
+    <div id="donation-receipt-template" style="display: none; width: 800px; background: white; padding: 60px 40px; font-family: 'Inter', sans-serif;">
+      <div style="text-align: center; margin-bottom: 40px;">
+        <h1 style="margin: 0 0 10px; color: #1b5e20; font-size: 32px;">💝 Bağış Teşekkürü</h1>
+        <p style="margin: 0; color: #666; font-size: 16px;">Bağışınız için teşekkür ederiz</p>
+      </div>
+      
+      <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 30px; margin-bottom: 30px; text-align: center;">
+        <p style="margin: 0 0 10px; color: #666; font-size: 14px;">Bağış Tutarı</p>
+        <p style="margin: 0; color: #1b5e20; font-size: 48px; font-weight: 700;" id="pdf-amount">0 ₺</p>
+      </div>
+
+      <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <p style="margin: 0 0 5px; color: #999; font-size: 12px; text-transform: uppercase;">Tarih</p>
+            <p style="margin: 0; color: #333; font-size: 16px; font-weight: 600;" id="pdf-date">-</p>
+          </div>
+          <div>
+            <p style="margin: 0 0 5px; color: #999; font-size: 12px; text-transform: uppercase;">Saat</p>
+            <p style="margin: 0; color: #333; font-size: 16px; font-weight: 600;" id="pdf-time">-</p>
+          </div>
+          <div>
+            <p style="margin: 0 0 5px; color: #999; font-size: 12px; text-transform: uppercase;">Durum</p>
+            <p style="margin: 0; color: #2e7d32; font-size: 16px; font-weight: 600;">✓ Başarılı</p>
+          </div>
+          <div>
+            <p style="margin: 0 0 5px; color: #999; font-size: 12px; text-transform: uppercase;">İşlem No</p>
+            <p style="margin: 0; color: #333; font-size: 16px; font-weight: 600;" id="pdf-reference">#-</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f9f9f9; border-radius: 8px; padding: 20px; margin-bottom: 30px; text-align: center;">
+        <p style="margin: 0 0 15px; color: #666; font-size: 14px; line-height: 1.6;">
+          <strong>Ufuk Derneği</strong>'ne yaptığınız değerli bağış,<br/>
+          toplumsal dayanışmayı güçlendirmeye katkıda bulunmaktadır.
+        </p>
+        <p style="margin: 0; color: #2e7d32; font-size: 12px; font-weight: 600;">Hayırlarınıza vesilе olduysanız</p>
+      </div>
+
+      <div style="border-top: 2px solid #e0e0e0; padding-top: 20px; text-align: center;">
+        <p style="margin: 0; color: #999; font-size: 12px;">
+          📧 info@ufukdernegi.org | 📞 0 (312) 310 10 10<br/>
+          📍 Ankara, Türkiye
+        </p>
+        <p style="margin: 15px 0 0; color: #999; font-size: 11px;">
+          Ufuk Derneği © 2025. Tüm hakları saklıdır.
+        </p>
+      </div>
+    </div>
     <footer class="site-footer">
       <div class="footer-top">
         <div class="footer-brand">
