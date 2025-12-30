@@ -3087,7 +3087,7 @@ body.dark #admin-team-manager {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive grid */
     gap: 30px;
-    padding: 40px 5%;
+    padding: 20px 0 10px;
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -3198,4 +3198,175 @@ body.dark #admin-team-manager {
 .read-more:hover {
     color: #2980b9;
     text-decoration: underline;
+}
+
+/* Faaliyetler - Admin yönetim bloğu */
+.activities-content {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  padding: 0 5% 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activities-admin {
+  display: none;
+}
+
+.admin-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.admin-card-header h2,
+.admin-card-header h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.admin-card .eyebrow {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.admin-card .muted {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.activities-admin button.primary {
+  background: #16a34a;
+  color: #ffffff;
+  border: 1px solid #16a34a;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(22,163,74,0.18);
+}
+
+.activities-admin button.secondary {
+  background: #ffffff;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.activities-admin button.danger {
+  background: #ffffff;
+  color: #b91c1c;
+  border: 1px solid #b91c1c;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.activities-admin button.ghost {
+  background: transparent;
+  color: #475569;
+  border: 1px solid #e5e7eb;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.admin-form input,
+.admin-form textarea {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #f8fafc;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.15);
+  background: #ffffff;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-list-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.row-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.row-sub {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .blog-grid { padding: 20px; }
+  .admin-card-header { flex-direction: column; align-items: flex-start; }
+  .admin-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
 }

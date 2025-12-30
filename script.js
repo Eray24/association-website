@@ -2053,6 +2053,309 @@
       // ==================== DEVAM ET BUTONU İŞLEVSELLİĞİ BİTİŞ ====================
     })();
 
+    // Faaliyetler sayfası: admin CRUD + modal detay
+    (function initActivitiesPage() {
+      if (currentPage !== 'activities.html') return;
+
+      const grid = document.getElementById('activities-grid');
+      const adminWrapper = document.getElementById('activities-admin');
+      const adminList = document.getElementById('activities-admin-list');
+      const modal = document.getElementById('activityModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+      const modalClose = document.querySelector('.modal-close');
+
+      const form = document.getElementById('activityForm');
+      const idInput = document.getElementById('activityId');
+      const titleInput = document.getElementById('activityTitle');
+      const categoryInput = document.getElementById('activityCategory');
+      const budgetInput = document.getElementById('activityBudget');
+      const imageInput = document.getElementById('activityImage');
+      const summaryInput = document.getElementById('activitySummary');
+      const descInput = document.getElementById('activityDescription');
+      const addBtn = document.getElementById('activityAddBtn');
+      const saveBtn = document.getElementById('activitySaveBtn');
+      const cancelBtn = document.getElementById('activityCancelBtn');
+
+      const defaultActivities = [
+        {
+          id: 'egitim',
+          title: 'Eğitim Desteği',
+          category: '📚 Eğitim',
+          budget: '₺125,000',
+          image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80',
+          summary: 'Kırsal bölgelerdeki kütüphaneleri yeniliyor, başarılı öğrencilere burs ve teknoloji desteği sağlıyoruz.',
+          description: '<p><strong>Proje Amacı:</strong> Maddi imkanı kısıtlı öğrencilerin eğitim hayatlarını sürdürebilmelerini sağlamak.</p><ul><li>✅ 50 öğrenciye yıllık burs desteği</li><li>✅ 200 öğrenciye kırtasiye ve kitap yardımı</li><li>✅ Ücretsiz dersane ve kurs imkanları</li><li>✅ Bilgisayar ve tablet desteği</li></ul><p><strong>Etki:</strong> 250+ öğrenciye ulaşıldı.</p>'
+        },
+        {
+          id: 'saglik',
+          title: 'Sağlık Yardımı',
+          category: '🏥 Sağlık',
+          budget: '₺85,000',
+          image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&q=80',
+          summary: 'Sosyal güvencesi olmayan ailelerin tedavi, ilaç ve rehabilitasyon süreçlerinde yanındayız.',
+          description: '<p><strong>Proje Amacı:</strong> İhtiyaç sahibi ailelerin sağlık harcamalarına destek olmak.</p><ul><li>✅ Kronik hastalara ilaç yardımı</li><li>✅ Ameliyat ve tedavi giderlerinde destek</li><li>✅ Ücretsiz sağlık taramaları</li><li>✅ Evde bakım hizmeti</li></ul><p><strong>Etki:</strong> 120 aileye düzenli sağlık desteği sağlandı.</p>'
+        },
+        {
+          id: 'gida',
+          title: 'Gıda Yardımı',
+          category: '🍽️ Yardım',
+          budget: '₺95,000',
+          image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80',
+          summary: 'Düzenli gıda kolisi ve sıcak yemek dağıtımıyla ihtiyaç sahiplerinin sofralarına destek oluyoruz.',
+          description: '<p><strong>Proje Amacı:</strong> Gıda güvencesi olmayan ailelere temel gıda desteği sağlamak.</p><ul><li>✅ Aylık düzenli gıda kolisi dağıtımı</li><li>✅ Ramazan ayında iftar ve kumanya yardımı</li><li>✅ Sokak hayvanları için mama bağışı</li><li>✅ Günlük sıcak yemek servisi</li></ul><p><strong>Etki:</strong> 300+ aileye düzenli gıda yardımı ulaştırıldı.</p>'
+        },
+        {
+          id: 'kultur',
+          title: 'Kültür ve Sanat',
+          category: '🎭 Sanat',
+          budget: '₺45,000',
+          image: 'https://images.unsplash.com/photo-1514533450685-4493e01d1fdc?auto=format&fit=crop&w=600&q=80',
+          summary: 'Ücretsiz tiyatro, atölye ve kurslarla sanata erişimi kolaylaştırıyoruz.',
+          description: '<p><strong>Proje Amacı:</strong> Toplumsal kültür birikimini zenginleştirmek ve sanata erişimi kolaylaştırmak.</p><ul><li>✅ Ücretsiz tiyatro ve sinema gösterimleri</li><li>✅ Çocuklara yönelik sanat atölyeleri</li><li>✅ Müzik ve dans kursları</li><li>✅ Kitap okuma kulüpleri</li></ul><p><strong>Etki:</strong> 15 etkinlik, 500+ katılımcı.</p>'
+        },
+        {
+          id: 'cevre',
+          title: 'Çevre Projeleri',
+          category: '🌱 Doğa',
+          budget: '₺35,000',
+          image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb7d5fa5?auto=format&fit=crop&w=600&q=80',
+          summary: 'Ağaçlandırma ve geri dönüşüm eğitimleriyle sürdürülebilir bir gelecek için çalışıyoruz.',
+          description: '<p><strong>Proje Amacı:</strong> Çevre bilincini artırmak ve doğayı korumak.</p><ul><li>✅ Ağaçlandırma kampanyaları</li><li>✅ Geri dönüşüm eğitimleri</li><li>✅ Atık yönetimi projeleri</li><li>✅ Doğa temizliği etkinlikleri</li></ul><p><strong>Etki:</strong> 5.000 fidan toprakla buluştu.</p>'
+        },
+        {
+          id: 'meslek',
+          title: 'Meslek Edindirme',
+          category: '👷 Kariyer',
+          budget: '₺75,000',
+          image: 'https://images.unsplash.com/photo-1581092921461-eab62e97a783?auto=format&fit=crop&w=600&q=80',
+          summary: 'Kodlama, el sanatları ve tekstilde sertifikalı kurslar ile istihdam köprüleri kuruyoruz.',
+          description: '<p><strong>Proje Amacı:</strong> İşsiz bireylere mesleki beceri kazandırmak.</p><ul><li>✅ Kodlama, el sanatları ve tekstil kursları</li><li>✅ Sertifikalı eğitim programları</li><li>✅ İş bulma ve staj imkanı</li><li>✅ Kariyer danışmanlığı</li></ul><p><strong>Etki:</strong> 200 mezun, %40 istihdam oranı.</p>'
+        }
+      ];
+
+      const stripTags = (html = '') => {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return temp.textContent || temp.innerText || '';
+      };
+
+      const loadActivities = () => {
+        try {
+          const stored = JSON.parse(localStorage.getItem('activitiesData') || 'null');
+          if (Array.isArray(stored) && stored.length) return stored;
+        } catch (err) {
+          // ignore parse error
+        }
+        return defaultActivities;
+      };
+
+      let activities = loadActivities();
+
+      const saveActivities = () => {
+        localStorage.setItem('activitiesData', JSON.stringify(activities));
+      };
+
+      const renderGrid = () => {
+        if (!grid) return;
+        grid.innerHTML = '';
+        activities.forEach((act) => {
+          const card = document.createElement('article');
+          card.className = 'blog-card';
+          card.dataset.activityId = act.id;
+          card.innerHTML = `
+            <div class="blog-image">
+              <img src="${act.image}" alt="${act.title}">
+              <span class="blog-category">${act.category}</span>
+            </div>
+            <div class="blog-details">
+              <h3>${act.title}</h3>
+              <p class="blog-summary">${act.summary}</p>
+              <div class="blog-footer">
+                <span class="budget-badge">🎯 Fon Hedefi: ${act.budget}</span>
+                <div class="activity-card-actions" style="display:flex; gap:8px; align-items:center;"></div>
+              </div>
+              <button class="read-more" data-activity-id="${act.id}" style="margin-top:12px;">Devamını Oku →</button>
+            </div>
+          `;
+
+          const actions = card.querySelector('.activity-card-actions');
+          if (actions && isAdmin(su)) {
+            actions.innerHTML = `
+              <button data-edit="${act.id}" class="secondary" style="padding:8px 12px;">Düzenle</button>
+              <button data-del="${act.id}" class="danger" style="padding:8px 12px;">Sil</button>
+            `;
+          }
+
+          grid.appendChild(card);
+        });
+
+        grid.querySelectorAll('.read-more').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.activityId;
+            const act = activities.find((a) => String(a.id) === String(id));
+            if (!act) return;
+            modalTitle.textContent = act.title;
+            modalBody.innerHTML = act.description || act.summary || '';
+            modal.style.display = 'flex';
+          });
+        });
+
+        if (isAdmin(su)) {
+          grid.querySelectorAll('button[data-edit]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.dataset.edit;
+              const act = activities.find((a) => String(a.id) === String(id));
+              if (!act) return;
+              idInput.value = act.id;
+              titleInput.value = act.title;
+              categoryInput.value = act.category;
+              budgetInput.value = act.budget;
+              imageInput.value = act.image;
+              summaryInput.value = act.summary;
+              descInput.value = stripTags(act.description || '');
+              addBtn.style.display = 'none';
+              saveBtn.style.display = 'inline-block';
+              cancelBtn.style.display = 'inline-block';
+              window.scrollTo({ top: form?.offsetTop || 0, behavior: 'smooth' });
+            });
+          });
+
+          grid.querySelectorAll('button[data-del]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.dataset.del;
+              if (!confirm('Bu faaliyeti silmek istiyor musunuz?')) return;
+              activities = activities.filter((a) => String(a.id) !== String(id));
+              saveActivities();
+              renderGrid();
+              renderAdminList();
+            });
+          });
+        }
+      };
+
+      const renderAdminList = () => {
+        if (!adminList) return;
+        adminList.innerHTML = '';
+        activities.forEach((act) => {
+          const row = document.createElement('div');
+          row.className = 'admin-list-row';
+          row.innerHTML = `
+            <div>
+              <div class="row-title">${act.title}</div>
+              <div class="row-sub">${act.category} • ${act.budget}</div>
+            </div>
+            <div class="row-actions">
+              <button data-edit="${act.id}" class="secondary">Düzenle</button>
+              <button data-del="${act.id}" class="danger">Sil</button>
+            </div>
+          `;
+          adminList.appendChild(row);
+        });
+
+        adminList.querySelectorAll('button[data-edit]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.edit;
+            const act = activities.find((a) => String(a.id) === String(id));
+            if (!act) return;
+            idInput.value = act.id;
+            titleInput.value = act.title;
+            categoryInput.value = act.category;
+            budgetInput.value = act.budget;
+            imageInput.value = act.image;
+            summaryInput.value = act.summary;
+            descInput.value = stripTags(act.description || '');
+            addBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+            window.scrollTo({ top: form?.offsetTop || 0, behavior: 'smooth' });
+          });
+        });
+
+        adminList.querySelectorAll('button[data-del]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.del;
+            if (!confirm('Bu faaliyeti silmek istiyor musunuz?')) return;
+            activities = activities.filter((a) => String(a.id) !== String(id));
+            saveActivities();
+            renderGrid();
+            renderAdminList();
+          });
+        });
+      };
+
+      const resetForm = () => {
+        if (form) form.reset();
+        idInput.value = '';
+        addBtn.style.display = 'inline-block';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+      };
+
+      if (addBtn) {
+        addBtn.addEventListener('click', () => {
+          if (!(titleInput.value && categoryInput.value && budgetInput.value && imageInput.value && summaryInput.value)) {
+            alert('Lütfen başlık, kategori, fon hedefi, görsel ve özet alanlarını doldurun.');
+            return;
+          }
+          const newAct = {
+            id: Date.now().toString(),
+            title: titleInput.value.trim(),
+            category: categoryInput.value.trim(),
+            budget: budgetInput.value.trim(),
+            image: imageInput.value.trim(),
+            summary: summaryInput.value.trim(),
+            description: (descInput.value || '').trim()
+          };
+          activities.push(newAct);
+          saveActivities();
+          renderGrid();
+          renderAdminList();
+          resetForm();
+        });
+      }
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          const id = idInput.value;
+          const idx = activities.findIndex((a) => String(a.id) === String(id));
+          if (idx === -1) return;
+          activities[idx] = {
+            id,
+            title: titleInput.value.trim(),
+            category: categoryInput.value.trim(),
+            budget: budgetInput.value.trim(),
+            image: imageInput.value.trim(),
+            summary: summaryInput.value.trim(),
+            description: (descInput.value || '').trim()
+          };
+          saveActivities();
+          renderGrid();
+          renderAdminList();
+          resetForm();
+        });
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', resetForm);
+      }
+
+      if (modal && modalClose) {
+        modalClose.addEventListener('click', () => (modal.style.display = 'none'));
+        window.addEventListener('click', (e) => {
+          if (e.target === modal) modal.style.display = 'none';
+        });
+      }
+
+      const suUser = getSessionUser();
+      if (suUser && isAdmin(suUser) && adminWrapper) {
+        adminWrapper.style.display = 'block';
+        renderAdminList();
+      }
+
+      renderGrid();
+    })();
+
     (function initDonationManagementPage() {
       if (currentPage !== 'donation-management.html' || !isAdmin(su)) return;
 

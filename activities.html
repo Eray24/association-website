@@ -39,111 +39,61 @@
 </section>
 
 <section class="activities-content">
-  <div class="blog-grid">
-    
-    <article class="blog-card" data-activity="egitim">
-      <div class="blog-image">
-        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80" alt="Eğitim Desteği">
-        <span class="blog-category">📚 Eğitim</span>
-      </div>
-      <div class="blog-details">
-        <h3>Eğitim Desteği</h3>
-        <p class="blog-summary">
-          Geleceğimizin teminatı olan çocuklarımızın eğitim hayatlarında fırsat eşitliğini yakalamaları en büyük önceliğimizdir. Kırsal bölgelerdeki köy okullarının kütüphanelerini yeniliyor, maddi imkansızlıklar nedeniyle eğitimine devam etmekte zorlanan başarılı öğrencilere burs sağlıyoruz. Bu yıl teknoloji sınıfları kurarak onları dijital çağa hazırlamayı hedefliyoruz.
-        </p>
-        <div class="blog-footer">
-          <span class="budget-badge">🎯 Fon Hedefi: ₺125,000</span>
-          
+  <div id="activities-admin" class="activities-admin" data-admin-only style="display:none; margin-bottom:32px;">
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <div>
+          <p class="eyebrow">Yönetici Alanı</p>
+          <h2>Faaliyet Ekle / Düzenle</h2>
+          <p class="muted">Başlık, kategori, fon hedefi ve özet zorunludur.</p>
+        </div>
+        <div class="admin-actions">
+          <button id="activityCancelBtn" class="ghost" style="display:none;">İptal</button>
+          <button id="activitySaveBtn" class="secondary" style="display:none;">Kaydet</button>
+          <button id="activityAddBtn" class="primary">Ekle</button>
         </div>
       </div>
-    </article>
-
-    <article class="blog-card" data-activity="saglik">
-      <div class="blog-image">
-        <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&q=80" alt="Sağlık Yardımı">
-        <span class="blog-category">🏥 Sağlık</span>
-      </div>
-      <div class="blog-details">
-        <h3>Sağlık Yardımı</h3>
-        <p class="blog-summary">
-          Sağlık, ertelenemez en temel insan hakkıdır. Sosyal güvencesi olmayan veya kronik rahatsızlıkları nedeniyle yüksek tedavi masraflarını karşılayamayan ailelerin yanında oluyoruz. Medikal cihaz temini, ilaç desteği ve rehabilitasyon süreçlerinde maddi ve manevi destek sağlayarak, hastalarımızın yüzünde bir tebessüm oluşturmak için çalışıyoruz.
-        </p>
-        <div class="blog-footer">
-          <span class="budget-badge">🎯 Fon Hedefi: ₺85,000</span>
-          
+      <form id="activityForm" class="admin-form">
+        <input type="hidden" id="activityId" />
+        <div class="form-grid">
+          <label>
+            Başlık
+            <input type="text" id="activityTitle" placeholder="Örn: Eğitim Desteği" required />
+          </label>
+          <label>
+            Kategori
+            <input type="text" id="activityCategory" placeholder="Örn: 📚 Eğitim" required />
+          </label>
+          <label>
+            Fon Hedefi
+            <input type="text" id="activityBudget" placeholder="Örn: ₺125,000" required />
+          </label>
+          <label>
+            Kapak Görseli URL
+            <input type="url" id="activityImage" placeholder="https://..." required />
+          </label>
         </div>
-      </div>
-    </article>
+        <label>
+          Kısa Özet
+          <textarea id="activitySummary" rows="3" placeholder="Kısa açıklama" required></textarea>
+        </label>
+        <label>
+          Detaylı Açıklama
+          <textarea id="activityDescription" rows="5" placeholder="Liste, paragraf vb."></textarea>
+        </label>
+      </form>
+    </div>
 
-    <article class="blog-card" data-activity="gida">
-      <div class="blog-image">
-        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80" alt="Gıda Yardımı">
-        <span class="blog-category">🍽️ Yardım</span>
+    <div class="admin-card" style="margin-top:16px;">
+      <div class="admin-card-header">
+        <h3>Mevcut Faaliyetler</h3>
+        <p class="muted">Kartların yanındaki düzenle/sil butonları</p>
       </div>
-      <div class="blog-details">
-        <h3>Gıda Yardımı</h3>
-        <p class="blog-summary">
-          Hiçbir komşumuz yatağa aç girmesin diye çalışıyoruz. Düzenli olarak tespit edilen ihtiyaç sahibi hanelere temel gıda kolileri ulaştırıyor, Ramazan aylarında ise kurduğumuz iftar çadırlarıyla birlik ve beraberliği pekiştiriyoruz. Sıcak yemek dağıtım ağımızla, evinde yemek pişirme imkanı olmayan yaşlı ve engelli vatandaşlarımızın kapısına kadar gidiyoruz.
-        </p>
-        <div class="blog-footer">
-          <span class="budget-badge">🎯 Fon Hedefi: ₺95,000</span>
-          
-        </div>
-      </div>
-    </article>
-
-    <article class="blog-card" data-activity="kultur">
-      <div class="blog-image">
-        <img src="https://images.unsplash.com/photo-1514533450685-4493e01d1fdc?auto=format&fit=crop&w=600&q=80" alt="Kültür ve Sanat">
-        <span class="blog-category">🎭 Sanat</span>
-      </div>
-      <div class="blog-details">
-        <h3>Kültür ve Sanat</h3>
-        <p class="blog-summary">
-          Toplumun ruhunu besleyen en önemli damarlardan biri sanattır. Dezavantajlı bölgelerde yaşayan gençlerimizi sanatla buluşturmak, yeteneklerini keşfetmelerini sağlamak amacıyla ücretsiz tiyatro gösterimleri, resim atölyeleri ve müzik kursları düzenliyoruz. Kültürel mirasımızı koruyan projelerle geçmişten geleceğe köprü kuruyoruz.
-        </p>
-        <div class="blog-footer">
-          <span class="budget-badge">🎯 Fon Hedefi: ₺45,000</span>
-          
-        </div>
-      </div>
-    </article>
-
-    <article class="blog-card" data-activity="cevre">
-      <div class="blog-image">
-        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb7d5fa5?auto=format&fit=crop&w=600&q=80" alt="Çevre Projeleri">
-        <span class="blog-category">🌱 Doğa</span>
-      </div>
-      <div class="blog-details">
-        <h3>Çevre Projeleri</h3>
-        <p class="blog-summary">
-          Daha yeşil bir dünya ve sürdürülebilir bir gelecek için kolları sıvadık. Erozyonla mücadele kapsamında hatıra ormanları oluşturuyor, şehir merkezlerinde atık yönetimi ve geri dönüşüm bilincini artırıcı seminerler veriyoruz. Doğaya bıraktığımız her fidanın, yarınlarımız için temiz bir nefes olacağını biliyoruz.
-        </p>
-        <div class="blog-footer">
-          <span class="budget-badge">🎯 Fon Hedefi: ₺35,000</span>
-          
-        </div>
-      </div>
-    </article>
-
-    <article class="blog-card" data-activity="meslek">
-      <div class="blog-image">
-        <img src="https://images.unsplash.com/photo-1581092921461-eab62e97a783?auto=format&fit=crop&w=600&q=80" alt="Meslek Edindirme">
-        <span class="blog-category">👷 Kariyer</span>
-      </div>
-      <div class="blog-details">
-        <h3>Meslek Edindirme</h3>
-        <p class="blog-summary">
-          İşsizlikle mücadelede en etkili yolun mesleki yetkinlik kazandırmak olduğuna inanıyoruz. Gençlerimize ve kadınlarımıza yönelik kodlama, el sanatları, tekstil ve aşçılık gibi alanlarda sertifikalı kurslar açıyoruz. Sadece eğitim vermekle kalmıyor, çözüm ortağı olduğumuz firmalarla istihdam köprüleri kuruyoruz.
-        </p>
-        <div class="blog-footer">
-          <span class="budget-badge">🎯 Fon Hedefi: ₺75,000</span>
-          
-        </div>
-      </div>
-    </article>
-
+      <div id="activities-admin-list" class="admin-list"></div>
+    </div>
   </div>
+
+  <div id="activities-grid" class="blog-grid"></div>
 </section>
 
 <div id="activityModal" class="modal">
@@ -205,117 +155,5 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-      // Faaliyet detay verileri
-      const activityDetails = {
-        egitim: {
-          title: "Eğitim Desteği Projesi",
-          description: `
-            <p><strong>Proje Amacı:</strong> Maddi imkanı kısıtlı öğrencilerin eğitim hayatlarını sürdürebilmelerini sağlamak.</p>
-            <ul>
-              <li>✅ 50 öğrenciye yıllık burs desteği</li>
-              <li>✅ 200 öğrenciye kırtasiye ve kitap yardımı</li>
-              <li>✅ Ücretsiz dersane ve kurs imkanları</li>
-              <li>✅ Bilgisayar ve tablet desteği</li>
-            </ul>
-            <p><strong>Etki:</strong> Bu yıl 250+ öğrenciye ulaştık ve eğitim hayatlarına katkı sağladık.</p>
-          `
-        },
-        saglik: {
-          title: "Sağlık Yardımı Projesi",
-          description: `
-            <p><strong>Proje Amacı:</strong> İhtiyaç sahibi ailelerin sağlık harcamalarına destek olmak.</p>
-            <ul>
-              <li>✅ Kronik hastalara ilaç yardımı</li>
-              <li>✅ Ameliyat ve tedavi giderlerinde destek</li>
-              <li>✅ Ücretsiz sağlık taramaları</li>
-              <li>✅ Evde bakım hizmeti</li>
-            </ul>
-            <p><strong>Etki:</strong> 120 aileye düzenli sağlık desteği sağlandı.</p>
-          `
-        },
-        gida: {
-          title: "Gıda Yardımı Programı",
-          description: `
-            <p><strong>Proje Amacı:</strong> Gıda güvencesi olmayan ailelere temel gıda desteği sağlamak.</p>
-            <ul>
-              <li>✅ Aylık düzenli gıda kolisi dağıtımı</li>
-              <li>✅ Ramazan ayında iftar ve kumanya yardımı</li>
-              <li>✅ Sokak hayvanları için mama bağışı</li>
-              <li>✅ Günlük sıcak yemek servisi</li>
-            </ul>
-            <p><strong>Etki:</strong> 300+ aileye düzenli gıda yardımı ulaştırıldı.</p>
-          `
-        },
-        kultur: {
-          title: "Kültür ve Sanat Etkinlikleri",
-          description: `
-            <p><strong>Proje Amacı:</strong> Toplumsal kültür birikimini zenginleştirmek ve sanata erişimi kolaylaştırmak.</p>
-            <ul>
-              <li>✅ Ücretsiz tiyatro ve sinema gösterimleri</li>
-              <li>✅ Çocuklara yönelik sanat atölyeleri</li>
-              <li>✅ Müzik ve dans kursları</li>
-              <li>✅ Kitap okuma kulüpleri</li>
-            </ul>
-            <p><strong>Etki:</strong> 15 etkinlik düzenlendi, 500+ kişiye ulaşıldı.</p>
-          `
-        },
-        cevre: {
-          title: "Çevre Koruma Projeleri",
-          description: `
-            <p><strong>Proje Amacı:</strong> Çevre bilincini artırmak ve yeşil alanları korumak.</p>
-            <ul>
-              <li>✅ 1,000 ağaç dikimi kampanyası</li>
-              <li>✅ Plastik atık toplama etkinlikleri</li>
-              <li>✅ Okullarda çevre eğitimleri</li>
-              <li>✅ Geri dönüşüm projeleri</li>
-            </ul>
-            <p><strong>Etki:</strong> 1,200 ağaç dikildi, 5 ton atık toplandı.</p>
-          `
-        },
-        meslek: {
-          title: "Meslek Edindirme ve İstihdam",
-          description: `
-            <p><strong>Proje Amacı:</strong> İşsiz gençlere meslek kazandırarak istihdama katkı sağlamak.</p>
-            <ul>
-              <li>✅ Ücretsiz meslek kursları (bilgisayar, dikiş, aşçılık)</li>
-              <li>✅ Girişimcilik eğitimleri</li>
-              <li>✅ Staj ve iş yerleştirme desteği</li>
-              <li>✅ Ekipman ve malzeme yardımı</li>
-            </ul>
-            <p><strong>Etki:</strong> 80 genç meslek sahibi oldu, 45'i istihdam edildi.</p>
-          `
-        }
-      };
-
-      // Modal açma/kapama
-      const modal = document.getElementById("activityModal");
-      const modalTitle = document.getElementById("modalTitle");
-      const modalBody = document.getElementById("modalBody");
-      const closeBtn = document.querySelector(".modal-close");
-
-      document.querySelectorAll(".activity-card").forEach(card => {
-        card.addEventListener("click", () => {
-          const activityKey = card.getAttribute("data-activity");
-          const detail = activityDetails[activityKey];
-          
-          if (detail) {
-            modalTitle.textContent = detail.title;
-            modalBody.innerHTML = detail.description;
-            modal.style.display = "flex";
-          }
-        });
-      });
-
-      closeBtn.addEventListener("click", () => {
-        modal.style.display = "none";
-      });
-
-      window.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.style.display = "none";
-        }
-      });
-    </script>
   </body>
 </html>
