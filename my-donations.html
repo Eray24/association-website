@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bağışlarım - Dernek Websitesi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .my-donations-hero {
+        background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+        padding: 80px 24px 60px;
+        text-align: center;
+        color: white;
+      }
+      .my-donations-hero h1 {
+        font-size: 36px;
+        margin: 0 0 12px;
+      }
+      .my-donations-hero p {
+        font-size: 16px;
+        opacity: 0.9;
+        margin: 0;
+      }
+      .my-donations-content {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 24px 80px;
+      }
+      .donations-summary {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+      }
+      .summary-item {
+        text-align: center;
+      }
+      .summary-item .label {
+        font-size: 14px;
+        color: #2e7d32;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .summary-item .value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1b5e20;
+      }
+      .donations-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .donations-list-header h2 {
+        font-size: 24px;
+        color: #0f172a;
+        margin: 0;
+      }
+      .donations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+      }
+      .donation-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .donation-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+      }
+      .donation-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #e8f5e9;
+      }
+      .donation-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+      }
+      .donation-amount {
+        flex: 1;
+      }
+      .donation-amount .amount {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2e7d32;
+        margin: 0;
+      }
+      .donation-amount .currency {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+      }
+      .donation-details {
+        font-size: 14px;
+        color: #475569;
+        line-height: 1.8;
+      }
+      .donation-details p {
+        margin: 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .donation-details .icon {
+        font-size: 16px;
+      }
+      .no-donations {
+        text-align: center;
+        padding: 80px 24px;
+        background: #f9fafb;
+        border-radius: 16px;
+        margin-top: 40px;
+      }
+      .no-donations .icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+      }
+      .no-donations h3 {
+        font-size: 24px;
+        color: #0f172a;
+        margin: 0 0 12px;
+      }
+      .no-donations p {
+        font-size: 16px;
+        color: #64748b;
+        margin: 0 0 24px;
+      }
+      .no-donations .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #2e7d32;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+      .no-donations .btn:hover {
+        background: #1b5e20;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+      }
+      @media (max-width: 768px) {
+        .my-donations-hero h1 {
+          font-size: 28px;
+        }
+        .donations-summary {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .donations-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <a href="index.html" class="logo-link">UFUK DERNEĞİ</a>
+      </div>
+      <div class="navbar-search">
+        <label for="site-search" class="sr-only">Sitede ara</label>
+        <input id="site-search" type="search" placeholder="Sitede ara" aria-label="Sitede ara" autocomplete="off" />
+        <div id="search-results" class="search-results" style="display:none;"></div>
+      </div>
+      <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="about.html">Hakkımızda</a>
+        <a href="management.html">Yönetim</a>
+        <a href="announcements.html">Duyurular</a>
+        <a href="activities.html">Faaliyetlerimiz</a>
+        <a href="contact.html">İletişim</a>
+        <button id="theme-toggle" class="theme-toggle">🌙</button>
+        <a href="login.html" class="login" id="userLoginBtn">Giriş Yap</a>
+      </nav>
+    </header>
+
+    <section class="my-donations-hero">
+      <h1>Bağışlarım</h1>
+      <p>Derneğimize yaptığınız değerli bağışların listesi</p>
+    </section>
+
+    <section class="my-donations-content" data-member-only>
+      <div class="donations-summary" id="donations-summary">
+        <div class="summary-item">
+          <div class="label">Toplam Bağış</div>
+          <div class="value" id="total-donation-amount">0 ₺</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Bağış Sayısı</div>
+          <div class="value" id="total-donation-count">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">İlk Bağış</div>
+          <div class="value" id="first-donation-date" style="font-size: 18px;">-</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Son Bağış</div>
+          <div class="value" id="last-donation-date" style="font-size: 18px;">-</div>
+        </div>
+      </div>
+
+      <div class="donations-list-header">
+        <h2>Bağış Geçmişi</h2>
+      </div>
+
+      <div class="donations-grid" id="donations-grid"></div>
+
+      <div class="no-donations" id="no-donations" style="display: none;">
+        <div class="icon">💝</div>
+        <h3>Henüz Bağış Yapmadınız</h3>
+        <p>Derneğimize ilk bağışınızı yaparak toplumsal dayanışmaya katkıda bulunabilirsiniz.</p>
+        <a href="donate.html" class="btn">İlk Bağışımı Yap</a>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>Ufuk Derneği</h3>
+          <p>Ufuk Derneği; eğitim, sağlık, sosyal yardım ve çevre projeleriyle toplumsal dayanışmayı güçlendiren gönüllülük temelli bir sivil oluşumdur.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="X" class="footer-social-link">𝕏</a>
+            <a href="#" aria-label="Facebook" class="footer-social-link">f</a>
+            <a href="#" aria-label="Instagram" class="footer-social-link">📷</a>
+            <a href="#" aria-label="LinkedIn" class="footer-social-link">in</a>
+            <a href="#" aria-label="YouTube" class="footer-social-link">▶</a>
+          </div>
+        </div>
+
+        <div class="footer-columns">
+          <div class="footer-column">
+            <h4>Kurumsal</h4>
+            <a href="about.html">Hakkımızda</a>
+            <a href="management.html">Yönetim</a>
+            <a href="activities.html">Faaliyetlerimiz</a>
+            <a href="announcements.html">Duyurular</a>
+          </div>
+          <div class="footer-column">
+            <h4>Destek</h4>
+            <a href="contact.html">İletişim</a>
+            <a href="index.html#bagis">Bağış</a>
+            <a href="register.html">Üye Ol</a>
+            <a href="login.html">Giriş Yap</a>
+          </div>
+        </div>
+
+        <div class="footer-contact">
+          <h4>İletişim</h4>
+          <ul>
+            <li><span class="footer-icon">📞</span>0 (312) 310 10 10</li>
+            <li><span class="footer-icon">📧</span>info@ufukdernegi.org</li>
+            <li><span class="footer-icon">📍</span>Ankara, Türkiye</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>Ufuk Derneği © 2025. Tüm hakları saklıdır.</p>
+        <div class="footer-bottom-links">
+          <a href="contact.html">Bize Ulaşın</a>
+          <a href="index.html#bagis">Bağış Yap</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const currentUser = JSON.parse(sessionStorage.getItem('user') || 'null');
+        
+        if (!currentUser || (currentUser.role !== 'member' && currentUser.role !== 'admin')) {
+          alert('Bu sayfayı görüntülemek için üye girişi yapmalısınız.');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const donations = JSON.parse(localStorage.getItem('donations') || '[]');
+        const userDonations = donations.filter(d => d.email === currentUser.email);
+        
+        const totalAmount = userDonations.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+        const donationCount = userDonations.length;
+        
+        document.getElementById('total-donation-amount').textContent = totalAmount.toFixed(2) + ' ₺';
+        document.getElementById('total-donation-count').textContent = donationCount;
+        
+        if (donationCount > 0) {
+          const sortedDonations = [...userDonations].sort((a, b) => a.timestamp - b.timestamp);
+          const firstDate = new Date(sortedDonations[0].date);
+          const lastDate = new Date(sortedDonations[sortedDonations.length - 1].date);
+          
+          document.getElementById('first-donation-date').textContent = firstDate.toLocaleDateString('tr-TR', { 
+            day: 'numeric', 
+            month: 'short', 
+            year: 'numeric' 
+          });
+          document.getElementById('last-donation-date').textContent = lastDate.toLocaleDateString('tr-TR', { 
+            day: 'numeric', 
+            month: 'short', 
+            year: 'numeric' 
+          });
+          
+          const donationsGrid = document.getElementById('donations-grid');
+          donationsGrid.innerHTML = '';
+          
+          // En yeni bağışları önce göster
+          const sortedByNewest = [...userDonations].sort((a, b) => b.timestamp - a.timestamp);
+          
+          sortedByNewest.forEach(donation => {
+            const date = new Date(donation.date);
+            const card = document.createElement('div');
+            card.className = 'donation-card';
+            
+            card.innerHTML = `
+              <div class="donation-card-header">
+                <div class="donation-icon">💝</div>
+                <div class="donation-amount">
+                  <p class="amount">${parseFloat(donation.amount).toFixed(2)} ₺</p>
+                  <p class="currency">Türk Lirası</p>
+                </div>
+              </div>
+              <div class="donation-details">
+                <p><span class="icon">📅</span> <strong>Tarih:</strong> ${date.toLocaleDateString('tr-TR', { 
+                  day: 'numeric', 
+                  month: 'long', 
+                  year: 'numeric' 
+                })}</p>
+                <p><span class="icon">🕐</span> <strong>Saat:</strong> ${date.toLocaleTimeString('tr-TR', { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                })}</p>
+                <p><span class="icon">✅</span> <strong>Durum:</strong> Başarılı</p>
+              </div>
+            `;
+            
+            donationsGrid.appendChild(card);
+          });
+        } else {
+          document.getElementById('no-donations').style.display = 'block';
+          document.getElementById('donations-summary').style.display = 'none';
+          document.querySelector('.donations-list-header').style.display = 'none';
+        }
+      });
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
