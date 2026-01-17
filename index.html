@@ -157,31 +157,75 @@
         değerlidir. Küçük bir destek, büyük bir değişim yaratabilir.
       </p>
 
+      <!-- Admin Düzenleme Butonu -->
+      <div id="donation-edit-btn-wrapper" style="margin-bottom:20px; display:none;">
+        <button id="donationEditBtn" style="padding:8px 12px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">✏️ Banka Bilgilerini Düzenle</button>
+      </div>
+
+      <!-- Admin Düzenleme Paneli -->
+      <div id="donation-admin-wrapper" style="display:none; background:#f0f4f8; border:2px solid #3b82f6; border-radius:8px; padding:20px; margin-bottom:30px;">
+        <h3 style="margin-top:0; color:#1e40af;">💰 Banka ve Kripto Bilgileri Düzenle</h3>
+        <form id="donationForm" style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label for="editBankName" style="display:block; font-weight:600; margin-bottom:4px;">Banka Adı</label>
+            <input id="editBankName" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Banka adını girin">
+          </div>
+          <div>
+            <label for="editIban" style="display:block; font-weight:600; margin-bottom:4px;">IBAN</label>
+            <input id="editIban" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="IBAN'ı girin">
+          </div>
+          <div>
+            <label for="editRecipient" style="display:block; font-weight:600; margin-bottom:4px;">Alıcı Adı</label>
+            <input id="editRecipient" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Alıcı adını girin">
+          </div>
+          <div>
+            <label for="editBtc" style="display:block; font-weight:600; margin-bottom:4px;">Bitcoin (BTC) Adresi</label>
+            <input id="editBtc" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box; font-family:monospace; font-size:12px;" placeholder="BTC adresi girin">
+          </div>
+          <div>
+            <label for="editEth" style="display:block; font-weight:600; margin-bottom:4px;">Ethereum (ETH) Adresi</label>
+            <input id="editEth" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box; font-family:monospace; font-size:12px;" placeholder="ETH adresi girin">
+          </div>
+          <div>
+            <label for="editTrx" style="display:block; font-weight:600; margin-bottom:4px;">TRX / TRC20 Adresi</label>
+            <input id="editTrx" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box; font-family:monospace; font-size:12px;" placeholder="TRX adresi girin">
+          </div>
+          <div>
+            <label for="editWesternUnion" style="display:block; font-weight:600; margin-bottom:4px;">Western Union Kodu</label>
+            <input id="editWesternUnion" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Western Union kodu girin">
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="donationSaveBtn" type="button" style="padding:10px 16px; background:#10b981; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">Kaydet</button>
+            <button id="donationCancelBtn" type="button" style="padding:10px 16px; background:#6b7280; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">İptal</button>
+          </div>
+        </form>
+      </div>
+
       <div class="donation-box">
         <div class="donation-item">
-          <strong>Banka:</strong> Türkiye Cumhuriyeti Ziraat Bankası
+          <strong>Banka:</strong> <span id="display-bank-name">Türkiye Cumhuriyeti Ziraat Bankası</span>
         </div>
         <div class="donation-item">
-          <strong>IBAN:</strong> TR33 0001 2009 7610 0012 3456 78
+          <strong>IBAN:</strong> <span id="display-iban">TR33 0001 2009 7610 0012 3456 78</span>
         </div>
         <div class="donation-item">
-          <strong>Alıcı Adı:</strong> Ufuk Derneği
+          <strong>Alıcı Adı:</strong> <span id="display-recipient">Ufuk Derneği</span>
         </div>
 
         <div class="donation-section-title">Kripto Adresleri:</div>
 
         <div class="donation-item crypto">
-          <strong>Bitcoin (BTC):</strong> <span class="crypto-addr">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span>
+          <strong>Bitcoin (BTC):</strong> <span class="crypto-addr" id="display-btc">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span>
         </div>
         <div class="donation-item crypto">
-          <strong>Ethereum (ETH):</strong> <span class="crypto-addr">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</span>
+          <strong>Ethereum (ETH):</strong> <span class="crypto-addr" id="display-eth">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</span>
         </div>
         <div class="donation-item crypto">
-          <strong>TRX / TRC20:</strong> <span class="crypto-addr">TXapV4386dKd9cOzq46Es1jh92dQQisAq6</span>
+          <strong>TRX / TRC20:</strong> <span class="crypto-addr" id="display-trx">TXapV4386dKd9cOzq46Es1jh92dQQisAq6</span>
         
 
         <div class="donation-item crypto" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-           <strong>Western Union:</strong> <span class="crypto-addr">274 581 9032</span>
+           <strong>Western Union:</strong> <span class="crypto-addr" id="display-wu">274 581 9032</span>
         </div>
 
       </div>

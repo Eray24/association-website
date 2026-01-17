@@ -2736,5 +2736,131 @@
       // Initial render
       renderSections();
     })();
+
+    // Ana sayfa: Donation bilgileri yönetimi (admin)
+    (function initDonationInfoManagement() {
+      if (currentPage !== '' && currentPage !== 'index.html') return;
+
+      const su = getSessionUser();
+      const adminWrapper = document.getElementById('donation-admin-wrapper');
+      const editBtnWrapper = document.getElementById('donation-edit-btn-wrapper');
+      const editBtn = document.getElementById('donationEditBtn');
+      const donationForm = document.getElementById('donationForm');
+      const bankNameInput = document.getElementById('editBankName');
+      const ibanInput = document.getElementById('editIban');
+      const recipientInput = document.getElementById('editRecipient');
+      const btcInput = document.getElementById('editBtc');
+      const ethInput = document.getElementById('editEth');
+      const trxInput = document.getElementById('editTrx');
+      const wuInput = document.getElementById('editWesternUnion');
+      const saveBtn = document.getElementById('donationSaveBtn');
+      const cancelBtn = document.getElementById('donationCancelBtn');
+
+      // Default donation info
+      const defaultDonationInfo = {
+        bankName: 'Türkiye Cumhuriyeti Ziraat Bankası',
+        iban: 'TR33 0001 2009 7610 0012 3456 78',
+        recipient: 'Ufuk Derneği',
+        btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+        eth: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+        trx: 'TXapV4386dKd9cOzq46Es1jh92dQQisAq6',
+        wu: '274 581 9032'
+      };
+
+      const loadDonationInfo = () => {
+        try {
+          const stored = JSON.parse(localStorage.getItem('donationInfo') || 'null');
+          if (stored && typeof stored === 'object') return stored;
+        } catch (err) {
+          // ignore parse error
+        }
+        return defaultDonationInfo;
+      };
+
+      let donationInfo = loadDonationInfo();
+
+      const saveDonationInfo = () => {
+        localStorage.setItem('donationInfo', JSON.stringify(donationInfo));
+      };
+
+      const renderDonationInfo = () => {
+        document.getElementById('display-bank-name').textContent = donationInfo.bankName || defaultDonationInfo.bankName;
+        document.getElementById('display-iban').textContent = donationInfo.iban || defaultDonationInfo.iban;
+        document.getElementById('display-recipient').textContent = donationInfo.recipient || defaultDonationInfo.recipient;
+        document.getElementById('display-btc').textContent = donationInfo.btc || defaultDonationInfo.btc;
+        document.getElementById('display-eth').textContent = donationInfo.eth || defaultDonationInfo.eth;
+        document.getElementById('display-trx').textContent = donationInfo.trx || defaultDonationInfo.trx;
+        document.getElementById('display-wu').textContent = donationInfo.wu || defaultDonationInfo.wu;
+      };
+
+      const loadFormData = () => {
+        bankNameInput.value = donationInfo.bankName || defaultDonationInfo.bankName;
+        ibanInput.value = donationInfo.iban || defaultDonationInfo.iban;
+        recipientInput.value = donationInfo.recipient || defaultDonationInfo.recipient;
+        btcInput.value = donationInfo.btc || defaultDonationInfo.btc;
+        ethInput.value = donationInfo.eth || defaultDonationInfo.eth;
+        trxInput.value = donationInfo.trx || defaultDonationInfo.trx;
+        wuInput.value = donationInfo.wu || defaultDonationInfo.wu;
+      };
+
+      const resetForm = () => {
+        if (adminWrapper) adminWrapper.style.display = 'none';
+        loadFormData();
+      };
+
+      // Admin panelini göster/gizle
+      if (isAdmin(su)) {
+        if (editBtnWrapper) editBtnWrapper.style.display = 'block';
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            if (adminWrapper) {
+              adminWrapper.style.display = adminWrapper.style.display === 'none' ? 'block' : 'none';
+              loadFormData();
+            }
+          });
+        }
+      }
+
+      // Kaydet butonu
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          const bankName = bankNameInput.value.trim();
+          const iban = ibanInput.value.trim();
+          const recipient = recipientInput.value.trim();
+          const btc = btcInput.value.trim();
+          const eth = ethInput.value.trim();
+          const trx = trxInput.value.trim();
+          const wu = wuInput.value.trim();
+
+          if (!bankName || !iban || !recipient) {
+            alert('Lütfen Banka, IBAN ve Alıcı Adı alanlarını doldurun.');
+            return;
+          }
+
+          donationInfo = {
+            bankName: bankName || defaultDonationInfo.bankName,
+            iban: iban || defaultDonationInfo.iban,
+            recipient: recipient || defaultDonationInfo.recipient,
+            btc: btc || defaultDonationInfo.btc,
+            eth: eth || defaultDonationInfo.eth,
+            trx: trx || defaultDonationInfo.trx,
+            wu: wu || defaultDonationInfo.wu
+          };
+
+          saveDonationInfo();
+          renderDonationInfo();
+          alert('Banka ve kripto bilgileri başarıyla güncellendi.');
+          resetForm();
+        });
+      }
+
+      // İptal butonu
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', resetForm);
+      }
+
+      // İlk yükleme
+      renderDonationInfo();
+    })();
   });
 })();
