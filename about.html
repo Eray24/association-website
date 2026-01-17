@@ -37,89 +37,42 @@
     </section>
 
     <section class="about-content">
-      <div class="about-section">
-        <h2>Kimiz?</h2>
-        <p>
-          A Derneği, toplumsal dayanışmayı güçlendiren, gönüllülüğü teşvik eden
-          ve sürdürülebilir projelerle fark yaratan bir sivil toplum
-          kuruluşudur. Kuruluşumuzdan itibaren, bireyleri bir araya getirerek,
-          ortak değerler etrafında güçlü bir topluluk oluşturmayı amaçlamıştır.
-        </p>
+      <!-- Admin Düzenleme Paneli -->
+      <div id="about-admin-wrapper" style="display:none; background:#f0f4f8; border:2px solid #3b82f6; border-radius:8px; padding:20px; margin-bottom:30px;">
+        <h2 style="margin-top:0; color:#1e40af;">📝 Hakkımızda Bölümünü Düzenle</h2>
+        
+        <!-- Bölüm Yönetimi -->
+        <div id="about-sections-manager" style="margin-bottom:20px; border:1px solid #cbd5e1; border-radius:6px; padding:15px; background:white;">
+          <h3 style="margin-top:0; color:#334155;">Bölümler</h3>
+          <div id="about-sections-list" style="margin-bottom:12px;"></div>
+          <button id="aboutAddSectionBtn" type="button" style="padding:8px 12px; background:#6366f1; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">+ Yeni Bölüm Ekle</button>
+        </div>
+
+        <!-- Bölüm Düzenleme Formu -->
+        <div id="about-edit-section-form" style="display:none; margin-bottom:20px; padding:15px; background:white; border:1px solid #e5e7eb; border-radius:6px;">
+          <h3 style="margin-top:0; color:#334155;">Bölümü Düzenle</h3>
+          <div style="margin-bottom:12px;">
+            <label for="editSectionTitle" style="display:block; font-weight:600; margin-bottom:4px;">Başlık</label>
+            <input id="editSectionTitle" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Başlığı girin">
+          </div>
+          <div style="margin-bottom:12px;">
+            <label for="editSectionContent" style="display:block; font-weight:600; margin-bottom:4px;">İçerik (HTML desteklenir)</label>
+            <textarea id="editSectionContent" style="width:100%; height:120px; padding:8px; border:1px solid #d1d5db; border-radius:4px; font-family:monospace;" placeholder="İçerik girin"></textarea>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="aboutSaveSectionBtn" type="button" style="padding:8px 12px; background:#10b981; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">Kaydet</button>
+            <button id="aboutCancelSectionBtn" type="button" style="padding:8px 12px; background:#6b7280; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">İptal</button>
+          </div>
+        </div>
       </div>
 
-      <div class="about-section">
-        <h2>Misyonumuz</h2>
-        <p>
-          Toplumdaki sorunlara çözüm üretmek, sosyal farkındalık yaratmak ve
-          herkesin birbirini desteklemesini sağlamak. Her bir üyemizin sesinin
-          duyulduğu, özgür düşündüğü ve katılımcı bir ortam oluşturmaktır.
-        </p>
+      <!-- Düzenleme Butonu (Admin için) -->
+      <div id="about-edit-btn-wrapper" style="margin-bottom:20px; display:none;">
+        <button id="aboutEditBtn" style="padding:8px 12px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">✏️ Düzenle</button>
       </div>
 
-      <div class="about-section">
-        <h2>Vizyonumuz</h2>
-        <p>
-          Daha adil, daha eşit ve daha dayanışmacı bir toplum inşa etmek.
-          Gönüllülerin gücüne inanıyoruz ve her bireyin toplumdaki değişimine
-          katkı koyabileceğini biliyoruz. Birlikte güçlü olduğumuzu ve birlikte
-          başarabileceğimizi vurgularız.
-        </p>
-      </div>
-
-      <div class="about-section">
-        <h2>Değerlerimiz</h2>
-        <ul class="values-list">
-          <li>
-            <strong>Dayanışma:</strong> Birbirini desteklemeye ve korumaya
-            inanıyoruz
-          </li>
-          <li>
-            <strong>Şeffaflık:</strong> Tüm işlemlerimizde dürüst ve açık olmayı
-            taahhüt ederiz
-          </li>
-          <li>
-            <strong>Katılımcılık:</strong> Her sesinin önemli olduğu demokratik
-            bir yapı oluştururuz
-          </li>
-          <li>
-            <strong>Sürdürülebilirlik:</strong> Uzun vadeli etki yaratmayı
-            hedefleriz
-          </li>
-          <li>
-            <strong>Çeşitlilik:</strong> Farklı görüşleri ve deneyimleri değerli
-            görüyoruz
-          </li>
-        </ul>
-      </div>
-
-      <div class="about-section">
-        <h2>Faaliyetlerimiz</h2>
-        <p>
-          Derneğimiz, eğitim programları, sosyal yardım aktiviteleri, kültürel
-          etkinlikler ve çevre koruma projelerini yürütmektedir. Her proje,
-          toplumda olumlu bir değişim yaratmaya yönelik olarak tasarlanmıştır.
-        </p>
-        <p>Düzenli olarak:</p>
-        <ul class="activities-list">
-          <li>Eğitim ve kültür etkinlikleri</li>
-          <li>Sosyal yardım kampanyaları</li>
-          <li>Gönüllülük programları</li>
-          <li>Toplum sağlığı projeleri</li>
-          <li>Çevre ve doğa koruma çalışmaları</li>
-          <li>Ağ oluşturma ve networking etkinlikleri</li>
-        </ul>
-      </div>
-
-      <div class="about-section">
-        <h2>Neden Bize Katılmalısınız?</h2>
-        <p>
-          Bir dernek üyesi olarak, sadece bir örgütün parçası olmaktan çok daha
-          fazlasını kazanırsınız. Alanında deneyimli insanlarla çalışma, yeni
-          beceriler öğrenme, anlamlı bağlantılar kurma ve toplumdaki değişime
-          doğrudan katkı sağlama fırsatı bulursunuz.
-        </p>
-        <p>Birlikte, daha iyi bir gelecek inşa edebiliriz.</p>
-      </div>
+      <!-- Dinamik Bölümler -->
+      <div id="about-sections-container"></div>
     </section>
 
     <footer class="site-footer">

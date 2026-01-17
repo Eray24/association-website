@@ -2537,5 +2537,204 @@
         });
       }
     })();
+
+    // Hakkımızda sayfası: admin CRUD
+    (function initAboutPage() {
+      if (currentPage !== 'about.html') return;
+
+      const su = getSessionUser();
+      const adminWrapper = document.getElementById('about-admin-wrapper');
+      const editBtnWrapper = document.getElementById('about-edit-btn-wrapper');
+      const editBtn = document.getElementById('aboutEditBtn');
+      const container = document.getElementById('about-sections-container');
+      const sectionsList = document.getElementById('about-sections-list');
+      const editForm = document.getElementById('about-edit-section-form');
+      const addSectionBtn = document.getElementById('aboutAddSectionBtn');
+      const editSectionTitle = document.getElementById('editSectionTitle');
+      const editSectionContent = document.getElementById('editSectionContent');
+      const saveSectionBtn = document.getElementById('aboutSaveSectionBtn');
+      const cancelSectionBtn = document.getElementById('aboutCancelSectionBtn');
+
+      let currentEditingIndex = -1;
+
+      // Default sections
+      const defaultSections = [
+        {
+          id: 'kimiz',
+          title: 'Kimiz?',
+          content: '<p>A Derneği, toplumsal dayanışmayı güçlendiren, gönüllülüğü teşvik eden ve sürdürülebilir projelerle fark yaratan bir sivil toplum kuruluşudur. Kuruluşumuzdan itibaren, bireyleri bir araya getirerek, ortak değerler etrafında güçlü bir topluluk oluşturmayı amaçlamıştır.</p>'
+        },
+        {
+          id: 'misyon',
+          title: 'Misyonumuz',
+          content: '<p>Toplumdaki sorunlara çözüm üretmek, sosyal farkındalık yaratmak ve herkesin birbirini desteklemesini sağlamak. Her bir üyemizin sesinin duyulduğu, özgür düşündüğü ve katılımcı bir ortam oluşturmaktır.</p>'
+        },
+        {
+          id: 'vizyon',
+          title: 'Vizyonumuz',
+          content: '<p>Daha adil, daha eşit ve daha dayanışmacı bir toplum inşa etmek. Gönüllülerin gücüne inanıyoruz ve her bireyin toplumdaki değişimine katkı koyabileceğini biliyoruz. Birlikte güçlü olduğumuzu ve birlikte başarabileceğimizi vurgularız.</p>'
+        },
+        {
+          id: 'degerler',
+          title: 'Değerlerimiz',
+          content: '<ul class="values-list"><li><strong>Dayanışma:</strong> Birbirini desteklemeye ve korumaya inanıyoruz</li><li><strong>Şeffaflık:</strong> Tüm işlemlerimizde dürüst ve açık olmayı taahhüt ederiz</li><li><strong>Katılımcılık:</strong> Her sesinin önemli olduğu demokratik bir yapı oluştururuz</li><li><strong>Sürdürülebilirlik:</strong> Uzun vadeli etki yaratmayı hedefleriz</li><li><strong>Çeşitlilik:</strong> Farklı görüşleri ve deneyimleri değerli görüyoruz</li></ul>'
+        },
+        {
+          id: 'faaliyetler',
+          title: 'Faaliyetlerimiz',
+          content: '<p>Derneğimiz, eğitim programları, sosyal yardım aktiviteleri, kültürel etkinlikler ve çevre koruma projelerini yürütmektedir. Her proje, toplumda olumlu bir değişim yaratmaya yönelik olarak tasarlanmıştır.</p><p>Düzenli olarak:</p><ul class="activities-list"><li>Eğitim ve kültür etkinlikleri</li><li>Sosyal yardım kampanyaları</li><li>Gönüllülük programları</li><li>Toplum sağlığı projeleri</li><li>Çevre ve doğa koruma çalışmaları</li><li>Ağ oluşturma ve networking etkinlikleri</li></ul>'
+        },
+        {
+          id: 'neden',
+          title: 'Neden Bize Katılmalısınız?',
+          content: '<p>Bir dernek üyesi olarak, sadece bir örgütün parçası olmaktan çok daha fazlasını kazanırsınız. Alanında deneyimli insanlarla çalışma, yeni beceriler öğrenme, anlamlı bağlantılar kurma ve toplumdaki değişime doğrudan katkı sağlama fırsatı bulursunuz.</p><p>Birlikte, daha iyi bir gelecek inşa edebiliriz.</p>'
+        }
+      ];
+
+      const loadSections = () => {
+        try {
+          const stored = JSON.parse(localStorage.getItem('aboutSections') || 'null');
+          if (Array.isArray(stored) && stored.length > 0) return stored;
+        } catch (err) {
+          // ignore parse error
+        }
+        return defaultSections;
+      };
+
+      let sections = loadSections();
+
+      const saveSections = () => {
+        localStorage.setItem('aboutSections', JSON.stringify(sections));
+      };
+
+      const renderSections = () => {
+        if (!container) return;
+        container.innerHTML = '';
+        sections.forEach((section) => {
+          const div = document.createElement('div');
+          div.className = 'about-section';
+          div.innerHTML = `<h2>${section.title}</h2>${section.content}`;
+          container.appendChild(div);
+        });
+      };
+
+      const renderSectionsList = () => {
+        if (!sectionsList) return;
+        sectionsList.innerHTML = '';
+        sections.forEach((section, idx) => {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #e5e7eb;';
+          row.innerHTML = `
+            <div>
+              <div style="font-weight:600; color:#1f2937;">${section.title}</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button data-edit-idx="${idx}" class="section-edit-btn" style="padding:6px 10px; background:#3b82f6; color:white; border:none; border-radius:3px; cursor:pointer; font-size:12px;">Düzenle</button>
+              <button data-del-idx="${idx}" class="section-del-btn" style="padding:6px 10px; background:#ef4444; color:white; border:none; border-radius:3px; cursor:pointer; font-size:12px;">Sil</button>
+            </div>
+          `;
+          sectionsList.appendChild(row);
+        });
+
+        // Edit buttons
+        sectionsList.querySelectorAll('.section-edit-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.editIdx);
+            currentEditingIndex = idx;
+            editSectionTitle.value = sections[idx].title;
+            editSectionContent.value = sections[idx].content;
+            if (editForm) editForm.style.display = 'block';
+            window.scrollTo({ top: editForm?.offsetTop || 0, behavior: 'smooth' });
+          });
+        });
+
+        // Delete buttons
+        sectionsList.querySelectorAll('.section-del-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.delIdx);
+            if (confirm(`"${sections[idx].title}" bölümünü silmek istiyor musunuz?`)) {
+              sections.splice(idx, 1);
+              saveSections();
+              renderSections();
+              renderSectionsList();
+            }
+          });
+        });
+      };
+
+      // Admin panel control
+      if (isAdmin(su)) {
+        if (editBtnWrapper) editBtnWrapper.style.display = 'block';
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            if (adminWrapper) {
+              adminWrapper.style.display = adminWrapper.style.display === 'none' ? 'block' : 'none';
+              renderSectionsList();
+            }
+          });
+        }
+      }
+
+      // Add new section
+      if (addSectionBtn) {
+        addSectionBtn.addEventListener('click', () => {
+          currentEditingIndex = -1;
+          editSectionTitle.value = '';
+          editSectionContent.value = '';
+          if (editForm) editForm.style.display = 'block';
+          window.scrollTo({ top: editForm?.offsetTop || 0, behavior: 'smooth' });
+        });
+      }
+
+      // Save section
+      if (saveSectionBtn) {
+        saveSectionBtn.addEventListener('click', () => {
+          const title = editSectionTitle.value.trim();
+          const content = editSectionContent.value.trim();
+
+          if (!title) {
+            alert('Lütfen başlık girin.');
+            return;
+          }
+          if (!content) {
+            alert('Lütfen içerik girin.');
+            return;
+          }
+
+          if (currentEditingIndex === -1) {
+            // New section
+            const newSection = {
+              id: 'section-' + Date.now(),
+              title: title,
+              content: content
+            };
+            sections.push(newSection);
+            alert('Yeni bölüm eklendi.');
+          } else {
+            // Edit existing
+            sections[currentEditingIndex].title = title;
+            sections[currentEditingIndex].content = content;
+            alert('Bölüm güncellendi.');
+          }
+
+          saveSections();
+          renderSections();
+          renderSectionsList();
+          if (editForm) editForm.style.display = 'none';
+          currentEditingIndex = -1;
+        });
+      }
+
+      // Cancel editing
+      if (cancelSectionBtn) {
+        cancelSectionBtn.addEventListener('click', () => {
+          if (editForm) editForm.style.display = 'none';
+          currentEditingIndex = -1;
+        });
+      }
+
+      // Initial render
+      renderSections();
+    })();
   });
 })();
