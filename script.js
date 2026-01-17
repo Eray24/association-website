@@ -2827,6 +2827,9 @@
       const bankNameInput = document.getElementById('editBankName');
       const ibanInput = document.getElementById('editIban');
       const recipientInput = document.getElementById('editRecipient');
+      const bank2NameInput = document.getElementById('editBank2Name');
+      const iban2Input = document.getElementById('editIban2');
+      const recipient2Input = document.getElementById('editRecipient2');
       const btcInput = document.getElementById('editBtc');
       const ethInput = document.getElementById('editEth');
       const trxInput = document.getElementById('editTrx');
@@ -2839,6 +2842,9 @@
         bankName: 'Türkiye Cumhuriyeti Ziraat Bankası',
         iban: 'TR33 0001 2009 7610 0012 3456 78',
         recipient: 'Ufuk Derneği',
+        bank2Name: '',
+        iban2: '',
+        recipient2: '',
         btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
         eth: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
         trx: 'TXapV4386dKd9cOzq46Es1jh92dQQisAq6',
@@ -2869,12 +2875,26 @@
         document.getElementById('display-eth').textContent = donationInfo.eth || defaultDonationInfo.eth;
         document.getElementById('display-trx').textContent = donationInfo.trx || defaultDonationInfo.trx;
         document.getElementById('display-wu').textContent = donationInfo.wu || defaultDonationInfo.wu;
+
+        // 2. Banka bilgileri
+        const bank2Section = document.getElementById('bank2-section');
+        if (donationInfo.bank2Name || donationInfo.iban2 || donationInfo.recipient2) {
+          bank2Section.style.display = 'block';
+          document.getElementById('display-bank2-name').textContent = donationInfo.bank2Name || '';
+          document.getElementById('display-iban2').textContent = donationInfo.iban2 || '';
+          document.getElementById('display-recipient2').textContent = donationInfo.recipient2 || '';
+        } else {
+          bank2Section.style.display = 'none';
+        }
       };
 
       const loadFormData = () => {
         bankNameInput.value = donationInfo.bankName || defaultDonationInfo.bankName;
         ibanInput.value = donationInfo.iban || defaultDonationInfo.iban;
         recipientInput.value = donationInfo.recipient || defaultDonationInfo.recipient;
+        bank2NameInput.value = donationInfo.bank2Name || '';
+        iban2Input.value = donationInfo.iban2 || '';
+        recipient2Input.value = donationInfo.recipient2 || '';
         btcInput.value = donationInfo.btc || defaultDonationInfo.btc;
         ethInput.value = donationInfo.eth || defaultDonationInfo.eth;
         trxInput.value = donationInfo.trx || defaultDonationInfo.trx;
@@ -2905,6 +2925,9 @@
           const bankName = bankNameInput.value.trim();
           const iban = ibanInput.value.trim();
           const recipient = recipientInput.value.trim();
+          const bank2Name = bank2NameInput.value.trim();
+          const iban2 = iban2Input.value.trim();
+          const recipient2 = recipient2Input.value.trim();
           const btc = btcInput.value.trim();
           const eth = ethInput.value.trim();
           const trx = trxInput.value.trim();
@@ -2919,6 +2942,9 @@
             bankName: bankName || defaultDonationInfo.bankName,
             iban: iban || defaultDonationInfo.iban,
             recipient: recipient || defaultDonationInfo.recipient,
+            bank2Name: bank2Name || '',
+            iban2: iban2 || '',
+            recipient2: recipient2 || '',
             btc: btc || defaultDonationInfo.btc,
             eth: eth || defaultDonationInfo.eth,
             trx: trx || defaultDonationInfo.trx,

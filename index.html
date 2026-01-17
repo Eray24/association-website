@@ -194,6 +194,23 @@
             <label for="editWesternUnion" style="display:block; font-weight:600; margin-bottom:4px;">Western Union Kodu</label>
             <input id="editWesternUnion" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Western Union kodu girin">
           </div>
+
+          <!-- 2. Banka Bilgileri (Opsiyonel) -->
+          <div style="margin-top:20px; padding-top:20px; border-top:2px solid #cbd5e1;">
+            <h4 style="margin:0 0 12px; color:#334155;">2. Banka Bilgileri (Opsiyonel)</h4>
+            <div>
+              <label for="editBank2Name" style="display:block; font-weight:600; margin-bottom:4px;">Banka Adı</label>
+              <input id="editBank2Name" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="2. Banka adı (opsiyonel)">
+            </div>
+            <div style="margin-top:12px;">
+              <label for="editIban2" style="display:block; font-weight:600; margin-bottom:4px;">IBAN</label>
+              <input id="editIban2" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="2. IBAN (opsiyonel)">
+            </div>
+            <div style="margin-top:12px;">
+              <label for="editRecipient2" style="display:block; font-weight:600; margin-bottom:4px;">Alıcı Adı</label>
+              <input id="editRecipient2" type="text" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="2. Alıcı adı (opsiyonel)">
+            </div>
+          </div>
           <div style="display:flex; gap:8px;">
             <button id="donationSaveBtn" type="button" style="padding:10px 16px; background:#10b981; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">Kaydet</button>
             <button id="donationCancelBtn" type="button" style="padding:10px 16px; background:#6b7280; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">İptal</button>
@@ -226,6 +243,20 @@
 
         <div class="donation-item crypto" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
            <strong>Western Union:</strong> <span class="crypto-addr" id="display-wu">274 581 9032</span>
+        </div>
+
+        <!-- 2. Banka Bilgileri (Opsiyonel) -->
+        <div id="bank2-section" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.2);">
+          <div style="font-size:14px; color:#cbd5e1; margin-bottom:12px;">Alternatif Banka:</div>
+          <div class="donation-item">
+            <strong>Banka:</strong> <span id="display-bank2-name"></span>
+          </div>
+          <div class="donation-item">
+            <strong>IBAN:</strong> <span id="display-iban2"></span>
+          </div>
+          <div class="donation-item">
+            <strong>Alıcı Adı:</strong> <span id="display-recipient2"></span>
+          </div>
         </div>
 
       </div>
