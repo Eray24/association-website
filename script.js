@@ -2057,6 +2057,54 @@
     (function initActivitiesPage() {
       if (currentPage !== 'activities.html') return;
 
+      // Resim compression fonksiyonu
+      const compressImage = (file, maxWidth = 600, maxHeight = 400, quality = 0.8) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              
+              // Aspect ratio'yu koru
+              if (width > height) {
+                if (width > maxWidth) {
+                  height = Math.round(height * (maxWidth / width));
+                  width = maxWidth;
+                }
+              } else {
+                if (height > maxHeight) {
+                  width = Math.round(width * (maxHeight / height));
+                  height = maxHeight;
+                }
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              // Base64 data URL'e çevir
+              canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              }, 'image/jpeg', quality);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      };
+
       const grid = document.getElementById('activities-grid');
       const adminWrapper = document.getElementById('activities-admin');
       const adminList = document.getElementById('activities-admin-list');
@@ -2076,6 +2124,8 @@
       const addBtn = document.getElementById('activityAddBtn');
       const saveBtn = document.getElementById('activitySaveBtn');
       const cancelBtn = document.getElementById('activityCancelBtn');
+
+      let compressedImageData = null;
 
       const defaultActivities = [
         {
@@ -2211,9 +2261,9 @@
               titleInput.value = act.title;
               categoryInput.value = act.category;
               budgetInput.value = act.budget;
-              imageInput.value = act.image;
               summaryInput.value = act.summary;
               descInput.value = stripTags(act.description || '');
+              compressedImageData = null; // Reset compressed image
               addBtn.style.display = 'none';
               saveBtn.style.display = 'inline-block';
               cancelBtn.style.display = 'inline-block';
@@ -2262,9 +2312,9 @@
             titleInput.value = act.title;
             categoryInput.value = act.category;
             budgetInput.value = act.budget;
-            imageInput.value = act.image;
             summaryInput.value = act.summary;
             descInput.value = stripTags(act.description || '');
+            compressedImageData = null; // Reset compressed image
             addBtn.style.display = 'none';
             saveBtn.style.display = 'inline-block';
             cancelBtn.style.display = 'inline-block';
@@ -2290,12 +2340,36 @@
         addBtn.style.display = 'inline-block';
         saveBtn.style.display = 'none';
         cancelBtn.style.display = 'none';
+        compressedImageData = null;
       };
+
+      // Resim input change event
+      if (imageInput) {
+        imageInput.addEventListener('change', async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) {
+            compressedImageData = null;
+            return;
+          }
+
+          try {
+            compressedImageData = await compressImage(file, 600, 400, 0.8);
+            alert(`✓ Resim optimize edildi (Boyut: ${(new Blob([compressedImageData]).size / 1024).toFixed(2)} KB)`);
+          } catch (err) {
+            alert('Resim işlenirken hata oluştu: ' + err.message);
+            compressedImageData = null;
+          }
+        });
+      }
 
       if (addBtn) {
         addBtn.addEventListener('click', () => {
-          if (!(titleInput.value && categoryInput.value && budgetInput.value && imageInput.value && summaryInput.value)) {
-            alert('Lütfen başlık, kategori, fon hedefi, görsel ve özet alanlarını doldurun.');
+          if (!(titleInput.value && categoryInput.value && budgetInput.value && summaryInput.value)) {
+            alert('Lütfen başlık, kategori, fon hedefi ve özet alanlarını doldurun.');
+            return;
+          }
+          if (!compressedImageData) {
+            alert('Lütfen bir resim seçin.');
             return;
           }
           const newAct = {
@@ -2303,7 +2377,7 @@
             title: titleInput.value.trim(),
             category: categoryInput.value.trim(),
             budget: budgetInput.value.trim(),
-            image: imageInput.value.trim(),
+            image: compressedImageData,
             summary: summaryInput.value.trim(),
             description: (descInput.value || '').trim()
           };
@@ -2320,12 +2394,16 @@
           const id = idInput.value;
           const idx = activities.findIndex((a) => String(a.id) === String(id));
           if (idx === -1) return;
+          
+          // Eğer resim değiştirilmişse, compressed versionu kullan; değilse eski resmi tut
+          const imageToUse = compressedImageData || activities[idx].image;
+          
           activities[idx] = {
             id,
             title: titleInput.value.trim(),
             category: categoryInput.value.trim(),
             budget: budgetInput.value.trim(),
-            image: imageInput.value.trim(),
+            image: imageToUse,
             summary: summaryInput.value.trim(),
             description: (descInput.value || '').trim()
           };
