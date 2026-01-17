@@ -62,8 +62,9 @@
           <input type="text" id="annTags" placeholder="Örn: Eğitim, Program" />
         </div>
         <div class="form-group">
-          <label for="annImage">Görsel URL</label>
-          <input type="url" id="annImage" placeholder="https://example.com/image.jpg" />
+          <label for="annImage">Görsel</label>
+          <input type="file" id="annImage" accept="image/*" />
+          <small style="display:block; margin-top:4px; color:#666;">Resim otomatik olarak optimize edilecektir (maks 600x400px)</small>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn-green" id="annSaveBtn">Kaydet</button>

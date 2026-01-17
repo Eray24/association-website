@@ -722,6 +722,54 @@
 
     // Duyurular sayfası yönetimi (admin CRUD)
     if (currentPage === "announcements.html") {
+      // Resim compression fonksiyonu
+      const compressImage = (file, maxWidth = 600, maxHeight = 400, quality = 0.8) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              
+              // Aspect ratio'yu koru
+              if (width > height) {
+                if (width > maxWidth) {
+                  height = Math.round(height * (maxWidth / width));
+                  width = maxWidth;
+                }
+              } else {
+                if (height > maxHeight) {
+                  width = Math.round(width * (maxHeight / height));
+                  height = maxHeight;
+                }
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              // Base64 data URL'e çevir
+              canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              }, 'image/jpeg', quality);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      };
+
       const annListEl = document.getElementById("ann-list");
       const annForm = document.getElementById("annForm");
       const annNewBtn = document.getElementById("annNewBtn");
@@ -731,8 +779,10 @@
       const annBody = document.getElementById("annBody");
       const annTags = document.getElementById("annTags");
       const annCancelBtn = document.getElementById("annCancelBtn");
+      const annImageInput = document.getElementById("annImage");
 
       let announcements = loadAnnouncements();
+      let compressedImageData = null;
 
       const renderAnnPage = () => {
         if (!annListEl) return;
@@ -794,8 +844,8 @@
               annTitle.value = ann.title || "";
               annDate.value = ann.date || "";
               annBody.value = ann.summary || "";
-              document.getElementById("annImage").value = ann.image || "";
               annTags.value = (ann.tags || []).join(", ");
+              compressedImageData = null; // Reset compressed image
               if (annForm) annForm.style.display = "block";
               window.scrollTo({ top: annForm.offsetTop - 40, behavior: "smooth" });
             });
@@ -934,6 +984,8 @@
         annDate.value = "";
         annBody.value = "";
         annTags.value = "";
+        if (annImageInput) annImageInput.value = "";
+        compressedImageData = null;
         if (annForm) annForm.style.display = "none";
       };
 
@@ -941,6 +993,25 @@
         annNewBtn.addEventListener("click", () => {
           resetForm();
           if (annForm) annForm.style.display = "block";
+        });
+      }
+
+      // Resim input change event
+      if (annImageInput) {
+        annImageInput.addEventListener('change', async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) {
+            compressedImageData = null;
+            return;
+          }
+
+          try {
+            compressedImageData = await compressImage(file, 600, 400, 0.8);
+            alert(`✓ Resim optimize edildi (Boyut: ${(new Blob([compressedImageData]).size / 1024).toFixed(2)} KB)`);
+          } catch (err) {
+            alert('Resim işlenirken hata oluştu: ' + err.message);
+            compressedImageData = null;
+          }
         });
       }
 
@@ -954,7 +1025,7 @@
           const title = annTitle?.value.trim();
           const date = annDate?.value || "";
           const summary = annBody?.value.trim();
-          const image = document.getElementById("annImage")?.value.trim() || "";
+          const image = compressedImageData || "";
           const tags = (annTags?.value || "")
             .split(",")
             .map((t) => t.trim())
@@ -963,19 +1034,27 @@
             alert("Lütfen başlık, tarih ve açıklama alanlarını doldurun.");
             return;
           }
+          if (!image) {
+            alert("Lütfen bir görsel seçin.");
+            return;
+          }
 
           const { day, month } = getDayMonth({ date });
+          
+          // Eğer resim değiştirilmemişse eski resmi koru
+          const idx = annEditIndex.value;
+          const finalImage = compressedImageData || (idx !== "" && announcements[Number(idx)] ? announcements[Number(idx)].image : "");
+          
           const newAnn = {
             title,
             summary,
             date,
-            image,
+            image: finalImage,
             tags,
             day,
             month,
           };
 
-          const idx = annEditIndex.value;
           if (idx !== "" && !Number.isNaN(Number(idx))) {
             announcements[Number(idx)] = newAnn;
           } else {
