@@ -7,13 +7,58 @@
 
     // localStorage'da kayıtlı sayfa içeriğini kontrol et
     const pages = JSON.parse(localStorage.getItem('customPages') || '{}');
-    if (pages[pageId] && pages[pageId].content) {
-      container.innerHTML = pages[pageId].content;
+    if (pages[pageId]) {
+      container.innerHTML = pages[pageId];
     }
   };
 
   // Sayfa yüklendiğinde çalıştır
   document.addEventListener('DOMContentLoaded', () => {
+    // URL'den sayfa ID'sini al (refresh yapılsa da çalışacak)
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageIdFromUrl = urlParams.get('id');
+    
+    if (pageIdFromUrl) {
+      // URL'de ID varsa, localStorage'dan içeriği al
+      const dynamicPageContent = localStorage.getItem('_dynamicPageContent');
+      const dynamicPageLabel = localStorage.getItem('_dynamicPageLabel');
+      
+      if (dynamicPageContent) {
+        const container = document.getElementById('page-content');
+        if (container) {
+          container.innerHTML = dynamicPageContent;
+        }
+        const heroTitle = document.getElementById('dynamic-page-title');
+        if (heroTitle) {
+          heroTitle.textContent = dynamicPageLabel || pageIdFromUrl;
+        }
+        return;
+      }
+    }
+    
+    // Eski yöntem: localStorage'daki dinamik sayfa (backward compat)
+    const dynamicPageId = localStorage.getItem('_dynamicPageId');
+    const dynamicPageLabel = localStorage.getItem('_dynamicPageLabel');
+    const dynamicPageContent = localStorage.getItem('_dynamicPageContent');
+    
+    if (dynamicPageId && dynamicPageContent) {
+      const container = document.getElementById('page-content');
+      if (container) {
+        container.innerHTML = dynamicPageContent;
+      }
+      // Hero başlığını güncelle
+      const heroTitle = document.getElementById('dynamic-page-title');
+      if (heroTitle) {
+        heroTitle.textContent = dynamicPageLabel || 'Sayfa';
+      }
+      // Temizle
+      localStorage.removeItem('_dynamicPageId');
+      localStorage.removeItem('_dynamicPageLabel');
+      localStorage.removeItem('_dynamicPageContent');
+      return;
+    }
+    
+    // Normal sayfa yüklemesi
     const currentFile = window.location.pathname.split('/').pop() || '';
     if (currentFile && currentFile.endsWith('.html')) {
       const pageId = currentFile.replace('.html', '');
@@ -3226,9 +3271,32 @@
         const insertBeforeElement = themeBtn || loginBtn;
         menuItems.forEach(item => {
           const a = document.createElement('a');
-          a.href = item.url;
+          // Dinamik sayfaları yüklemek için # kullan
+          a.href = 'javascript:void(0)';
           a.textContent = item.label;
           a.dataset.menuId = item.id;
+          a.dataset.pageUrl = item.url;
+          a.style.cursor = 'pointer';
+          // Dinamik sayfa yükleme
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageUrl = item.url;
+            const pageId = pageUrl.replace('.html', '');
+            const pageContent = window.getPageContent(pageId);
+            
+            if (pageContent) {
+              // localStorage'a sayfa bilgisini kaydet
+              localStorage.setItem('_dynamicPageId', pageId);
+              localStorage.setItem('_dynamicPageLabel', item.label);
+              localStorage.setItem('_dynamicPageContent', pageContent);
+              
+              // page.html'e yönlendir (query param ile sayfa ID'sini geç)
+              window.location.href = 'page.html?id=' + encodeURIComponent(pageId);
+            } else {
+              // Normal sayfa açması
+              window.location.href = pageUrl;
+            }
+          });
           if (insertBeforeElement) {
             nav.insertBefore(a, insertBeforeElement);
           } else {
@@ -3275,9 +3343,9 @@
               
               <form id="menuAddForm" style="background:rgba(255,255,255,0.95); color:#1f2937; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
                 <h4 style="margin:0 0 15px 0; color:#667eea; font-size:16px;">➕ Yeni Sayfa Ekle</h4>
-                <div style="display:grid; gap:10px; grid-template-columns:1fr 1fr;">
+                <div style="display:grid; gap:10px;">
                   <input type="text" id="menuNewLabel" placeholder="Sayfa Adı (örn: Galeri)" required style="padding:10px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:14px; font-family:inherit;" />
-                  <input type="text" id="menuNewUrl" placeholder="URL (örn: gallery.html)" required style="padding:10px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:14px; font-family:inherit;" />
+                  <input type="text" id="menuNewUrl" style="display:none;" />
                 </div>
                 <button type="submit" style="width:100%; margin-top:10px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">Sayfayı Ekle</button>
               </form>
@@ -3334,7 +3402,6 @@
                   const items = window.getMenuItems();
                   items[idx].active = !items[idx].active;
                   window.saveMenuItems(items);
-                  window.renderMenu();
                   renderMenuList();
                 });
               });
@@ -3349,7 +3416,6 @@
                   if (confirm(`"${items[idx].label}" sayfasını silmek istediğinize emin misiniz?`)) {
                     items.splice(idx, 1);
                     window.saveMenuItems(items);
-                    window.renderMenu();
                     renderMenuList();
                   }
                 });
@@ -3358,11 +3424,36 @@
 
             // Yeni sayfa ekleme
             const menuForm = document.getElementById('menuAddForm');
+            const menuNewLabelInput = document.getElementById('menuNewLabel');
+            const menuNewUrlInput = document.getElementById('menuNewUrl');
+            
+            // Sayfa adı yazılırken URL'yi otomatik oluştur
+            if (menuNewLabelInput && menuNewUrlInput) {
+              menuNewLabelInput.addEventListener('input', (e) => {
+                const label = e.target.value.trim();
+                if (label) {
+                  // Türkçe karakterleri temizle ve URL-friendly format yap
+                  const urlFriendly = label
+                    .toLowerCase()
+                    .replace(/ç/g, 'c')
+                    .replace(/ğ/g, 'g')
+                    .replace(/ı/g, 'i')
+                    .replace(/ö/g, 'o')
+                    .replace(/ş/g, 's')
+                    .replace(/ü/g, 'u')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+                  menuNewUrlInput.value = urlFriendly + '.html';
+                }
+              });
+            }
+            
             if (menuForm) {
               menuForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const label = document.getElementById('menuNewLabel').value.trim();
-                const url = document.getElementById('menuNewUrl').value.trim();
+                const label = menuNewLabelInput.value.trim();
+                const url = menuNewUrlInput.value.trim();
 
                 if (!label || !url) {
                   alert('Lütfen tüm alanları doldurun.');
@@ -3376,11 +3467,48 @@
 
                 // Varsayılan sayfa içeriğini oluştur ve kaydet
                 const pageId = url.replace('.html', '');
-                const defaultContent = getDefaultPageContent(label);
-                window.savePageContent(pageId, {
-                  title: label,
-                  content: `<h2>${label}</h2><p>Bu sayfa yeni oluşturulmuştur. Admin panelinden düzenleyebilirsiniz.</p>`
-                });
+                const defaultContent = `
+                  <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 20px; border-radius: 12px; text-align: center; margin-bottom: 40px;">
+                    <h1 style="margin: 0 0 20px 0; font-size: 36px; font-weight: 700;">${label}</h1>
+                    <p style="margin: 0; font-size: 18px; opacity: 0.95; max-width: 600px; margin: 0 auto;">Bu sayfaya hoş geldiniz. Yönetim panelinden bu sayfa için içerik ekleyebilirsiniz.</p>
+                  </section>
+                  
+                  <div style="background: #f0f4ff; border-left: 5px solid #667eea; padding: 30px; border-radius: 8px; margin-bottom: 40px;">
+                    <div style="display: flex; gap: 15px; align-items: flex-start;">
+                      <span style="font-size: 28px; flex-shrink: 0;">💡</span>
+                      <div style="text-align: left;">
+                        <h3 style="margin: 0 0 10px 0; color: #667eea; font-size: 18px;">Admin İpucu</h3>
+                        <p style="margin: 0; color: #555; line-height: 1.6;">
+                          Bu sayfa yeni oluşturulmuştur. <strong>Yönetim sayfasından</strong> "Sayfa Yönetimi" alanında bu sayfa için:
+                        </p>
+                        <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #555;">
+                          <li>Özel başlıklar ve alt başlıklar ekleyebilirsiniz</li>
+                          <li>Resim ve videolar ekleyebilirsiniz</li>
+                          <li>Sayfa içeriğini tamamen özelleştirebilirsiniz</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: white; border: 1px solid #e5e7eb; padding: 25px; border-radius: 8px; text-align: center;">
+                      <div style="font-size: 32px; margin-bottom: 10px;">📝</div>
+                      <h4 style="margin: 0 0 8px 0; color: #1f2937;">İçerik Ekle</h4>
+                      <p style="margin: 0; color: #666; font-size: 14px;">Yönetim panelinden bu sayfaya metin, resim ve medya ekleyin.</p>
+                    </div>
+                    <div style="background: white; border: 1px solid #e5e7eb; padding: 25px; border-radius: 8px; text-align: center;">
+                      <div style="font-size: 32px; margin-bottom: 10px;">⚙️</div>
+                      <h4 style="margin: 0 0 8px 0; color: #1f2937;">Düzenle</h4>
+                      <p style="margin: 0; color: #666; font-size: 14px;">Sayfanın tasarımını ve yerleşimini isteğinize göre özelleştirin.</p>
+                    </div>
+                    <div style="background: white; border: 1px solid #e5e7eb; padding: 25px; border-radius: 8px; text-align: center;">
+                      <div style="font-size: 32px; margin-bottom: 10px;">✨</div>
+                      <h4 style="margin: 0 0 8px 0; color: #1f2937;">Yayınla</h4>
+                      <p style="margin: 0; color: #666; font-size: 14px;">Hazırladığınız içeriği canlı ortamda yayınlayın.</p>
+                    </div>
+                  </div>
+                `;
+                window.savePageContent(pageId, defaultContent);
 
                 const items = window.getMenuItems();
                 const newItem = {
@@ -3392,9 +3520,9 @@
                 };
                 items.push(newItem);
                 window.saveMenuItems(items);
-                window.renderMenu();
                 renderMenuList();
                 menuForm.reset();
+                menuNewUrlInput.value = '';
                 alert(`"${label}" sayfası oluşturuldu ve menüye eklendi. Sayfaya erişebilirsiniz: ${url}`);
               });
             }
