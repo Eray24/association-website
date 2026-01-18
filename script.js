@@ -3215,17 +3215,22 @@
         const themeBtn = nav.querySelector('#theme-toggle');
         const loginBtn = nav.querySelector('#userLoginBtn');
         
-        // Tüm HTML linklerini kaldır
-        existingLinks.forEach(link => link.remove());
+        // Tüm HTML linklerini kaldır (theme ve login button'ı hariç)
+        existingLinks.forEach(link => {
+          if (link !== loginBtn) {
+            link.remove();
+          }
+        });
         
-        // Yeni menü linklerini ekle (theme button ve login button'dan önce)
+        // Yeni menü linklerini ekle (theme button'dan önce)
+        const insertBeforeElement = themeBtn || loginBtn;
         menuItems.forEach(item => {
           const a = document.createElement('a');
           a.href = item.url;
           a.textContent = item.label;
           a.dataset.menuId = item.id;
-          if (themeBtn) {
-            nav.insertBefore(a, themeBtn);
+          if (insertBeforeElement) {
+            nav.insertBefore(a, insertBeforeElement);
           } else {
             nav.appendChild(a);
           }
