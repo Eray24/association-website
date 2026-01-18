@@ -476,21 +476,6 @@
       }
     }
 
-    // Ana sayfada Bağış Yap butonunun yanına Sosyal Medya butonu ekle (tüm kullanıcılar için)
-    if (currentPage === '' || currentPage === 'index.html') {
-      const donateBtn = document.querySelector('.hero .buttons a[href="donate.html"]');
-      const existingSocialBtn = document.querySelector('.hero .buttons a[href="#social"]');
-      
-      if (donateBtn && !existingSocialBtn) {
-        const socialBtn = document.createElement('a');
-        socialBtn.href = '#social';
-        socialBtn.className = donateBtn.className || 'primary';
-        socialBtn.textContent = 'Sosyal Medya';
-        socialBtn.style.marginLeft = '8px';
-        donateBtn.insertAdjacentElement('afterend', socialBtn);
-      }
-    }
-
     // Ana sayfada Bağış Yap butonunun yanına yönetim/üye butonlarını ekle (hem admin hem üye için)
     if ((currentPage === '' || currentPage === 'index.html') && su && (su.role === 'member' || su.role === 'admin')) {
       const donateBtn = document.querySelector('.hero .buttons a[href="donate.html"]');
