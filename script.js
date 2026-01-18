@@ -19,9 +19,12 @@
     const pageIdFromUrl = urlParams.get('id');
     
     if (pageIdFromUrl) {
-      // URL'de ID varsa, localStorage'dan içeriği al
-      const dynamicPageContent = localStorage.getItem('_dynamicPageContent');
-      const dynamicPageLabel = localStorage.getItem('_dynamicPageLabel');
+      // URL'de ID varsa, customPages localStorage'dan içeriği al
+      const customPages = JSON.parse(localStorage.getItem('customPages') || '{}');
+      const dynamicPageContent = customPages[pageIdFromUrl];
+      const menuItems = JSON.parse(localStorage.getItem('navigationMenu') || '[]');
+      const menuItem = menuItems.find(item => item.url === pageIdFromUrl);
+      const dynamicPageLabel = menuItem?.label || pageIdFromUrl;
       
       if (dynamicPageContent) {
         const container = document.getElementById('page-content');
@@ -3532,6 +3535,240 @@
           }
         }
       }
+    })();
+
+    // Dinamik sayfa içeriği: bölüm yönetimi (page.html)
+    (function initDynamicPageSections() {
+      const currentFile = window.location.pathname.split('/').pop() || '';
+      if (currentFile !== 'page.html') return;
+
+      const su = getSessionUser();
+      const pageIdFromUrl = new URLSearchParams(window.location.search).get('id');
+      if (!pageIdFromUrl) return;
+
+      const adminWrapper = document.getElementById('dynamic-admin-wrapper');
+      const editBtnWrapper = document.getElementById('dynamic-edit-btn-wrapper');
+      const editBtn = document.getElementById('dynamicEditBtn');
+      const container = document.getElementById('page-content');
+      const sectionsList = document.getElementById('dynamic-sections-list');
+      const editForm = document.getElementById('dynamic-edit-section-form');
+      const addSectionBtn = document.getElementById('dynamicAddSectionBtn');
+      const editSectionTitle = document.getElementById('dynamicEditSectionTitle');
+      const editSectionContent = document.getElementById('dynamicEditSectionContent');
+      const saveSectionBtn = document.getElementById('dynamicSaveSectionBtn');
+      const cancelSectionBtn = document.getElementById('dynamicCancelSectionBtn');
+
+      let currentEditingIndex = -1;
+
+      // Helper: metni HTML'e dönüştür
+      const plainToHtml = (text) => {
+        if (!text) return '';
+        let t = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const lines = t.split('\n');
+        let inList = false;
+        let out = '';
+        lines.forEach((ln) => {
+          const trimmed = ln.trim();
+          if (trimmed.startsWith('• ')) {
+            if (!inList) { out += '<ul>'; inList = true; }
+            out += '<li>' + trimmed.slice(2) + '</li>';
+          } else {
+            if (inList) { out += '</ul>'; inList = false; }
+            if (trimmed === '') {
+              out += '\n';
+            } else {
+              out += '<p>' + trimmed + '</p>';
+            }
+          }
+        });
+        if (inList) out += '</ul>';
+        return out;
+      };
+
+      // Helper: HTML'i metne dönüştür
+      const htmlToPlain = (html) => {
+        if (!html) return '';
+        let t = html.replace(/<\s*\/p\s*>/gi, '\n');
+        t = t.replace(/<\s*br\s*\/?>/gi, '\n');
+        t = t.replace(/<\s*\/li\s*>/gi, '\n');
+        t = t.replace(/<\s*li[^>]*>/gi, '• ');
+        t = t.replace(/<[^>]+>/g, '');
+        t = t.replace(/&nbsp;/gi, ' ');
+        t = t.replace(/&amp;/gi, '&');
+        t = t.replace(/&lt;/gi, '<');
+        t = t.replace(/&gt;/gi, '>');
+        t = t.replace(/\n{3,}/g, '\n\n').trim();
+        return t;
+      };
+
+      // Default: hoş geldiniz
+      const defaultSections = [
+        {
+          id: 'welcome',
+          title: 'Hoş Geldiniz',
+          content: '<p>Bu sayfaya hoş geldiniz. Yönetim panelinden bu sayfayı düzenleyebilirsiniz.</p>'
+        }
+      ];
+
+      const loadSections = () => {
+        try {
+          const pages = JSON.parse(localStorage.getItem('customPages') || '{}');
+          if (pages[pageIdFromUrl]) {
+            // HTML'den bölümleri parse et
+            const html = pages[pageIdFromUrl];
+            if (html.includes('<section') || html.includes('data-section-id')) {
+              // Structured bölümler
+              return parseSectionsFromHtml(html);
+            }
+          }
+        } catch (err) {
+          // ignore
+        }
+        return defaultSections;
+      };
+
+      // HTML'den yapılandırılmış bölümleri parse et
+      const parseSectionsFromHtml = (html) => {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        const sections = [];
+        const sectionDivs = temp.querySelectorAll('[data-section-id]');
+        sectionDivs.forEach((sec) => {
+          const id = sec.getAttribute('data-section-id');
+          const title = sec.querySelector('[data-section-title]')?.textContent || 'Bölüm';
+          const content = sec.querySelector('[data-section-content]')?.innerHTML || '';
+          sections.push({ id, title, content });
+        });
+        return sections.length > 0 ? sections : defaultSections;
+      };
+
+      let sections = loadSections();
+
+      const saveSections = () => {
+        // Bölümleri yapılandırılmış HTML'e çevir
+        let html = '';
+        sections.forEach((sec) => {
+          html += `<section data-section-id="${sec.id}" style="margin-bottom:30px;"><h2 data-section-title="${sec.title}">${sec.title}</h2><div data-section-content>${sec.content}</div></section>`;
+        });
+        const customPages = JSON.parse(localStorage.getItem('customPages') || '{}');
+        customPages[pageIdFromUrl] = html;
+        localStorage.setItem('customPages', JSON.stringify(customPages));
+      };
+
+      const renderSections = () => {
+        if (!container) return;
+        container.innerHTML = '';
+        sections.forEach((section) => {
+          const div = document.createElement('section');
+          div.setAttribute('data-section-id', section.id);
+          div.style.marginBottom = '30px';
+          div.innerHTML = `<h2 data-section-title="${section.title}">${section.title}</h2><div data-section-content>${section.content}</div>`;
+          container.appendChild(div);
+        });
+      };
+
+      const renderSectionsList = () => {
+        if (!sectionsList) return;
+        sectionsList.innerHTML = '';
+        sections.forEach((section, index) => {
+          const div = document.createElement('div');
+          div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; padding:8px; background:#f3f4f6; border-radius:4px; align-items:center;';
+          div.innerHTML = `
+            <span style="flex:1; font-weight:500;">${section.title}</span>
+            <button data-edit="${index}" type="button" style="padding:4px 8px; background:#3b82f6; color:white; border:none; border-radius:3px; cursor:pointer; font-size:12px;">Düzenle</button>
+            <button data-delete="${index}" type="button" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:3px; cursor:pointer; font-size:12px;">Sil</button>
+          `;
+          sectionsList.appendChild(div);
+
+          // Düzenle
+          div.querySelector(`[data-edit]`).addEventListener('click', () => {
+            currentEditingIndex = index;
+            editSectionTitle.value = section.title;
+            editSectionContent.value = htmlToPlain(section.content);
+            editForm.style.display = 'block';
+          });
+
+          // Sil
+          div.querySelector(`[data-delete]`).addEventListener('click', () => {
+            if (confirm(`"${section.title}" bölümü silinsin mi?`)) {
+              sections.splice(index, 1);
+              saveSections();
+              renderSections();
+              renderSectionsList();
+            }
+          });
+        });
+      };
+
+      // Admin kontrol
+      if (isAdmin(su)) {
+        if (adminWrapper) adminWrapper.style.display = 'block';
+        if (editBtnWrapper) editBtnWrapper.style.display = 'none';
+      } else {
+        if (adminWrapper) adminWrapper.style.display = 'none';
+        if (editBtnWrapper) editBtnWrapper.style.display = 'none';
+      }
+
+      // Düzenle butonu (admin değilse)
+      if (editBtn) {
+        editBtn.addEventListener('click', () => {
+          if (adminWrapper) adminWrapper.style.display = 'block';
+          if (editBtnWrapper) editBtnWrapper.style.display = 'none';
+        });
+      }
+
+      // Yeni bölüm ekle
+      if (addSectionBtn) {
+        addSectionBtn.addEventListener('click', () => {
+          currentEditingIndex = -1;
+          editSectionTitle.value = '';
+          editSectionContent.value = '';
+          editForm.style.display = 'block';
+        });
+      }
+
+      // Kaydet
+      if (saveSectionBtn) {
+        saveSectionBtn.addEventListener('click', () => {
+          const title = editSectionTitle.value.trim();
+          const content = plainToHtml(editSectionContent.value);
+
+          if (!title) {
+            alert('Başlık boş olamaz!');
+            return;
+          }
+
+          if (currentEditingIndex === -1) {
+            // Yeni bölüm
+            sections.push({
+              id: 'section-' + Date.now(),
+              title,
+              content
+            });
+          } else {
+            // Mevcut bölümü güncelle
+            sections[currentEditingIndex].title = title;
+            sections[currentEditingIndex].content = content;
+          }
+
+          saveSections();
+          renderSections();
+          renderSectionsList();
+          editForm.style.display = 'none';
+        });
+      }
+
+      // İptal
+      if (cancelSectionBtn) {
+        cancelSectionBtn.addEventListener('click', () => {
+          editForm.style.display = 'none';
+          currentEditingIndex = -1;
+        });
+      }
+
+      // İlk render
+      renderSections();
+      renderSectionsList();
     })();
   });
 })();
