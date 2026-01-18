@@ -503,6 +503,14 @@
           manageBtn.textContent = 'Bağış Yönetim';
           manageBtn.style.marginLeft = '8px';
           targetBtn.insertAdjacentElement('afterend', manageBtn);
+
+          // Sosyal Medya butonu (tasarım aynı, Bağış Yönetim'in yanına)
+          const socialBtn = document.createElement('a');
+          socialBtn.href = '#social';
+          socialBtn.className = donateBtn.className || 'primary';
+          socialBtn.textContent = 'Sosyal Medya';
+          socialBtn.style.marginLeft = '8px';
+          manageBtn.insertAdjacentElement('afterend', socialBtn);
         }
       }
     }
