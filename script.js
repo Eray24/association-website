@@ -476,6 +476,21 @@
       }
     }
 
+    // Ana sayfada Bağış Yap butonunun yanına Sosyal Medya butonu ekle (tüm kullanıcılar için)
+    if (currentPage === '' || currentPage === 'index.html') {
+      const donateBtn = document.querySelector('.hero .buttons a[href="donate.html"]');
+      const existingSocialBtn = document.querySelector('.hero .buttons a[href="#social"]');
+      
+      if (donateBtn && !existingSocialBtn) {
+        const socialBtn = document.createElement('a');
+        socialBtn.href = '#social';
+        socialBtn.className = donateBtn.className || 'primary';
+        socialBtn.textContent = 'Sosyal Medya';
+        socialBtn.style.marginLeft = '8px';
+        donateBtn.insertAdjacentElement('afterend', socialBtn);
+      }
+    }
+
     // Ana sayfada Bağış Yap butonunun yanına yönetim/üye butonlarını ekle (hem admin hem üye için)
     if ((currentPage === '' || currentPage === 'index.html') && su && (su.role === 'member' || su.role === 'admin')) {
       const donateBtn = document.querySelector('.hero .buttons a[href="donate.html"]');
@@ -483,34 +498,30 @@
       const existingMyDonationsBtn = document.querySelector('.hero .buttons a[href="my-donations.html"]');
       
       if (donateBtn) {
-        // Üye veya Admin için Bağışlarım butonu
+        // Sosyal Medya butonunu bul (artık zaten var)
+        const socialBtn = document.querySelector('.hero .buttons a[href="#social"]');
+        const targetAfterSocial = socialBtn || donateBtn;
+
+        // Üye veya Admin için Bağışlarım butonu (Sosyal Medya'dan sonra)
         if (!existingMyDonationsBtn) {
           const myDonationsBtn = document.createElement('a');
           myDonationsBtn.href = 'my-donations.html';
           myDonationsBtn.className = donateBtn.className || 'primary';
           myDonationsBtn.textContent = 'Bağışlarım';
           myDonationsBtn.style.marginLeft = '8px';
-          donateBtn.insertAdjacentElement('afterend', myDonationsBtn);
+          targetAfterSocial.insertAdjacentElement('afterend', myDonationsBtn);
         }
         
         // Sadece Admin için Bağış Yönetim butonu (Bağışlarım'dan sonra)
         if (isAdmin(su) && !existingManageBtn) {
           const myDonationsBtn = document.querySelector('.hero .buttons a[href="my-donations.html"]');
-          const targetBtn = myDonationsBtn || donateBtn;
+          const targetBtn = myDonationsBtn || targetAfterSocial;
           const manageBtn = document.createElement('a');
           manageBtn.href = 'donation-management.html';
           manageBtn.className = donateBtn.className || 'primary';
           manageBtn.textContent = 'Bağış Yönetim';
           manageBtn.style.marginLeft = '8px';
           targetBtn.insertAdjacentElement('afterend', manageBtn);
-
-          // Sosyal Medya butonu (tasarım aynı, Bağış Yönetim'in yanına)
-          const socialBtn = document.createElement('a');
-          socialBtn.href = '#social';
-          socialBtn.className = donateBtn.className || 'primary';
-          socialBtn.textContent = 'Sosyal Medya';
-          socialBtn.style.marginLeft = '8px';
-          manageBtn.insertAdjacentElement('afterend', socialBtn);
         }
       }
     }
