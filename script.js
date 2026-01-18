@@ -3172,6 +3172,183 @@
       renderDonationInfo();
     })();
 
+    // Ana sayfa: "Neden Bize Katılmalısınız?" yönetimi (admin)
+    (function initWhyJoinManagement() {
+      if (currentPage !== '' && currentPage !== 'index.html') return;
+
+      const su = getSessionUser();
+      const adminWrapper = document.getElementById('why-admin-wrapper');
+      const editBtnWrapper = document.getElementById('why-edit-btn-wrapper');
+      const editBtn = document.getElementById('whyEditBtn');
+      const saveBtn = document.getElementById('whySaveBtn');
+      const cancelBtn = document.getElementById('whyCancelBtn');
+      const addCardBtn = document.getElementById('whyAddCardBtn');
+      const cardsEditContainer = document.getElementById('why-cards-edit-container');
+      const cardsDisplay = document.getElementById('why-cards-display');
+
+      // Default why join cards
+      const defaultWhyCards = [
+        {
+          icon: '👥',
+          title: 'Güçlü Bir Topluluk',
+          text: 'Benzer hedeflere ve değerlere sahip bireylerle tanışın, dayanışma içinde güçlü bağlar kurun.'
+        },
+        {
+          icon: '📈',
+          title: 'Gelişim Fırsatları',
+          text: 'Özel etkinlikler, atölyeler ve networking fırsatlarıyla kendinizi geliştirin.'
+        },
+        {
+          icon: '💚',
+          title: 'Fark Yaratın',
+          text: 'Toplumda olumlu değişim yaratan anlamlı projelere katkı sağlayın.'
+        }
+      ];
+
+      const loadWhyCards = () => {
+        try {
+          const stored = JSON.parse(localStorage.getItem('whyCards') || 'null');
+          if (stored && Array.isArray(stored) && stored.length > 0) return stored;
+        } catch (err) {
+          // ignore parse error
+        }
+        return defaultWhyCards;
+      };
+
+      let whyCards = loadWhyCards();
+
+      const saveWhyCards = () => {
+        localStorage.setItem('whyCards', JSON.stringify(whyCards));
+      };
+
+      const renderWhyCardsDisplay = () => {
+        cardsDisplay.innerHTML = '';
+        whyCards.forEach((card, index) => {
+          const cardEl = document.createElement('div');
+          cardEl.className = 'why-card';
+          cardEl.innerHTML = `
+            <div class="icon">${card.icon}</div>
+            <h3>${card.title}</h3>
+            <p>${card.text}</p>
+          `;
+          cardsDisplay.appendChild(cardEl);
+        });
+      };
+
+      const renderFormCards = () => {
+        cardsEditContainer.innerHTML = '';
+        whyCards.forEach((card, index) => {
+          const cardDiv = document.createElement('div');
+          cardDiv.style.cssText = 'background:white; padding:15px; border-radius:6px; border:1px solid #d1d5db; position:relative;';
+          cardDiv.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h4 style="margin:0; color:#334155;">Kart ${index + 1}</h4>
+              <button type="button" class="delete-card-btn" data-index="${index}" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">✕ Sil</button>
+            </div>
+            <div style="margin-bottom:12px;">
+              <label style="display:block; font-weight:600; margin-bottom:4px;">İkon (Emoji)</label>
+              <input type="text" maxlength="2" class="card-icon-input" data-index="${index}" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Emoji" value="${card.icon}">
+            </div>
+            <div style="margin-bottom:12px;">
+              <label style="display:block; font-weight:600; margin-bottom:4px;">Başlık</label>
+              <input type="text" class="card-title-input" data-index="${index}" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box;" placeholder="Başlık" value="${card.title}">
+            </div>
+            <div>
+              <label style="display:block; font-weight:600; margin-bottom:4px;">Açıklama</label>
+              <textarea class="card-text-input" data-index="${index}" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px; box-sizing:border-box; min-height:60px; font-family:Arial, sans-serif;" placeholder="Açıklama">${card.text}</textarea>
+            </div>
+          `;
+          cardsEditContainer.appendChild(cardDiv);
+        });
+
+        // Delete butonlarını bağla
+        document.querySelectorAll('.delete-card-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const index = parseInt(btn.dataset.index);
+            whyCards.splice(index, 1);
+            renderFormCards();
+          });
+        });
+      };
+
+      const resetForm = () => {
+        if (adminWrapper) adminWrapper.style.display = 'none';
+        renderFormCards();
+      };
+
+      // Admin panelini göster/gizle
+      if (isAdmin(su)) {
+        if (editBtnWrapper) editBtnWrapper.style.display = 'block';
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            if (adminWrapper) {
+              adminWrapper.style.display = adminWrapper.style.display === 'none' ? 'block' : 'none';
+              renderFormCards();
+            }
+          });
+        }
+      }
+
+      // Yeni kart ekleme butonu
+      if (addCardBtn) {
+        addCardBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          whyCards.push({
+            icon: '⭐',
+            title: 'Yeni Kart',
+            text: 'Açıklamayı buraya yazın.'
+          });
+          renderFormCards();
+        });
+      }
+
+      // Kaydet butonu
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          const newCards = [];
+          
+          document.querySelectorAll('.card-icon-input').forEach((input, index) => {
+            const icon = input.value.trim().substring(0, 2) || '⭐';
+            const titleInput = document.querySelectorAll('.card-title-input')[index];
+            const textInput = document.querySelectorAll('.card-text-input')[index];
+            
+            const title = titleInput.value.trim();
+            const text = textInput.value.trim();
+
+            if (!title || !text) {
+              alert(`Kart ${index + 1}: Başlık ve açıklama boş olamaz.`);
+              return;
+            }
+
+            newCards.push({ icon, title, text });
+          });
+
+          if (newCards.length === 0) {
+            alert('En az bir kart olmalı!');
+            return;
+          }
+
+          whyCards = newCards;
+          saveWhyCards();
+          renderWhyCardsDisplay();
+          alert('Kartlar başarıyla güncellendi.');
+          resetForm();
+        });
+      }
+
+      // İptal butonu
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', resetForm);
+      }
+
+      // İlk yükleme
+      renderWhyCardsDisplay();
+      if (isAdmin(su)) {
+        renderFormCards();
+      }
+    })();
+
     // Menü Yönetimi
     (function initMenuManagement() {
       const defaultMenuItems = [

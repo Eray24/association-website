@@ -121,32 +121,28 @@
     <section class="why-join">
       <h2>Neden Bize Katılmalısınız?</h2>
 
-      <div class="why-cards">
-        <div class="why-card">
-          <div class="icon">👥</div>
-          <h3>Güçlü Bir Topluluk</h3>
-          <p>
-            Benzer hedeflere ve değerlere sahip bireylerle tanışın, dayanışma
-            içinde güçlü bağlar kurun.
-          </p>
-        </div>
+      <!-- Admin Düzenleme Butonu -->
+      <div id="why-edit-btn-wrapper" style="margin-bottom:20px; display:none;">
+        <button id="whyEditBtn" style="padding:8px 12px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">✏️ Kartları Düzenle</button>
+      </div>
 
-        <div class="why-card">
-          <div class="icon">📈</div>
-          <h3>Gelişim Fırsatları</h3>
-          <p>
-            Özel etkinlikler, atölyeler ve networking fırsatlarıyla kendinizi
-            geliştirin.
-          </p>
-        </div>
+      <!-- Admin Düzenleme Paneli -->
+      <div id="why-admin-wrapper" style="display:none; background:#f0f4f8; border:2px solid #3b82f6; border-radius:8px; padding:20px; margin-bottom:30px;">
+        <h3 style="margin-top:0; color:#1e40af;">📝 "Neden Bize Katılmalısınız?" Kartlarını Düzenle</h3>
+        <form id="whyForm" style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Kartlar dinamik olarak eklenecek -->
+          <div id="why-cards-edit-container" style="display:flex; flex-direction:column; gap:12px;"></div>
 
-        <div class="why-card">
-          <div class="icon">💚</div>
-          <h3>Fark Yaratın</h3>
-          <p>
-            Toplumda olumlu değişim yaratan anlamlı projelere katkı sağlayın.
-          </p>
-        </div>
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <button id="whyAddCardBtn" type="button" style="padding:10px 16px; background:#8b5cf6; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">+ Yeni Kart Ekle</button>
+            <button id="whySaveBtn" type="button" style="padding:10px 16px; background:#10b981; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">Kaydet</button>
+            <button id="whyCancelBtn" type="button" style="padding:10px 16px; background:#6b7280; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">İptal</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="why-cards" id="why-cards-display">
+        <!-- Kartlar dinamik olarak render edilecek -->
       </div>
     </section>
 
