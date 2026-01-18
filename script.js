@@ -1,3 +1,27 @@
+// Dinamik sayfa yükleme
+(function() {
+  // Sayfa dosyası varsa döndür, yoksa localStorage'dan kontrol et
+  window.loadDynamicPageContent = async function(pageId) {
+    const container = document.getElementById('page-content');
+    if (!container) return;
+
+    // localStorage'da kayıtlı sayfa içeriğini kontrol et
+    const pages = JSON.parse(localStorage.getItem('customPages') || '{}');
+    if (pages[pageId] && pages[pageId].content) {
+      container.innerHTML = pages[pageId].content;
+    }
+  };
+
+  // Sayfa yüklendiğinde çalıştır
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentFile = window.location.pathname.split('/').pop() || '';
+    if (currentFile && currentFile.endsWith('.html')) {
+      const pageId = currentFile.replace('.html', '');
+      window.loadDynamicPageContent(pageId);
+    }
+  });
+})();
+
 // LocalStorage tabanlı kullanıcı ve oturum yönetimi (backend yok)
 // Admin hesabını doğrudan tanımla (async await sorunu çözmek için)
 (async () => {
@@ -2714,6 +2738,54 @@
 
       let currentEditingIndex = -1;
 
+      // Helper: HTML'i düz metne çevir (liste/paragraf sonlarını yeni satıra dönüştürür)
+      const htmlToPlain = (html) => {
+        if (!html) return '';
+        // Replace closing paragraph and list item tags with newlines
+        let t = html.replace(/<\s*\/p\s*>/gi, '\n');
+        t = t.replace(/<\s*br\s*\/?>/gi, '\n');
+        t = t.replace(/<\s*\/li\s*>/gi, '\n');
+        // Replace list starts with a dash marker
+        t = t.replace(/<\s*li[^>]*>/gi, '- ');
+        // Remove all remaining tags
+        t = t.replace(/<[^>]+>/g, '');
+        // Decode basic HTML entities
+        t = t.replace(/&nbsp;/gi, ' ');
+        t = t.replace(/&amp;/gi, '&');
+        t = t.replace(/&lt;/gi, '<');
+        t = t.replace(/&gt;/gi, '>');
+        // Trim extra blank lines
+        t = t.replace(/\n{3,}/g, '\n\n').trim();
+        return t;
+      };
+
+      // Helper: düz metni basit HTML'e çevir (paragraflara sarar, listeleri korur)
+      const plainToHtml = (text) => {
+        if (!text) return '';
+        // Normalize CRLF
+        let t = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        // Lines starting with '- ' become list items
+        const lines = t.split('\n');
+        let inList = false;
+        let out = '';
+        lines.forEach((ln) => {
+          const trimmed = ln.trim();
+          if (trimmed.startsWith('- ')) {
+            if (!inList) { out += '<ul>'; inList = true; }
+            out += '<li>' + trimmed.slice(2) + '</li>';
+          } else {
+            if (inList) { out += '</ul>'; inList = false; }
+            if (trimmed === '') {
+              out += '\n';
+            } else {
+              out += '<p>' + trimmed + '</p>';
+            }
+          }
+        });
+        if (inList) out += '</ul>';
+        return out;
+      };
+
       // Default sections
       const defaultSections = [
         {
@@ -2799,7 +2871,8 @@
             const idx = Number(btn.dataset.editIdx);
             currentEditingIndex = idx;
             editSectionTitle.value = sections[idx].title;
-            editSectionContent.value = sections[idx].content;
+            // Edit alanına ham HTML göstermeyelim; kullanıcıya düz metin sun
+            editSectionContent.value = htmlToPlain(sections[idx].content);
             if (editForm) editForm.style.display = 'block';
             window.scrollTo({ top: editForm?.offsetTop || 0, behavior: 'smooth' });
           });
@@ -2847,7 +2920,7 @@
       if (saveSectionBtn) {
         saveSectionBtn.addEventListener('click', () => {
           const title = editSectionTitle.value.trim();
-          const content = editSectionContent.value.trim();
+          let content = editSectionContent.value.trim();
 
           if (!title) {
             alert('Lütfen başlık girin.');
@@ -2858,19 +2931,24 @@
             return;
           }
 
+          // Eğer kullanıcı içerikte HTML etiketleri eklediyse olduğu gibi kaydet,
+          // yoksa düz metni basit HTML'e dönüştürerek sakla.
+          const looksLikeHtml = /<[^>]+>/.test(content);
+          const savedContent = looksLikeHtml ? content : plainToHtml(content);
+
           if (currentEditingIndex === -1) {
             // New section
             const newSection = {
               id: 'section-' + Date.now(),
               title: title,
-              content: content
+              content: savedContent
             };
             sections.push(newSection);
             alert('Yeni bölüm eklendi.');
           } else {
             // Edit existing
             sections[currentEditingIndex].title = title;
-            sections[currentEditingIndex].content = content;
+            sections[currentEditingIndex].content = savedContent;
             alert('Bölüm güncellendi.');
           }
 
@@ -3044,6 +3122,283 @@
 
       // İlk yükleme
       renderDonationInfo();
+    })();
+
+    // Menü Yönetimi
+    (function initMenuManagement() {
+      const defaultMenuItems = [
+        { id: 'home', label: 'Ana Sayfa', url: 'index.html', active: true, order: 1 },
+        { id: 'about', label: 'Hakkımızda', url: 'about.html', active: true, order: 2 },
+        { id: 'management', label: 'Yönetim', url: 'management.html', active: true, order: 3 },
+        { id: 'announcements', label: 'Duyurular', url: 'announcements.html', active: true, order: 4 },
+        { id: 'activities', label: 'Faaliyetlerimiz', url: 'activities.html', active: true, order: 5 },
+        { id: 'contact', label: 'İletişim', url: 'contact.html', active: true, order: 6 }
+      ];
+
+      const MENU_STORAGE_KEY = 'navigationMenu';
+      const PAGES_STORAGE_KEY = 'customPages';
+
+      window.getMenuItems = function() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(MENU_STORAGE_KEY) || 'null');
+          if (Array.isArray(stored) && stored.length > 0) return stored;
+        } catch (err) {
+          // ignore parse error
+        }
+        return defaultMenuItems;
+      };
+
+      window.saveMenuItems = function(items) {
+        localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(items));
+      };
+
+      window.getPageContent = function(pageId) {
+        try {
+          const pages = JSON.parse(localStorage.getItem(PAGES_STORAGE_KEY) || '{}');
+          return pages[pageId] || null;
+        } catch (err) {
+          return null;
+        }
+      };
+
+      window.savePageContent = function(pageId, content) {
+        const pages = JSON.parse(localStorage.getItem(PAGES_STORAGE_KEY) || '{}');
+        pages[pageId] = content;
+        localStorage.setItem(PAGES_STORAGE_KEY, JSON.stringify(pages));
+      };
+
+      const getDefaultPageContent = (label) => {
+        return `<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>${label} - Dernek Websitesi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo"><a href="index.html" class="logo-link">UFUK DERNEĞİ</a></div>
+    <nav id="navbar-nav"></nav>
+  </header>
+
+  <section class="hero">
+    <h1>${label}</h1>
+    <p>Bu sayfanın içeriğini admin panelinden düzenleyebilirsiniz.</p>
+  </section>
+
+  <section class="content">
+    <div id="page-content" style="max-width:1200px; margin:0 auto; padding:40px 20px;">
+      <p style="text-align:center; color:#666; font-size:18px;">Sayfa içeriği yükleniyor...</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2024 Ufuk Derneği. Tüm hakları saklıdır.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>`;
+      };
+
+      window.renderMenu = function() {
+        const nav = document.querySelector('nav');
+        if (!nav) return;
+        
+        const menuItems = window.getMenuItems().filter(m => m.active).sort((a, b) => a.order - b.order);
+        
+        // Mevcut menü linklerini bul ve güncelle
+        const existingLinks = nav.querySelectorAll('a[href$=".html"]');
+        const themeBtn = nav.querySelector('#theme-toggle');
+        const loginBtn = nav.querySelector('#userLoginBtn');
+        
+        // Tüm HTML linklerini kaldır
+        existingLinks.forEach(link => link.remove());
+        
+        // Yeni menü linklerini ekle (theme button ve login button'dan önce)
+        menuItems.forEach(item => {
+          const a = document.createElement('a');
+          a.href = item.url;
+          a.textContent = item.label;
+          a.dataset.menuId = item.id;
+          if (themeBtn) {
+            nav.insertBefore(a, themeBtn);
+          } else {
+            nav.appendChild(a);
+          }
+        });
+      };
+
+      // Sayfa yüklendiğinde menüyü renderla
+      window.renderMenu();
+
+      // Management sayfasında admin paneli
+      if (currentPage === 'management.html') {
+        const su = getSessionUser();
+        if (isAdmin(su)) {
+          const adminArea = document.querySelector('[data-admin-only]');
+          if (adminArea) {
+            // Menü yönetim panelini ekle
+            const menuManagerDiv = document.createElement('div');
+            menuManagerDiv.id = 'admin-menu-manager';
+            menuManagerDiv.style.cssText = `
+              margin-top:30px; 
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              padding:30px; 
+              border-radius:12px; 
+              box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+              color: white;
+            `;
+            menuManagerDiv.innerHTML = `
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <span style="font-size:32px;">📋</span>
+                <h3 style="margin:0; font-size:24px; color:white;">Menü Yönetimi</h3>
+              </div>
+              <p style="margin:0 0 20px 0; font-size:15px; color:rgba(255,255,255,0.9);">Üst menüdeki sayfaları yönetebilirsiniz. Aktif/pasif yapabilir, silebilir ve yeni sayfalar ekleyebilirsiniz.</p>
+              
+              <div style="background:rgba(255,255,255,0.95); color:#1f2937; border-radius:10px; overflow:hidden; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                <div style="background:#f3f4f6; padding:15px; font-weight:700; font-size:14px; display:grid; grid-template-columns:1fr 1fr auto; gap:12px; align-items:center; border-bottom:2px solid #e5e7eb;">
+                  <div>📄 Sayfa Adı</div>
+                  <div>🔗 URL</div>
+                  <div>⚙️ İşlemler</div>
+                </div>
+                <div id="menuItemsList" style="max-height:400px; overflow-y:auto;"></div>
+              </div>
+              
+              <form id="menuAddForm" style="background:rgba(255,255,255,0.95); color:#1f2937; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                <h4 style="margin:0 0 15px 0; color:#667eea; font-size:16px;">➕ Yeni Sayfa Ekle</h4>
+                <div style="display:grid; gap:10px; grid-template-columns:1fr 1fr;">
+                  <input type="text" id="menuNewLabel" placeholder="Sayfa Adı (örn: Galeri)" required style="padding:10px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:14px; font-family:inherit;" />
+                  <input type="text" id="menuNewUrl" placeholder="URL (örn: gallery.html)" required style="padding:10px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:14px; font-family:inherit;" />
+                </div>
+                <button type="submit" style="width:100%; margin-top:10px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">Sayfayı Ekle</button>
+              </form>
+            `;
+            adminArea.appendChild(menuManagerDiv);
+
+            // Menü listesini renderla
+            const renderMenuList = () => {
+              const menuList = document.getElementById('menuItemsList');
+              if (!menuList) return;
+              
+              const items = window.getMenuItems().sort((a, b) => a.order - b.order);
+              menuList.innerHTML = '';
+              
+              items.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.style.cssText = `
+                  display:grid; 
+                  grid-template-columns:1fr 1fr auto; 
+                  gap:12px; 
+                  align-items:center; 
+                  padding:15px; 
+                  border-bottom:1px solid #f3f4f6;
+                  transition: background 0.2s;
+                 `;
+                row.onmouseover = () => row.style.background = '#f9fafb';
+                row.onmouseout = () => row.style.background = 'transparent';
+                
+                const statusText = item.active ? '✅ Aktif' : '⏸️ Pasif';
+                const statusColor = item.active ? '#10b981' : '#f59e0b';
+                
+                row.innerHTML = `
+                  <div>
+                    <div style="font-weight:600; color:#1f2937; font-size:15px;">${item.label}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:13px; color:#666; font-family:monospace; background:#f3f4f6; padding:6px 8px; border-radius:4px;">${item.url}</div>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button class="menu-toggle-status" data-idx="${idx}" style="background:${statusColor}; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;" title="Durumu değiştir">${statusText}</button>
+                    <button class="menu-delete" data-idx="${idx}" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; transition:all 0.2s;" title="Sayfayı sil">🗑️ Sil</button>
+                  </div>
+                `;
+                
+                menuList.appendChild(row);
+              });
+
+              // Toggle status
+              menuList.querySelectorAll('.menu-toggle-status').forEach(btn => {
+                btn.addEventListener('mouseover', () => btn.style.opacity = '0.9');
+                btn.addEventListener('mouseout', () => btn.style.opacity = '1');
+                btn.addEventListener('click', () => {
+                  const idx = Number(btn.dataset.idx);
+                  const items = window.getMenuItems();
+                  items[idx].active = !items[idx].active;
+                  window.saveMenuItems(items);
+                  window.renderMenu();
+                  renderMenuList();
+                });
+              });
+
+              // Delete menu item
+              menuList.querySelectorAll('.menu-delete').forEach(btn => {
+                btn.addEventListener('mouseover', () => btn.style.opacity = '0.9');
+                btn.addEventListener('mouseout', () => btn.style.opacity = '1');
+                btn.addEventListener('click', () => {
+                  const idx = Number(btn.dataset.idx);
+                  const items = window.getMenuItems();
+                  if (confirm(`"${items[idx].label}" sayfasını silmek istediğinize emin misiniz?`)) {
+                    items.splice(idx, 1);
+                    window.saveMenuItems(items);
+                    window.renderMenu();
+                    renderMenuList();
+                  }
+                });
+              });
+            };
+
+            // Yeni sayfa ekleme
+            const menuForm = document.getElementById('menuAddForm');
+            if (menuForm) {
+              menuForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const label = document.getElementById('menuNewLabel').value.trim();
+                const url = document.getElementById('menuNewUrl').value.trim();
+
+                if (!label || !url) {
+                  alert('Lütfen tüm alanları doldurun.');
+                  return;
+                }
+
+                if (!url.endsWith('.html')) {
+                  alert('URL ".html" ile bitmelidir.');
+                  return;
+                }
+
+                // Varsayılan sayfa içeriğini oluştur ve kaydet
+                const pageId = url.replace('.html', '');
+                const defaultContent = getDefaultPageContent(label);
+                window.savePageContent(pageId, {
+                  title: label,
+                  content: `<h2>${label}</h2><p>Bu sayfa yeni oluşturulmuştur. Admin panelinden düzenleyebilirsiniz.</p>`
+                });
+
+                const items = window.getMenuItems();
+                const newItem = {
+                  id: 'menu-' + Date.now(),
+                  label: label,
+                  url: url,
+                  active: true,
+                  order: Math.max(...items.map(i => i.order), 0) + 1
+                };
+                items.push(newItem);
+                window.saveMenuItems(items);
+                window.renderMenu();
+                renderMenuList();
+                menuForm.reset();
+                alert(`"${label}" sayfası oluşturuldu ve menüye eklendi. Sayfaya erişebilirsiniz: ${url}`);
+              });
+            }
+
+            // İlk renderla
+            renderMenuList();
+          }
+        }
+      }
     })();
   });
 })();
