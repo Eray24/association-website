@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sosyal Medya Hesap Bağlantısı - Dernek Websitesi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .social-container {
+        max-width: 500px;
+        margin: 60px auto;
+        padding: 40px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .platform-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+
+      .platform-btn {
+        padding: 16px;
+        border: 2px solid #d1d5db;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 28px;
+        transition: all 0.2s;
+      }
+
+      .platform-btn:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .platform-btn.selected {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      body.dark .platform-btn {
+        background: #374151;
+        border-color: #4b5563;
+      }
+
+      body.dark .platform-btn.selected {
+        background: #1e40af;
+        border-color: #3b82f6;
+      }
+
+      .social-container {
+        max-width: 500px;
+        margin: 60px auto;
+        padding: 40px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .social-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .social-header h1 {
+        color: #1f2937;
+        font-size: 28px;
+        margin: 0 0 10px;
+      }
+
+      .social-header p {
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .social-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #374151;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+      }
+
+      .submit-btn:hover {
+        background: #2563eb;
+      }
+
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 8px 16px;
+        background: #f3f4f6;
+        color: #374151;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        text-align: center;
+        transition: background 0.2s;
+      }
+
+      .back-btn:hover {
+        background: #e5e7eb;
+      }
+
+      .info-box {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #1e40af;
+      }
+
+      .success-message {
+        background: #dcfce7;
+        border-left: 4px solid #22c55e;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #166534;
+        display: none;
+      }
+
+      .error-message {
+        background: #fee2e2;
+        border-left: 4px solid #ef4444;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #991b1b;
+        display: none;
+      }
+
+      body.dark .social-container {
+        background: #1f2937;
+      }
+
+      body.dark .social-header h1 {
+        color: #f3f4f6;
+      }
+
+      body.dark .social-header p {
+        color: #9ca3af;
+      }
+
+      body.dark .form-group label {
+        color: #e5e7eb;
+      }
+
+      body.dark .form-group input {
+        background: #374151;
+        color: #f3f4f6;
+        border-color: #4b5563;
+      }
+
+      body.dark .back-btn {
+        background: #374151;
+        color: #e5e7eb;
+      }
+
+      body.dark .back-btn:hover {
+        background: #4b5563;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <a href="index.html" class="logo-link">UFUK DERNEĞİ</a>
+      </div>
+      <div class="navbar-search">
+        <label for="site-search" class="sr-only">Sitede ara</label>
+        <input id="site-search" type="search" placeholder="Sitede ara" aria-label="Sitede ara" autocomplete="off" />
+        <div id="search-results" class="search-results" style="display:none;"></div>
+      </div>
+      <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="about.html">Hakkımızda</a>
+        <a href="management.html">Yönetim</a>
+        <a href="announcements.html">Duyurular</a>
+        <a href="activities.html">Faaliyetlerimiz</a>
+        <a href="contact.html">İletişim</a>
+        <button id="theme-toggle" class="theme-toggle">🌙</button>
+        <a href="login.html" class="login" id="userLoginBtn">Giriş Yap</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="social-container">
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="social-header">
+          <div class="social-icon" id="socialIcon">📱</div>
+          <h1 id="socialName">Sosyal Medya Hesabı Bağla</h1>
+          <p id="socialPlatform">Platform seçin veya devam edin</p>
+        </div>
+
+        <!-- Platform seçici (ön sayfada platform parametresi yoksa görünür) -->
+        <div id="platformSelector" class="platform-selector" style="display: none;">
+          <button type="button" class="platform-btn" data-platform="X" title="X (Twitter)">𝕏</button>
+          <button type="button" class="platform-btn" data-platform="Facebook" title="Facebook">f</button>
+          <button type="button" class="platform-btn" data-platform="Instagram" title="Instagram">📷</button>
+          <button type="button" class="platform-btn" data-platform="LinkedIn" title="LinkedIn">in</button>
+          <button type="button" class="platform-btn" data-platform="YouTube" title="YouTube">▶</button>
+        </div>
+
+        <div class="info-box">
+          ℹ️ Sosyal medya hesaplarınızı bağlayarak derneğimizle daha iyi iletişim kurun ve kampanyalara katılın.
+        </div>
+
+        <form id="socialMediaForm">
+          <div class="form-group">
+            <label for="email">E-Posta Adresi</label>
+            <input type="email" id="email" name="email" required placeholder="ornek@email.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" name="password" required placeholder="Şifrenizi girin" />
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">Hesabı Bağla</button>
+        </form>
+
+        <a href="index.html" class="back-btn">← Ana Sayfaya Dön</a>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>Ufuk Derneği</h3>
+          <p>Ufuk Derneği; eğitim, sağlık, sosyal yardım ve çevre projeleriyle toplumsal dayanışmayı güçlendiren gönüllülük temelli bir sivil oluşumdur.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="X" class="footer-social-link">𝕏</a>
+            <a href="#" aria-label="Facebook" class="footer-social-link">f</a>
+            <a href="#" aria-label="Instagram" class="footer-social-link">📷</a>
+            <a href="#" aria-label="LinkedIn" class="footer-social-link">in</a>
+            <a href="#" aria-label="YouTube" class="footer-social-link">▶</a>
+          </div>
+        </div>
+
+        <div class="footer-columns">
+          <div class="footer-column">
+            <h4>Kurumsal</h4>
+            <a href="about.html">Hakkımızda</a>
+            <a href="management.html">Yönetim</a>
+            <a href="activities.html">Faaliyetlerimiz</a>
+            <a href="announcements.html">Duyurular</a>
+          </div>
+          <div class="footer-column">
+            <h4>Destek</h4>
+            <a href="contact.html">İletişim</a>
+            <a href="index.html#bagis">Bağış</a>
+            <a href="register.html">Üye Ol</a>
+            <a href="login.html">Giriş Yap</a>
+          </div>
+        </div>
+
+        <div class="footer-contact">
+          <h4>İletişim</h4>
+          <ul>
+            <li><span class="footer-icon">📞</span>0 (312) 310 10 10</li>
+            <li><span class="footer-icon">📧</span>info@ufukdernegi.org</li>
+            <li><span class="footer-icon">📍</span>Ankara, Türkiye</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>Ufuk Derneği © 2025. Tüm hakları saklıdır.</p>
+        <div class="footer-bottom-links">
+          <a href="contact.html">Bize Ulaşın</a>
+          <a href="index.html#bagis">Bağış Yap</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+      // Sosyal medya platformları
+      const platforms = {
+        'X': { icon: '𝕏', name: 'X (Twitter)' },
+        'Facebook': { icon: 'f', name: 'Facebook' },
+        'Instagram': { icon: '📷', name: 'Instagram' },
+        'LinkedIn': { icon: 'in', name: 'LinkedIn' },
+        'YouTube': { icon: '▶', name: 'YouTube' }
+      };
+
+      let selectedPlatform = null;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const platform = urlParams.get('platform');
+        const form = document.getElementById('socialMediaForm');
+        const socialIcon = document.getElementById('socialIcon');
+        const socialName = document.getElementById('socialName');
+        const socialPlatform = document.getElementById('socialPlatform');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const platformSelector = document.getElementById('platformSelector');
+        const platformBtns = document.querySelectorAll('.platform-btn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (platform && platforms[platform]) {
+          // Platform belirtilmişse direkt form göster
+          selectedPlatform = platform;
+          const p = platforms[platform];
+          socialIcon.textContent = p.icon;
+          socialName.textContent = p.name;
+          socialPlatform.textContent = `${p.name} hesabı bilgilerinizi girin`;
+          platformSelector.style.display = 'none';
+        } else {
+          // Platform belirtilmemişse seçim sayfası göster
+          platformSelector.style.display = 'grid';
+          socialIcon.textContent = '🔗';
+          socialName.textContent = 'Sosyal Medya Hesabı Bağla';
+          socialPlatform.textContent = 'Lütfen platform seçin';
+          
+          // Platform butonlarına olay dinleyicisi ekle
+          platformBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              const plat = btn.dataset.platform;
+              selectedPlatform = plat;
+              
+              // Tüm butonlardan selected sınıfını kaldır
+              platformBtns.forEach(b => b.classList.remove('selected'));
+              // Tıklanan butona selected sınıfı ekle
+              btn.classList.add('selected');
+              
+              // Header'ı güncelle
+              const p = platforms[plat];
+              socialIcon.textContent = p.icon;
+              socialName.textContent = p.name;
+              socialPlatform.textContent = `${p.name} hesabı bilgilerinizi girin`;
+            });
+          });
+        }
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          if (!selectedPlatform) {
+            errorMessage.textContent = '⚠️ Lütfen bir platform seçin.';
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            return;
+          }
+
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value.trim();
+
+          if (!email || !password) {
+            errorMessage.textContent = '⚠️ Lütfen tüm alanları doldurun.';
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            return;
+          }
+
+          // LocalStorage'da sosyal medya hesaplarını sakla
+          const socialAccounts = JSON.parse(localStorage.getItem('socialAccounts') || '{}');
+          socialAccounts[selectedPlatform] = {
+            email: email,
+            password: password,
+            connectedAt: new Date().toISOString()
+          };
+          localStorage.setItem('socialAccounts', JSON.stringify(socialAccounts));
+
+          // Başarı mesajı göster
+          successMessage.textContent = `✅ ${selectedPlatform} hesabınız başarıyla bağlandı!`;
+          successMessage.style.display = 'block';
+          errorMessage.style.display = 'none';
+
+          // Formu temizle
+          form.reset();
+          platformBtns.forEach(b => b.classList.remove('selected'));
+          selectedPlatform = null;
+
+          // 2 saniye sonra ana sayfaya yönlendir
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        });
+      });
+    </script>
+  </body>
+</html>
